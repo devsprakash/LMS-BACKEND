@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www",
+    "dev": "pm2 start ./bin/www",
+    "restart": "pm2 restart ./bin/www",
+    "stop": "pm2 stop ./bin/www"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -27,7 +30,8 @@
     "multer": "^1.4.2",
     "multer-s3": "^2.9.0",
     "nodemon": "^3.1.0",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "pm2": "^5.4.2"
   },
   "nodemonConfig": {
     "ignore": [
