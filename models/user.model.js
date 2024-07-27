@@ -9,8 +9,8 @@ const { JWT_SECRET } = require('../keys/keys');
 
 
 // Define user schema
-const userSchema = new Schema({
-    
+const userSchema = new mongoose.Schema({
+
     first_name: {
         type: String
     },
