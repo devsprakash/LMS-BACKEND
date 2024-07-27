@@ -56,6 +56,10 @@ exports.Register= async (req, res, next) => {
             last_name: user.first_name,
             email: user.email,
             user_type: user.user_type,
+            gender:user.gender,
+            phone:user.phone,
+            created_at:user.created_at,
+            updated_at:user.updated_at
         }
 
         return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.signUp_success', responseData, req.headers.lang);

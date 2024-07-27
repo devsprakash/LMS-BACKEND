@@ -2,6 +2,7 @@
 const { body, validationResult } = require('express-validator');
 
 
+const valid_gender = ['male' , 'female' , 'other'];
 
 exports.user_validator = [
 
@@ -29,29 +30,6 @@ exports.user_validator = [
     .isEmail().withMessage('please enter a valid email')
     .trim(),
 
-  body('password')
-    .not()
-    .isEmpty()
-    .withMessage('password is required')
-    .isString().withMessage('password mus be a string')
-    .isLength({ min: 8 }).withMessage('password must be at least 8 characters ')
-    .trim(),
-
-  body('confirm_password')
-    .not()
-    .isEmpty()
-    .withMessage('confirm_password is required')
-    .isString().withMessage('confirm_password mus be a string')
-    .isLength({ min: 8 }).withMessage('confirm_password must be at least 8 characters ')
-    .trim(),
-
-
-  body('joining_date')
-    .not()
-    .isEmpty().withMessage('joining_date is required')
-    .isString().withMessage('joining_date must be a string')
-    .trim(),
-
   body('phone')
     .not()
     .isEmpty().withMessage('phone is required')
@@ -60,29 +38,12 @@ exports.user_validator = [
     .isLength({ max: 10 }).withMessage('phone must be at least 10 characters')
     .trim(),
 
-  body('company')
+  body('gender')
     .not()
-    .isEmpty().withMessage('company is required')
-    .isString().withMessage('company must be a string')
-    .trim(),
-
-
-  body('department')
-    .not()
-    .isEmpty().withMessage('department is required')
-    .isString().withMessage('department must be a string')
-    .trim(),
-
-  body('designation')
-    .not()
-    .isEmpty().withMessage('designation is required')
-    .isString().withMessage('designation must be a string')
-    .trim(),
-
-  body('employee_id')
-    .not()
-    .isEmpty().withMessage('employee_id is required')
-    .isString().withMessage('employee_id must be a string')
+    .isEmpty().withMessage('gender is required')
+    .isString().withMessage('gender must be a string')
+    .isIn(valid_gender)
+    .withMessage('please enter a valid gender type')
     .trim(),
 
 ];

@@ -8,7 +8,7 @@ const {
 
 
 
-router.post('/addUser', user_validator, ValidatorResult, authenticate, Register)
+router.post('/signUp', user_validator, ValidatorResult, Register)
 
 
 
