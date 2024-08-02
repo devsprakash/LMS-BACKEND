@@ -10,8 +10,6 @@ exports.user_validator = [
     .not()
     .isEmpty().withMessage('full_name is required')
     .isString().withMessage('full_name must be a string')
-    .isLength({ min: 2, max: 20 })
-    .withMessage('full_name size must be between 2 and 30 characters')
     .trim(),
 
   body('email')
@@ -42,8 +40,6 @@ exports.user_validator = [
     .not()
     .isEmpty().withMessage('course_name is required')
     .isString().withMessage('course_name must be a string')
-    .isLength({ min: 2, max: 20 })
-    .withMessage('course_name size must be between 2 and 30 characters')
     .trim(),
 
 ];
