@@ -21,7 +21,6 @@ const {
 
 
 
-
 exports.Register= async (req, res, next) => {
 
     try {
@@ -52,12 +51,12 @@ exports.Register= async (req, res, next) => {
         const user = await Usersave(reqBody);
         const responseData = {
             _id: user._id,
-            first_name: user.last_name,
-            last_name: user.first_name,
+            full_name: user.full_name,
             email: user.email,
             user_type: user.user_type,
             gender:user.gender,
             phone:user.phone,
+            course_name:user.course_name,
             created_at:user.created_at,
             updated_at:user.updated_at
         }

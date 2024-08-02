@@ -6,20 +6,12 @@ const valid_gender = ['male' , 'female' , 'other'];
 
 exports.user_validator = [
 
-  body('first_name')
+  body('full_name')
     .not()
-    .isEmpty().withMessage('first_name is required')
-    .isString().withMessage('first_name must be a string')
+    .isEmpty().withMessage('full_name is required')
+    .isString().withMessage('full_name must be a string')
     .isLength({ min: 2, max: 20 })
-    .withMessage('first_name size must be between 2 and 30 characters')
-    .trim(),
-
-  body('last_name')
-    .not()
-    .isEmpty().withMessage('last_name is required')
-    .isString().withMessage('last_name must be a string')
-    .isLength({ min: 2, max: 20 })
-    .withMessage('last_name size must be between 2 and 30 characters')
+    .withMessage('full_name size must be between 2 and 30 characters')
     .trim(),
 
   body('email')
@@ -35,7 +27,7 @@ exports.user_validator = [
     .isEmpty().withMessage('phone is required')
     .isString().withMessage('phone must be a string')
     .isMobilePhone().withMessage('please enter a valid phone number')
-    .isLength({ max: 10 }).withMessage('phone must be at least 10 characters')
+    .isLength({ max: 12 }).withMessage('phone must be at least 10 characters')
     .trim(),
 
   body('gender')
@@ -44,6 +36,14 @@ exports.user_validator = [
     .isString().withMessage('gender must be a string')
     .isIn(valid_gender)
     .withMessage('please enter a valid gender type')
+    .trim(),
+
+    body('course_name')
+    .not()
+    .isEmpty().withMessage('course_name is required')
+    .isString().withMessage('course_name must be a string')
+    .isLength({ min: 2, max: 20 })
+    .withMessage('course_name size must be between 2 and 30 characters')
     .trim(),
 
 ];
