@@ -1,3 +1,5 @@
+const { talk_to_expert, brochure_download } = require("../../v1/controllers/user.controller");
+
 module.exports = {
 
     'USER': {
@@ -42,7 +44,12 @@ module.exports = {
         get_user_profile : 'User profile get profile.',
         user_deleted: 'User deleted successfully.',
         logout_success: "Logout successfully.",
-        exist_email:'this email is already used please used another email'
+        exist_email:'this email is already used please used another email',
+        talk_to_expert:'Our representative will connect with you very soon',
+        brochure_download_success:'brochure download successfully',
+        fill_the_form_successfully:'your form has been successfully sumbit',
+        no_image_upload:'please upload your ews certificate'
+    
     },
     'GENERAL': {
         

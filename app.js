@@ -10,15 +10,9 @@ const indexRouter = require('./v1/routes/index');
 const usersRouter = require('./v1/routes/users');
 const indexAdminRouter = require('./admin/routes/index');
 const adminRouter = require('./admin/routes/admin');
-
+const fs = require('fs')
 
 const app = express();
-
-app.use(express.static(path.join(__dirname, 'public')));
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
-
 app.use(flash());
 
 app.use(
@@ -36,6 +30,17 @@ app.use(
 
 //Database connection with mongodb
 const mongoose = require('./config/database');
+
+
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+app.use('/uploads', express.static(uploadDir));
+
 
 app.use(cors());
 app.use(logger('dev'));

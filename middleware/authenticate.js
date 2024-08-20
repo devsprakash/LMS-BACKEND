@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const constants = require('../config/constants')
 const { sendResponse } = require('../services/common.service');
-const { JWT_SECRET } = require('../keys/keys');
+const { JWT_SECRET } = require('../keys//development.keys');
 
 
 

@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const { login_validator } = require('../../validation/user.validator')
 const {
   login,
   logout
@@ -9,8 +8,8 @@ const authenticate = require('../../middleware/authenticate');
 
 
 
-router.post('/login', login_validator, login)
-router.get('/logout', authenticate, logout)
+router.post('/login', login)
+router.get('/logout', logout)
 
 
 
