@@ -313,3 +313,19 @@ exports.discount_form = async (req, res, next) => {
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
     }
 }
+
+
+
+exports.AllUsers = async (req, res, next) => {
+
+    try {
+
+     const allUsers = await User.find();
+
+      return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.fill_the_form_successfully', allUsers , req.headers.lang);
+
+    } catch (err) {
+        console.log("err(discount_form)........", err)
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
+    }
+}
