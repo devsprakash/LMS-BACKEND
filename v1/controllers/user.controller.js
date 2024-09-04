@@ -55,6 +55,7 @@ exports.Register= async (req, res, next) => {
             full_name: user.full_name,
             email: user.email,
             user_type: user.user_type,
+            social_media:user.social_media,
             gender:user.gender,
             phone:user.phone,
             course_name:user.course_name,
@@ -321,7 +322,6 @@ exports.AllUsers = async (req, res, next) => {
     try {
 
      const allUsers = await User.find();
-
       return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.fill_the_form_successfully', allUsers , req.headers.lang);
 
     } catch (err) {

@@ -39,8 +39,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: null
     },
+    social_media: {
+        type: String
+    },
     city: {
-        type:String,
+        type: String,
     },
     device_token: {
         type: String,
