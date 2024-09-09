@@ -9,6 +9,7 @@ const TalkToExpert = require('../../models/talk_to_export.modal')
 const BrochureDownload = require('../../models/brochure_download')
 const DiscountForm = require('../../models/discount_form.modal');
 const Story = require('../../models/success_story_modal');
+const Blog = require('../../models/post_blog_modal');
 const {
     Usersave,
 } = require('../services/user.service');
@@ -358,3 +359,42 @@ exports.post_your_story = async (req, res, next) => {
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
     }
 }
+
+
+
+exports.post_blog = async (req, res, next) => {
+
+    try {
+
+        const reqBody = req.body;
+
+        if (!req.file)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.no_image_upload', {}, req.headers.lang);
+        
+        console.log("data..." , req.file);
+        const blog_image_url = `${BASEURL}/uploads/${req.file.filename}`;
+
+        reqBody.blog_image = blog_image_url;
+        reqBody.created_at = await dateFormat.set_current_timestamp();
+        reqBody.updated_at = await dateFormat.set_current_timestamp();
+
+        const user = await Blog.create(reqBody);
+        const responseData = {
+            _id: user._id,
+            blog_name: user.blog_name,
+            blog_title:user.blog_title,
+            blog_image: user.blog_image,
+            blog_category:user.blog_category,
+            blog_content:user.blog_content,
+            created_at:user.created_at,
+            updated_at:user.updated_at
+        }
+
+      return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.successfully_post_your_blog', responseData, req.headers.lang);
+
+    } catch (err) {
+        console.log("err(post_blog)........", err)
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
+    }
+}
+

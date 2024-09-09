@@ -160,8 +160,6 @@ exports.discount_form_validator = [
     .isEmpty().withMessage('pancard is required')
     .isString().withMessage('pancard must be a string')
     .trim(),
-
-
 ];
 
 
@@ -184,6 +182,35 @@ body('email')
   .not()
   .isEmpty().withMessage('descripation is required')
   .isString().withMessage('descripation must be a string')
+  .trim(),
+
+]
+
+
+exports.post_blog_validation = [
+
+  body('blog_name')
+  .not()
+  .isEmpty().withMessage('blog_name is required')
+  .isString().withMessage('blog_name must be a string')
+  .trim(),
+
+body('blog_title')
+  .not()
+  .isEmpty().withMessage('blog_title is required')
+  .isString().withMessage('blog_title must be a string')
+  .trim(),
+
+  body('blog_category')
+  .not()
+  .isEmpty().withMessage('blog_category is required')
+  .isString().withMessage('blog_category must be a string')
+  .trim(),
+
+  body('blog_content')
+  .not()
+  .isEmpty().withMessage('blog_content is required')
+  .isString().withMessage('blog_content must be a string')
   .trim(),
 
 ]
