@@ -165,7 +165,6 @@ exports.discount_form_validator = [
 ];
 
 
-
 exports.post_story_validation = [
 
   body('name')
