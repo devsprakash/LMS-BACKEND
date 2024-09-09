@@ -8,6 +8,7 @@ const User = require('../../models/user.model');
 const TalkToExpert = require('../../models/talk_to_export.modal')
 const BrochureDownload = require('../../models/brochure_download')
 const DiscountForm = require('../../models/discount_form.modal');
+const Story = require('../../models/success_story_modal');
 const {
     Usersave,
 } = require('../services/user.service');
@@ -321,6 +322,39 @@ exports.AllUsers = async (req, res, next) => {
 
     } catch (err) {
         console.log("err(discount_form)........", err)
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
+    }
+}
+
+
+
+exports.post_your_story = async (req, res, next) => {
+
+    try {
+
+        const reqBody = req.body;
+        const checkMail = await isValid(reqBody.email);
+
+        if (!checkMail)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
+    
+        reqBody.created_at = await dateFormat.set_current_timestamp();
+        reqBody.updated_at = await dateFormat.set_current_timestamp();
+
+        const user = await Story.create(reqBody);
+        const responseData = {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            descripation:user.descripation,
+            created_at:user.created_at,
+            updated_at:user.updated_at
+        }
+
+      return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.successfully_post_your_story', responseData, req.headers.lang);
+
+    } catch (err) {
+        console.log("err(post_your_story)........", err)
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
     }
 }

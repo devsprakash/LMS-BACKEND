@@ -48,7 +48,8 @@ module.exports = {
         talk_to_expert:'Our representative will connect with you very soon',
         brochure_download_success:'brochure download successfully',
         fill_the_form_successfully:'your form has been successfully sumbit',
-        no_image_upload:'please upload your ews certificate'
+        no_image_upload:'please upload your ews certificate',
+        successfully_post_your_story:'Your Story Post Successfully'
     
     },
     'GENERAL': {

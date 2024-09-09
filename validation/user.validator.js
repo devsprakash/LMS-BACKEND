@@ -166,6 +166,29 @@ exports.discount_form_validator = [
 
 
 
+exports.post_story_validation = [
+
+  body('name')
+  .not()
+  .isEmpty().withMessage('name is required')
+  .isString().withMessage('name must be a string')
+  .trim(),
+
+body('email')
+  .not()
+  .isEmpty().withMessage('email is required')
+  .isString().withMessage('email must be a string')
+  .isEmail().withMessage('please enter valid email')
+  .trim(),
+
+  body('descripation')
+  .not()
+  .isEmpty().withMessage('descripation is required')
+  .isString().withMessage('descripation must be a string')
+  .trim(),
+
+]
+
 
 
 
