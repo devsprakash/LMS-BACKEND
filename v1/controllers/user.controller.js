@@ -20,7 +20,7 @@ const {
 const {
     isValid
 } = require('../../services/blackListMail')
-const {sendMail}  = require('../../services/email.services')
+const { sendMail }  = require('../../services/email.services')
 
 
 
@@ -66,74 +66,74 @@ exports.Register= async (req, res, next) => {
             updated_at:user.updated_at
         }
 
-// let text = `Welcome to ATIIT GLOBAL PRIVATE LIMITED! 🎉
+let text = `Welcome to ATIIT GLOBAL PRIVATE LIMITED! 🎉
 
-// Dear ${[user.full_name]},
+Dear ${[user.full_name]},
 
-// We are thrilled to welcome you to ATIIT GLOBAL PRIVATE LIMITED! Congratulations on successfully registering with us.
+We are thrilled to welcome you to ATIIT GLOBAL PRIVATE LIMITED! Congratulations on successfully registering with us.
 
-// Here’s what you can look forward to:
+Here’s what you can look forward to:
 
-// A World-Class Learning Experience
-// Dive into our extensive range of courses designed to enhance your skills and knowledge in various fields.
+A World-Class Learning Experience
+Dive into our extensive range of courses designed to enhance your skills and knowledge in various fields.
 
-// Access to Industry Experts
-// Get direct access to top professionals in the industry through our mentor sessions and live webinars.
+Access to Industry Experts
+Get direct access to top professionals in the industry through our mentor sessions and live webinars.
 
-// Personalized Learning Paths
-// Our courses are tailored to meet your specific career goals. Whether you're a beginner or an experienced professional, we have something for everyone.
+Personalized Learning Paths
+Our courses are tailored to meet your specific career goals. Whether you're a beginner or an experienced professional, we have something for everyone.
 
-// Networking Opportunities
-// Join our community of like-minded learners and industry professionals to expand your network and explore new opportunities.
+Networking Opportunities
+Join our community of like-minded learners and industry professionals to expand your network and explore new opportunities.
 
-// 24/7 Support
-// Our dedicated support team is here to assist you at every step of your learning journey.
+24/7 Support
+Our dedicated support team is here to assist you at every step of your learning journey.
 
-// Placed in Top Companies
-// Benefit from our placement assistance program designed to help you secure job opportunities in top companies.
+Placed in Top Companies
+Benefit from our placement assistance program designed to help you secure job opportunities in top companies.
 
-// Explore Our Courses:
+Explore Our Courses:
 
-// Advanced Certification in Gen AI
-// Advanced Certification in IOT-Industrial Automation
-// Advanced Certification in Wireless Technology
-// Advanced Certification in Microelectronics and Semiconductor Technology
-// Advanced Certification in Cloud Computing
-// Advanced Certification in Cyber Security
-// Advanced Certification in Embedded Systems
-// Advanced Training in Mineral Exploration
-// Advanced Training in Space Science
-// Advanced Training in Blue Economy
-// Advanced Training in Energy Resources
-// Advanced Training in Renewable Energy
-// Advanced Training in Full Stack Development (MERN)
-// Advanced Training in Full Stack Development With Python
-// Advanced Certification in Natural Language Processing
-// Exclusive Benefits:
+Advanced Certification in Gen AI
+Advanced Certification in IOT-Industrial Automation
+Advanced Certification in Wireless Technology
+Advanced Certification in Microelectronics and Semiconductor Technology
+Advanced Certification in Cloud Computing
+Advanced Certification in Cyber Security
+Advanced Certification in Embedded Systems
+Advanced Training in Mineral Exploration
+Advanced Training in Space Science
+Advanced Training in Blue Economy
+Advanced Training in Energy Resources
+Advanced Training in Renewable Energy
+Advanced Training in Full Stack Development (MERN)
+Advanced Training in Full Stack Development With Python
+Advanced Certification in Natural Language Processing
+Exclusive Benefits:
 
-// - Flexible Learning Schedules
-//   Study at your own pace with our flexible learning options.
+- Flexible Learning Schedules
+  Study at your own pace with our flexible learning options.
 
-// - Certification
-//   Earn a globally recognized certificate upon course completion.
+- Certification
+  Earn a globally recognized certificate upon course completion.
 
-// - Career Support
-//   Receive guidance from our career experts to help you land your dream job.
+- Career Support
+  Receive guidance from our career experts to help you land your dream job.
 
-// - Placed in Top Companies
-//   Our placement assistance program will connect you with leading companies in your industry.
-//   We’re excited to have you on board and look forward to supporting your learning journey.
+- Placed in Top Companies
+  Our placement assistance program will connect you with leading companies in your industry.
+  We’re excited to have you on board and look forward to supporting your learning journey.
 
-// Best regards,
-// ATIIT GLOBAL PRIVATE LIMITED
-// Visit our Website: https://atiitglobal.com/
-// Contact us: support@atiitglobal.com`
+Best regards,
+ATIIT GLOBAL PRIVATE LIMITED
+Visit our Website: https://atiitglobal.com/
+Contact us: support@atiitglobal.com`
 
-//     sendMail(text , user.email).then(() => {
-//         console.log('successfully send the email')
-//     }).catch((err) => {
-//         console.log('email not send' , err)
-//     })
+    sendMail(text , user.email).then(() => {
+        console.log('successfully send the email')
+    }).catch((err) => {
+        console.log('email not send' , err)
+    })
 
     return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.signUp_success', responseData, req.headers.lang);
 
