@@ -127,7 +127,9 @@ Exclusive Benefits:
 Best regards,
 ATIIT GLOBAL PRIVATE LIMITED
 Visit our Website: https://atiitglobal.com/
-Contact us: support@atiitglobal.com`
+Call Us : 1800 200 350
+Contact us: connect@atiitglobal.com
+`
 
     sendMail(text , user.email).then(() => {
         console.log('successfully send the email')
