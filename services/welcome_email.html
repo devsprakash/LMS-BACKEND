@@ -1,0 +1,288 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to ATIIT GLOBAL</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"/>
+  <style>
+    /* Base styles */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+    :root {
+      --open-sans: 'Poppins', sans-serif;
+      --blue: #3c3ff0;
+      --light-blue: #0d6aba;
+      --dark-blue: #008CEA;
+      --grey: #1c1c1c;
+      --secondary-color: #5a5959;
+      --highlight-color: #ef620b;
+      --hover-color: #ff00b3;
+    }
+
+    body {
+      font-family: var(--open-sans);
+      background-color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .header {
+      text-align: center;
+      padding-bottom: 20px;
+    }
+
+    .header img {
+      max-width: 150px;
+      animation: bounceIn 2s ease-in-out;
+    }
+
+    h1 {
+      color: var(--blue);
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    p {
+      color: #333;
+      font-size: 16px;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    .highlight {
+      color: #262525;
+      font-weight: bold;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+
+    .courses {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      animation: zoomIn 1s ease-in-out;
+    }
+
+    .course-item {
+      width: 48%;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 22px;
+    }
+
+    .course-item:hover {
+      transform: scale(1.05);
+    }
+
+    .course-item p{
+      font-size: 22px;
+      font-weight: 600px;
+      color: #333;
+    }
+
+    .course-item img {
+      width: 500px;
+      height: 300px;
+      border-radius: 8px;
+      animation: rotateIn 1.5s ease-in-out;
+    }
+
+    .footer {
+      text-align: center;
+      padding-top: 20px;
+      font-size: 14px;
+      color: #777;
+    }
+
+    .footer p {
+      color: #3c3ff0;
+      text-align: left;
+      font-weight: 500;
+    }
+
+    .social-icons {
+      margin: 20px 0;
+      animation: bounceIn 1.5s ease-in-out;
+    }
+
+    .social-icons a {
+      margin: 0 10px;
+      color: #3c3ff0;
+      text-decoration: none;
+      font-size: 25px;
+      transition: color 0.3s;
+      font-size: 22px;
+    }
+
+    .social-icons .para {
+       text-align: center;
+       font-size: 25px;
+    }
+
+    .social-icons img {
+       width: 40px;
+       height: auto;
+    }
+
+    .footer a {
+      color: var(--blue);
+      text-decoration: none;
+      font-size: 22px;
+    }
+
+    .footer p {
+      color: #3c3ff0;
+      text-decoration: none;
+      font-size: 22px;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background-color: var(--blue);
+      color: #fff;
+      padding: 15px 25px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 25px;
+      margin-bottom: 20px;
+      transition: background-color 0.3s;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Header with logo -->
+    <div class="header">
+      <img src="https://atiitglobal.com/assets/img/logo/logos/Logo_BMP_without%20line_Transparent%20(1).png" alt="ATIIT GLOBAL Logo">
+      <h1>Welcome to ATIIT GLOBAL PRIVATE LIMITED! 🎉</h1>
+    </div>
+
+    <!-- Introduction paragraph -->
+    <p>Dear <span class="highlight">{{name}}</span>,</p>
+
+    <p>We are thrilled to welcome you to ATIIT GLOBAL PRIVATE LIMITED! Congratulations on successfully registering with us.</p>
+
+    <h2>Here’s what you can look forward to:</h2>
+
+    <p><strong>A World-Class Learning Experience:</strong> Dive into our extensive range of courses designed to enhance your skills and knowledge in various fields.</p>
+
+    <p><strong>Access to Industry Experts:</strong> Get direct access to top professionals in the industry through our mentor sessions and live webinars.</p>
+
+    <p><strong>Personalized Learning Paths:</strong> Our courses are tailored to meet your specific career goals, whether you're a beginner or an experienced professional.</p>
+
+    <p><strong>Networking Opportunities:</strong> Join our community of like-minded learners and industry professionals to expand your network and explore new opportunities.</p>
+
+    <p><strong>24/7 Support:</strong> Our dedicated support team is here to assist you at every step of your learning journey.</p>
+
+    <p><strong>Placed in Top Companies:</strong> Benefit from our placement assistance program designed to help you secure job opportunities in top companies.</p>
+
+    <!-- CTA Button -->
+    <a href="https://atiitglobal.com/courses-list.html" class="cta-button">Explore Our Courses</a>
+
+
+    <div class="courses">
+      <div class="course-item">
+        <img src="https://atiitglobal.com/assets/img/courses/artificial-intelligence-1024x512.webp" alt="Gen AI Course">
+        <p>Advanced Certification in Gen AI</p>
+      </div>
+  </div>
+
+  <div class="courses">
+      <div class="course-item">
+        <img src="https://atiitglobal.com/assets/img/student/IOT-course-image.webp" alt="IOT Industrial Automation">
+        <p>Advanced Certification in IOT-Industrial Automation</p>
+      </div>
+  </div>
+      
+  <div class="courses">
+      <div class="course-item">
+        <img src="https://atiitglobal.com/assets/img/courses/6g-technology.jpg" alt="Wireless Technology">
+        <p>Advanced Certification in Wireless Technology</p>
+      </div>
+  </div>
+     
+  <div class="courses">
+      <div class="course-item">
+        <img src="https://atiitglobal.com/assets/img/student/microelectronics-course-image.jpg" alt="Microelectronics and Semiconductor">
+        <p>Advanced Certification in Microelectronics and Semiconductor Technology</p>
+      </div>
+  </div>
+     
+  <div class="courses">
+      <div class="course-item">
+        <img src="https://atiitglobal.com/assets/img/student/Computational%20Fluid%20Dynamics-course-image.webp" alt="Microelectronics and Semiconductor">
+        <p>Advanced Certification in Computational Fluid Dynamics</p>
+      </div>
+  </div>
+     
+  <div class="courses">
+      <div class="course-item">
+        <img src="https://atiitglobal.com/assets/img/student/space-science-course-image-1.jpg" alt="Microelectronics and Semiconductor">
+        <p>Space Science (For children)</p>
+      </div>
+  </div>
+    
+  <div class="courses">
+      <div class="course-item">
+        <img src="https://atiitglobal.com/assets/img/student/minerals-exploration-course-image.jpg" alt="Microelectronics and Semiconductor">
+        <p>Advanced Training in Mineral exploration</p>
+      </div>
+  </div>
+
+  <div class="courses">
+      <div class="course-item">
+        <img src="https://atiitglobal.com/assets/img/student/Energy%20Resources-image.jpg" alt="Microelectronics and Semiconductor">
+        <p>Advanced Training in Energy Resources</p>
+      </div>
+  </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p class="para">Follow Us:</p>
+      <div class="social-icons">
+        <a href="https://www.youtube.com/@atiit-education"><img src="https://th.bing.com/th/id/R.68859d1a014a1bd67e3fa063d41148a3?rik=dWWdh73VjLk2lQ&riu=http%3a%2f%2fclipart-library.com%2fimages_k%2fyoutube-transparent-png%2fyoutube-transparent-png-15.png&ehk=rZ%2fw10rk3IJdEPBB8ZqssrEApBJLMz%2bJig5nsYs9BqE%3d&risl=&pid=ImgRaw&r=0" alt="youtube"></a>
+        <a href="https://x.com/ATIITINDIA"><img src="https://pngmind.com/wp-content/uploads/2019/08/Twitter-Logo-Png-Transparent-Background.jpg" alt="twitter"></a>
+        <a href="https://www.instagram.com/atiit_edu/?igsh=MWN3NmpiazcxdzM5Nw%3D%3D"><img src="https://th.bing.com/th/id/OIP.4yOhxJCs2K0_hNHRpteMmgHaHZ?rs=1&pid=ImgDetMain" alt="instagram"></a>
+        <a href="https://www.linkedin.com/company/atiit-pvt-ltd/"><img src="https://logospng.org/download/linkedin/logo-linkedin-icon-1536.png" alt="linkedin"></a>
+        <a href="https://www.facebook.com/atiitindia?mibextid=ZbWKwL"><img src="https://logodownload.org/wp-content/uploads/2014/09/facebook-logo-0.png" alt="facebook"></a>
+      </div>
+      <p><a href="https://atiitglobal.com" target="_blank">Visit Our Website : https://atiitglobal.com/</a></p>
+      <p><a href="tel:1800200350">Call Us : 1800 200 350</a></p>
+      <p><a href="mailto:connect@atiitglobal.com">Contact us : connect@atiitglobal.com</a></p>
+      <p><a href="https://atiitglobal.com/contact-us.html">Privacy Policy</a> | <a href="https://atiitglobal.com/contact-us.html">Terms of Service</a></p>
+      <p>&copy; 2024 ATIIT GLOBAL. All rights reserved.</p>
+    </div>
+  </div>
+
+</body>
+</html>
+
+
+
