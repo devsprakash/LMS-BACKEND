@@ -24,6 +24,8 @@ const { sendMail }  = require('../../services/email.services')
 
 
 
+
+
 exports.Register= async (req, res, next) => {
 
     try {
@@ -67,12 +69,12 @@ exports.Register= async (req, res, next) => {
         }
 
     sendMail(user.email , user.full_name).then(() => {
-        console.log('successfully send the email')
+        console.log('successfully send the email.............')
     }).catch((err) => {
-        console.log('email not send' , err)
+        console.log('email not send.........' , err)
     })
 
-    return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.signUp_success', responseData, req.headers.lang);
+      return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.signUp_success', responseData, req.headers.lang);
 
     } catch (err) {
         console.log("err(Register)........", err)
