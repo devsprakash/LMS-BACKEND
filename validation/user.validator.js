@@ -216,6 +216,145 @@ body('blog_title')
 ]
 
 
+exports.booking_validator = [
+
+  body('full_name')
+    .not()
+    .isEmpty().withMessage('full_name is required')
+    .isString().withMessage('full_name must be a string')
+    .trim(),
+
+  body('email')
+    .not()
+    .isEmpty()
+    .withMessage('email is required')
+    .isString().withMessage('email mus be a string')
+    .isEmail().withMessage('please enter a valid email')
+    .trim(),
+
+  body('phone')
+    .not()
+    .isEmpty().withMessage('phone is required')
+    .isString().withMessage('phone must be a string')
+    .isMobilePhone().withMessage('please enter a valid phone number')
+    .isLength({ min: 10, max: 12 }).withMessage('phone must be at least 10 characters')
+    .trim(),
+
+    body('adharcard')
+    .not()
+    .isEmpty().withMessage('adharcard is required')
+    .isNumeric().withMessage('adharcard must be a number')
+    .isLength({ min: 12, max: 12 }).withMessage('adharcard must be at least 12 characters')
+    .trim(),
+
+  body('gender')
+    .not()
+    .isEmpty().withMessage('gender is required')
+    .isString().withMessage('gender must be a string')
+    .isIn(valid_gender)
+    .withMessage('please enter a valid gender type')
+    .trim(),
+
+  body('city')
+    .not()
+    .isEmpty().withMessage('city is required')
+    .isString().withMessage('city must be a string')
+    .trim(),
+
+  body('course_name')
+    .not()
+    .isEmpty().withMessage('course_name is required')
+    .isString().withMessage('course_name must be a string')
+    .trim(),
+
+];
+
+
+
+exports.hiring_validator = [
+
+  body('name')
+    .not()
+    .isEmpty().withMessage('name is required')
+    .isString().withMessage('name must be a string')
+    .trim(),
+
+  body('work_email')
+    .not()
+    .isEmpty()
+    .withMessage('work_email is required')
+    .isString().withMessage('work_email mus be a string')
+    .isEmail().withMessage('please enter a valid work_email')
+    .trim(),
+
+  body('phone_number')
+    .not()
+    .isEmpty().withMessage('phone_number is required')
+    .isString().withMessage('phone_number must be a string')
+    .isMobilePhone().withMessage('please enter a valid phone number')
+    .isLength({ min: 10, max: 12 }).withMessage('phone must be at least 10 characters')
+    .trim(),
+
+  body('company')
+    .not()
+    .isEmpty().withMessage('company is required')
+    .isString().withMessage('company must be a string')
+    .trim(),
+
+  body('your_requirements')
+    .not()
+    .isEmpty().withMessage('your_requirements is required')
+    .isString().withMessage('your_requirements must be a string')
+    .trim(),
+
+];
+
+
+
+exports.enroll_form_validator = [
+
+  body('name')
+    .not()
+    .isEmpty().withMessage('name is required')
+    .isString().withMessage('name must be a string')
+    .trim(),
+
+  body('email')
+    .not()
+    .isEmpty()
+    .withMessage('email is required')
+    .isString().withMessage('email mus be a string')
+    .isEmail().withMessage('please enter a valid email')
+    .trim(),
+
+  body('phone')
+    .not()
+    .isEmpty().withMessage('phone is required')
+    .isString().withMessage('phone must be a string')
+    .isMobilePhone().withMessage('please enter a valid phone number')
+    .isLength({ min: 10, max: 12 }).withMessage('phone must be at least 10 characters')
+    .trim(),
+
+  body('city')
+    .not()
+    .isEmpty().withMessage('city is required')
+    .isString().withMessage('city must be a string')
+    .trim(),
+
+  body('course_name')
+    .not()
+    .isEmpty().withMessage('course_name is required')
+    .isString().withMessage('course_name must be a string')
+    .trim(),
+
+  body('pincode')
+    .not()
+    .isEmpty().withMessage('pincode is required')
+    .isNumeric().withMessage('pincode must be a number')
+    .isLength({ min: 6, max: 6 }).withMessage('phone must be at least 6 digits')
+    .trim(),
+];
+
 
 
 exports.ValidatorResult = (req, res, next) => {

@@ -50,9 +50,15 @@ module.exports = {
         fill_the_form_successfully:'your form has been successfully sumbit',
         no_image_upload:'no_image_upload',
         successfully_post_your_story:'Your Story Post Successfully',
-        successfully_post_your_blog:'Your Blog Post Successfully'
-    
+        successfully_post_your_blog:'Your Blog Post Successfully',
+        successfully_booking_your_seat:'Successfully Booked Your Seat',
+        your_hiring_requirements:'Successfully Sumbit Your Requirements',
+        enrollment_form_sumbit_successfully:'successfully sumbit your enrollment form',
+        no_file_uploaded: 'No files were uploaded. Please upload the required documents.',
+        missing_documnets:'Some required documents are missing. Please upload all documents.',
+        your_documents_successfully:'your successfully sumbit your documents'
     },
+    
     'GENERAL': {
         
         general_error_content: 'Something went wrong. Please try again later.',

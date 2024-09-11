@@ -1,22 +1,26 @@
 
 
+
 const mongoose = require('mongoose');
 
 
 // Define user schema
-const TalkToExpertSchema = new mongoose.Schema({
+const EnrollDocumentsSchema = new mongoose.Schema({
 
-    name: {
+    tenth_certificate: {
         type: String
     },
-    email: {
+    plus_two_certificate: {
         type: String
     },
-    phone: {
+    graduation_ertificate: {
         type: String
     },
-    course_name: {
+    pancard: {
         type: String
+    },
+    adharcard:{
+        type:String
     },
     created_at: {
         type: String
@@ -31,5 +35,5 @@ const TalkToExpertSchema = new mongoose.Schema({
 });
 
 
-const TalkToExpert = mongoose.model('TalkToExpert', TalkToExpertSchema);
-module.exports = TalkToExpert;
+const EnrollDocuments = mongoose.model('EnrollDocuments', EnrollDocumentsSchema);
+module.exports = EnrollDocuments;

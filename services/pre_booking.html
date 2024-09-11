@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Reservation Success</title>
+    <style>
+      /* Base styles */
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+      
+      :root {
+    --open-sans: "Poppins", sans-serif;
+    --blue: #3c3ff0;
+}
+
+/* General Styles */
+body {
+    font-family: var(--open-sans);
+    background-color: #fff;
+    margin: 0;
+    padding: 0;
+}
+
+table {
+    max-width: 1000px;
+    width: 100%;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.email-header {
+    background-color: #3c3ff0;
+    padding: 20px;
+    text-align: center;
+    color: white;
+}
+
+.email-header h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 600;
+}
+
+.email-body {
+    padding: 40px;
+    text-align: left;
+    color: #333;
+}
+
+.email-body h2 {
+    font-size: 24px;
+    color: #3c3ff0;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.email-body p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.email-body .reservation-details {
+    background-color: #f8f8f8;
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.email-body .reservation-details h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.email-body .reservation-details p {
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+.email-footer {
+    background-color: #3c3ff0;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Responsive Styles */
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+    .email-header h1 {
+        font-size: 20px;
+    }
+
+    .email-body {
+        padding: 20px;
+    }
+
+    .email-body h2 {
+        font-size: 20px;
+    }
+
+    .email-body p {
+        font-size: 14px;
+    }
+
+    .email-body .reservation-details {
+        padding: 15px;
+    }
+
+    .email-body .reservation-details h3 {
+        font-size: 16px;
+    }
+
+    .email-body .reservation-details p {
+        font-size: 14px;
+    }
+
+    .email-footer {
+        padding: 15px;
+    }
+
+    .email-footer p {
+        font-size: 12px;
+    }
+}
+
+/* Medium and up devices */
+@media only screen and (min-width: 600px) and (max-width: 970px) {
+    .email-header h1 {
+        font-size: 24px;
+    }
+
+    .email-body h2 {
+        font-size: 22px;
+    }
+
+    .email-body p {
+        font-size: 15px;
+    }
+
+    .email-body .reservation-details {
+        padding: 18px;
+    }
+
+    .email-body .reservation-details h3 {
+        font-size: 17px;
+    }
+
+    .email-body .reservation-details p {
+        font-size: 15px;
+    }
+
+    .email-footer {
+        padding: 18px;
+    }
+
+    .email-footer p {
+        font-size: 13px;
+    }
+}
+
+/* Large devices (tablets and desktops) */
+@media only screen and (min-width: 970px) {
+    .email-header h1 {
+        font-size: 26px;
+    }
+
+    .email-body h2 {
+        font-size: 24px;
+    }
+
+    .email-body p {
+        font-size: 16px;
+    }
+
+    .email-body .reservation-details {
+        padding: 20px;
+    }
+
+    .email-body .reservation-details h3 {
+        font-size: 18px;
+    }
+
+    .email-body .reservation-details p {
+        font-size: 16px;
+    }
+
+    .email-footer {
+        padding: 20px;
+    }
+
+    .email-footer p {
+        font-size: 14px;
+    }
+}
+
+    </style>
+  </head>
+  <body>
+    <table>
+      <!-- Header -->
+      <tr>
+        <td class="email-header">
+          <h1>Booking Confirmed!</h1>
+        </td>
+      </tr>
+
+      <!-- Body -->
+      <tr>
+        <td class="email-body">
+          <h2>Your Booking is Successfully Confirmed! 🎉 </h2>
+          <p>Dear [{{name}}],</p>
+          <p>
+            Thank you for reserving your spot in our upcoming course. We are
+            thrilled to have you with us and look forward to delivering an
+            exceptional learning experience.
+          </p>
+
+          <div class="reservation-details">
+            <h3>Here Are Your Booking Details:</h3>
+            <p><strong>Course Name:</strong> {{course_name}}</p>
+            <p><strong>Date:</strong> {{date}}</p>
+            <p><strong>Time:</strong> {{time}}</p>
+          </div>
+          <p>
+            If you have any questions or need assistance, please don’t hesitate
+            to reach out to us at
+            <a
+              href="mailto:connect@atiitglobal.com"
+              style="color: #3c3ff0; text-decoration: none"
+              >connect@atiitglobal.com</a
+            >.
+          </p>
+        </td>
+      </tr>
+
+      <!-- Footer -->
+      <tr>
+        <td class="email-footer">
+          <p>
+            Thank you for choosing us! We can't wait to see you in the course.
+          </p>
+          <p>&copy; 2024 ATIIT Global. All rights reserved.</p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

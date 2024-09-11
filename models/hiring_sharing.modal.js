@@ -1,31 +1,25 @@
+
 const mongoose = require('mongoose');
 
 
-// Define user schema
-const DiscountFormSchema = new mongoose.Schema({
+const HiringSchema = new mongoose.Schema({
 
     name: {
         type: String
     },
-    email: {
+    work_email: {
         type: String
     },
-    phone: {
+    company: {
         type: String
     },
-    course_name: {
+    your_requirements: {
         type: String
     },
-    city: {
-        type:String,
+    phone_number: {
+        type: Number
     },
-    adharacard:{
-        type:Number,
-    },
-    pancard:{
-        type:String,
-    },
-    ews_certificate:{
+    additional_file:{
         type:String,
     },
     created_at: {
@@ -41,6 +35,5 @@ const DiscountFormSchema = new mongoose.Schema({
 });
 
 
-
-const DiscountForm = mongoose.model('Discount_Form', DiscountFormSchema);
-module.exports = DiscountForm;
+const Hiring = mongoose.model('HiringRequirements', HiringSchema);
+module.exports = Hiring;
