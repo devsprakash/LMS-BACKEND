@@ -11,8 +11,7 @@ const Story = require('../../models/success_story_modal');
 const Blog = require('../../models/post_blog_modal');
 const Booking = require('../../models/pre_booking.modal');
 const Hiring = require('../../models/hiring_sharing.modal');
-const Enroll = require('../../models/course-enroll_form');
-const EnrollDocument = require('../../models/enrollent_documents');
+const Enroll = require('../../models/course-enroll');
 const {
     Usersave,
 } = require('../services/user.service');
@@ -24,7 +23,7 @@ const {
     isValid
 } = require('../../services/blackListMail')
 const { sendMail , BookingSendMail , EnrollSendMail }  = require('../../services/email.services')
-
+const passwordGenerator = require('password-generator');
 
 
 
@@ -43,7 +42,8 @@ exports.Register= async (req, res, next) => {
 
         if (existing_email)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.exist_email', {}, req.headers.lang);
-      
+        
+        reqBody.password = await bcrypt.hash(reqBody.password, 10);
         reqBody.created_at = await dateFormat.set_current_timestamp();
         reqBody.updated_at = await dateFormat.set_current_timestamp();
 
@@ -61,6 +61,7 @@ exports.Register= async (req, res, next) => {
             _id: user._id,
             full_name: user.full_name,
             email: user.email,
+            password:user.password,
             user_type: user.user_type,
             social_media:user.social_media,
             gender:user.gender,
@@ -81,6 +82,52 @@ exports.Register= async (req, res, next) => {
 
     } catch (err) {
         console.log("err(Register)........", err)
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
+    }
+}
+
+
+
+exports.login = async (req, res, next) => {
+
+    try {
+
+        const reqBody = req.body
+
+        let user = await User.findByCredentials(reqBody.email, reqBody.password, reqBody.user_type || '2');
+        if (user == 1) return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.email_not_found', {}, req.headers.lang);
+        if (user == 2) return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.invalid_password', {}, req.headers.lang);
+        if (user.status == 0) return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.inactive_account', {}, req.headers.lang);
+        if (user.status == 2) return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.deactive_account', {}, req.headers.lang);
+        if (user.deleted_at != null) return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.inactive_account', {}, req.headers.lang);
+
+        let newToken = await user.generateAuthToken();
+        let refreshToken = await user.generateRefreshToken()
+
+        user.device_type = (reqBody.device_type) ? reqBody.device_type : null
+        user.device_token = (reqBody.device_token) ? reqBody.device_token : null
+        user.tokens = newToken;
+        user.refresh_tokens = refreshToken;
+        await user.save();
+
+        const responseData = {
+            _id: user._id,
+            full_name: user.full_name,
+            email: user.email,
+            social_media:user.social_media,
+            gender:user.gender,
+            phone:user.phone,
+            course_name:user.course_name,
+            city:user.city,
+            tokens: user.tokens,
+            user_type: user.user_type,
+            refresh_tokens: user.refresh_tokens,
+        }
+
+        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.login_success', responseData, req.headers.lang);
+
+    } catch (err) {
+        console.log('err(Login).....', err)
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
     }
 }
@@ -313,91 +360,75 @@ exports.HiringRequirements = async (req, res, next) => {
 }
 
 
-
-exports.course_enroll_form = async (req, res, next) => {
+exports.course_enroll = async (req, res, next) => {
 
     try {
 
         const reqBody = req.body;
+        
         const checkMail = await isValid(reqBody.email);
 
-        if (!checkMail)
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
-    
+        if (!checkMail) {
+            return sendResponse( res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang );
+        }
+
+        if (!req.files) {
+            return sendResponse( res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.no_file_uploaded', {}, req.headers.lang );
+        }
+
+        const tenth_certificate_url = req.files.tenth_certificate ? `${BASEURL}/uploads/${req.files.tenth_certificate[0].filename}` : null;
+        const plus_two_certificate_url = req.files.plus_two_certificate ? `${BASEURL}/uploads/${req.files.plus_two_certificate[0].filename}` : null;
+        const graduation_certificate_url = req.files.graduation_certificate ? `${BASEURL}/uploads/${req.files.graduation_certificate[0].filename}` : null;
+        const pancard_url = req.files.pancard ? `${BASEURL}/uploads/${req.files.pancard[0].filename}` : null;
+        const adharcard_url = req.files.adharcard ? `${BASEURL}/uploads/${req.files.adharcard[0].filename}` : null;
+        
+
+        if (!tenth_certificate_url || !plus_two_certificate_url || !graduation_certificate_url || !pancard_url || !adharcard_url) {
+            return sendResponse( res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.missing_documents', {}, req.headers.lang );
+        }
+
+        reqBody.tenth_certificate = tenth_certificate_url;
+        reqBody.plus_two_certificate = plus_two_certificate_url;
+        reqBody.graduation_certificate = graduation_certificate_url;
+        reqBody.pancard = pancard_url;
+        reqBody.adharcard = adharcard_url;
         reqBody.created_at = await dateFormat.set_current_timestamp();
         reqBody.updated_at = await dateFormat.set_current_timestamp();
 
         const enroll = await Enroll.create(reqBody);
+
         const responseData = {
             _id: enroll._id,
             name: enroll.name,
             email: enroll.email,
-            phone:enroll.phone,
+            phone: enroll.phone,
             city: enroll.city,
-            pincode:enroll.pincode,
-            course_name:enroll.course_name,
-            created_at:enroll.created_at,
-            updated_at:enroll.updated_at
-        }
+            pincode: enroll.pincode,
+            course_name: enroll.course_name,
+            tenth_certificate: enroll.tenth_certificate,
+            plus_two_certificate: enroll.plus_two_certificate,
+            graduation_certificate: enroll.graduation_ertificate,
+            pancard: enroll.pancard,
+            adharcard: enroll.adharcard,
+            created_at: enroll.created_at,
+            updated_at: enroll.updated_at
+        };
 
-      return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.enrollment_form_sumbit_successfully', responseData, req.headers.lang);
+    
+         const password = passwordGenerator(12, false);
+
+        EnrollSendMail(enroll.name, enroll.email, enroll.course_name , password)
+            .then(() => {
+                console.log('Email sent successfully');
+            })
+            .catch((err) => {
+                console.log('Failed to send email: ', err);
+            });
+
+        return sendResponse(res, constants.WEB_STATUS_CODE.CREATED,constants.STATUS_CODE.SUCCESS, 'USER.enrollment_form_submit_successfully', responseData,req.headers.lang);
 
     } catch (err) {
-        console.log("err(course_enroll_form)........", err)
-        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
+        console.log("Error in course_enroll: ", err);
+        return sendResponse( res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message,req.headers.lang );
     }
-}
-
-
-
-exports.course_enroll_documents = async (req, res, next) => {
-
-    try {
-
-        const reqBody = req.body;
-
-        if (!req.files || Object.keys(req.files).length === 0) 
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.no_file_uploaded', {}, req.headers.lang);
-        
-        const tenth_certificate_url = req.files.tenth_certificate ? req.files.tenth_certificate[0].path : null;
-        const plus_two_certificate_url = req.files.plus_two_certificate ? req.files.plus_two_certificate[0].path : null;
-        const graduation_certificate_url = req.files.graduation_certificate ? req.files.graduation_certificate[0].path : null;
-        const pancard_url = req.files.pancard ? req.files.pancard[0].path : null;
-        const adharcard_url = req.files.adharcard ? req.files.adharcard[0].path : null;
-
-        if (!tenth_certificate_url || !plus_two_certificate_url || !graduation_certificate_url || !pancard_url || !adharcard_url) 
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.missing_documnets', {}, req.headers.lang);
-    
-        reqBody.tenth_certificate = tenth_certificate_url;
-        reqBody.plus_two_certificate = plus_two_certificate_url,
-        reqBody.graduation_ertificate = graduation_certificate_url;
-        reqBody.pancard = pancard_url,
-        reqBody.adharcard = adharcard_url,
-        reqBody.created_at = await dateFormat.set_current_timestamp();
-        reqBody.updated_at = await dateFormat.set_current_timestamp();
-
-        const documents = await EnrollDocument.create(reqBody);
-        const responseData = {
-            _id: documents._id,
-            tenth_certificate:documents.tenth_certificate,
-            plus_two_certificate:documents.plus_two_certificate,
-            graduation_ertificate: documents.graduation_ertificate,
-            pancard:documents.pancard,
-            adharcard:documents.adharcard,
-            created_at:documents.created_at,
-            updated_at:documents.updated_at
-        }
-
-        EnrollSendMail("prakash" , "psamantaray77@gmail.com" , "Generative AI").then(() => {
-            console.log('successfully send the email.............')
-        }).catch((err) => {
-            console.log('email not send.........' , err)
-        })
-    
-      return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.your_documents_successfully', responseData, req.headers.lang);
-
-    } catch (err) {
-        console.log("err(course_enroll_documents)........", err)
-        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
-    }
-}
+};

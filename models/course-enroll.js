@@ -1,12 +1,28 @@
 
-
-
 const mongoose = require('mongoose');
 
 
 // Define user schema
-const EnrollDocumentsSchema = new mongoose.Schema({
+const EnrollSchema = new mongoose.Schema({
 
+    name: {
+        type: String
+    },
+    email: {
+        type: String
+    },
+    phone: {
+        type: String
+    },
+    course_name: {
+        type: String
+    },
+    pincode:{
+        type:Number
+    },
+    city:{
+        type:String
+    },
     tenth_certificate: {
         type: String
     },
@@ -35,5 +51,5 @@ const EnrollDocumentsSchema = new mongoose.Schema({
 });
 
 
-const EnrollDocuments = mongoose.model('EnrollDocuments', EnrollDocumentsSchema);
-module.exports = EnrollDocuments;
+const Enroll = mongoose.model('course_enroll', EnrollSchema);
+module.exports = Enroll;

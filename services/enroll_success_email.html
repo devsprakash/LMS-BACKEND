@@ -61,11 +61,7 @@
             border-radius: 8px;
             margin-top: 20px;
         }
-        .email-body .details-box h3 {
-            font-size: 18px;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
+
         .email-body .details-box p {
             font-size: 16px;
             margin: 5px 0;
@@ -107,7 +103,11 @@
                 <h2>Congratulations, Your Enrollment is Successful! 🎉</h2>
                 <p>Dear [{{name}}],</p>
                 <p>We are excited to inform you that your enrollment in the [{{course_name}}] course has been successfully completed.</p>
-
+                
+                <div class="details-box">
+                    <p><strong>Email:</strong> {{email}}</p>
+                    <p><strong>Password:</strong> {{password}}</p>
+                  </div>
 
                 <p>We look forward to having you in our course. Should you have any questions, feel free to contact us at <a href="mailto:connect@atiitglobal.com">connect@atiitglobal.com</a>.</p>
 

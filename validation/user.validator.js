@@ -20,6 +20,16 @@ exports.user_validator = [
     .isEmail().withMessage('please enter a valid email')
     .trim(),
 
+        
+  body('password')
+  .not()
+  .isEmpty()
+  .withMessage('password is required')
+  .isString().withMessage('password mus be a string')
+  .isLength({ min: 8 }).withMessage('password must be at least 8 characters ')
+  .trim(),
+
+
   body('phone')
     .not()
     .isEmpty().withMessage('phone is required')
@@ -49,6 +59,29 @@ exports.user_validator = [
     .trim(),
 
 ];
+
+
+
+exports.login_validator = [
+
+  body('email')
+  .not()
+  .isEmpty()
+  .withMessage('email is required')
+  .isString().withMessage('email mus be a string')
+  .isEmail().withMessage('please enter a valid email')
+  .trim(),
+      
+body('password')
+.not()
+.isEmpty()
+.withMessage('password is required')
+.isString().withMessage('password mus be a string')
+.isLength({ min: 8 }).withMessage('password must be at least 8 characters ')
+.trim(),
+
+
+]
 
 
 exports.talk_to_expert_validator = [
@@ -107,58 +140,6 @@ exports.brochure_download_validator = [
     .isString().withMessage('phone must be a string')
     .isMobilePhone().withMessage('please enter a valid phone number')
     .isLength({ min: 10, max: 12 }).withMessage('phone must be at least 10 characters')
-    .trim(),
-];
-
-
-exports.discount_form_validator = [
-
-  body('name')
-    .not()
-    .isEmpty().withMessage('name is required')
-    .isString().withMessage('name must be a string')
-    .trim(),
-
-  body('email')
-    .not()
-    .isEmpty()
-    .withMessage('email is required')
-    .isString().withMessage('email mus be a string')
-    .isEmail().withMessage('please enter a valid email')
-    .trim(),
-
-  body('phone')
-    .not()
-    .isEmpty().withMessage('phone is required')
-    .isString().withMessage('phone must be a string')
-    .isMobilePhone().withMessage('please enter a valid phone number')
-    .isLength({ min: 10, max: 12 }).withMessage('phone must be at least 10 characters')
-    .trim(),
-
-  body('city')
-    .not()
-    .isEmpty().withMessage('city is required')
-    .isString().withMessage('city must be a string')
-    .trim(),
-
-  body('course_name')
-    .not()
-    .isEmpty().withMessage('course_name is required')
-    .isString().withMessage('course_name must be a string')
-    .trim(),
-
-  body('adharacard')
-    .not()
-    .isEmpty().withMessage('adharacard is required')
-    .isNumeric().withMessage('adharacard must be a number')
-    .isLength({ min: 12, max: 12 })
-    .withMessage('adharacard length should be 12')
-    .trim(),
-
-    body('pancard')
-    .not()
-    .isEmpty().withMessage('pancard is required')
-    .isString().withMessage('pancard must be a string')
     .trim(),
 ];
 
@@ -326,6 +307,7 @@ exports.enroll_form_validator = [
     .isString().withMessage('email mus be a string')
     .isEmail().withMessage('please enter a valid email')
     .trim(),
+
 
   body('phone')
     .not()

@@ -42,6 +42,9 @@ const userSchema = new mongoose.Schema({
     social_media: {
         type: String
     },
+    password:{
+        type:String
+    },
     city: {
         type: String,
     },

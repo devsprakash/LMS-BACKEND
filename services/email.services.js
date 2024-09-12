@@ -118,7 +118,7 @@ exports.BookingSendMail = async (user , email, course_name) => {
 
 
 
-exports.EnrollSendMail = async (user , email, course_name) => {
+exports.EnrollSendMail = async (user , email, course_name , password) => {
 
     try {
     
@@ -143,7 +143,9 @@ exports.EnrollSendMail = async (user , email, course_name) => {
 
         const replacements = {
             name: user,
-            course_name:course_name
+            course_name:course_name,
+            email:email,
+            password:password
         };
         const htmlToSend = template(replacements);
         let mailOptions = {
