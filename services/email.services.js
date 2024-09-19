@@ -2,6 +2,8 @@ const nodemailer = require('nodemailer');
 const fs = require('fs');
 const handlebars = require('handlebars');
 const path = require('path');
+const axios = require('axios'); // Ensure axios is imported
+
 
 
 
@@ -164,3 +166,19 @@ exports.EnrollSendMail = async (user , email, course_name , password) => {
         throw error;
     }
 };
+
+
+
+// Function to fetch the Zoho token
+exports.fetchZohoToken = async () => {
+    let ZOHO_TOKEN;
+    const url = `https://accounts.zoho.in/oauth/v2/token?refresh_token=1000.5ab19094e2914d60324ee850bf9c026e.50ff6bde3861ed9ed269ded14f0cb7e9&client_id=1000.H1KFIDBEDRLJIMZKLTFBQ5X2IU35XO&client_secret=bd03c5c99a73e7db590d4e8d4701d953a1f56fe5fc&grant_type=refresh_token`;
+    try {
+        const response = await axios.post(url);
+        console.log('Token created successfully:', response.data);
+        ZOHO_TOKEN = response.data.access_token;
+    } catch (error) {
+        console.error('Error creating Token:', error.response ? error.response.data : error.message);
+    }
+    return ZOHO_TOKEN;
+}

@@ -121,7 +121,7 @@ userSchema.methods.generateAuthToken = async function () {
     }, JWT_SECRET, { expiresIn: '24h' });
     user.tokens = token;
     user.updated_at = await dateFormat.set_current_timestamp();
-    user.refresh_tokens_expires = await dateFormat.add_time_current_date(5, 'days');
+    user.refresh_tokens_expires = await dateFormat.add_time_current_date(7, 'days');
     await user.save();
     return token;
 };

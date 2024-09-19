@@ -1,21 +1,20 @@
+
 const mongoose = require('mongoose');
 
 
-// Define user schema
-const StorySchema = new mongoose.Schema({
-    
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'users', 
-    },
-    name: {
+const ContactSchema = new mongoose.Schema({
+
+    full_name: {
         type: String
     },
     email: {
         type: String
     },
-    descripation: {
+    phone: {
         type: String
+    },
+    message:{
+        type:String
     },
     created_at: {
         type: String
@@ -30,6 +29,5 @@ const StorySchema = new mongoose.Schema({
 });
 
 
-
-const Story = mongoose.model('story', StorySchema);
-module.exports = Story;
+const Contact = mongoose.model('Contact', ContactSchema);
+module.exports = Contact;

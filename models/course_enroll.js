@@ -5,6 +5,10 @@ const mongoose = require('mongoose');
 // Define user schema
 const EnrollSchema = new mongoose.Schema({
 
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users', 
+    },
     name: {
         type: String
     },

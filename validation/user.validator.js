@@ -338,6 +338,40 @@ exports.enroll_form_validator = [
 ];
 
 
+exports.contact_us_validator = [
+
+  body('full_name')
+  .not()
+  .isEmpty().withMessage('full_name is required')
+  .isString().withMessage('full_name must be a string')
+  .trim(),
+
+body('email')
+  .not()
+  .isEmpty()
+  .withMessage('email is required')
+  .isString().withMessage('email mus be a string')
+  .isEmail().withMessage('please enter a valid email')
+  .trim(),
+
+body('phone')
+  .not()
+  .isEmpty().withMessage('phone is required')
+  .isString().withMessage('phone must be a string')
+  .isMobilePhone().withMessage('please enter a valid phone number')
+  .isLength({ min: 10, max: 12 }).withMessage('phone must be at least 10 characters')
+  .trim(),
+
+  body('message')
+  .not()
+  .isEmpty().withMessage('message is required')
+  .isString().withMessage('message must be a string')
+  .trim(),
+
+
+]
+
+
 
 exports.ValidatorResult = (req, res, next) => {
 

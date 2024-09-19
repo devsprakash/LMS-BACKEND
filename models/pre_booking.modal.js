@@ -3,7 +3,11 @@ const mongoose = require('mongoose');
 
 // Define user schema
 const BookingSchema = new mongoose.Schema({
-
+    
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users', 
+    },
     full_name: {
         type: String
     },

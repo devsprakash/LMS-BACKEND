@@ -56,7 +56,10 @@ module.exports = {
         enrollment_form_sumbit_successfully:'successfully sumbit your enrollment form',
         no_file_uploaded: 'No files were uploaded. Please upload the required documents.',
         missing_documnets:'Some required documents are missing. Please upload all documents.',
-        your_documents_successfully:'your successfully sumbit your documents'
+        your_documents_successfully:'your successfully sumbit your documents',
+        successfully_created_contact_us:'Our support team will connect with you very soon',
+        not_register : 'Your Are Not Register Please Register First',
+        loginedIn_success: 'Please Login First, Then Post Your Story or Blog'
     },
     
     'GENERAL': {
