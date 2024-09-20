@@ -277,10 +277,11 @@ exports.reset_password = async (req, res, next) => {
         if(!user || user === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.invalid_token', {}, req.headers.lang);
         
-        const update_password = await bcrypt.compare(user.password ,new_password);
-        user.password = update_password;
+        const hashedPassword = await bcrypt.hash(new_password, 10); 
+        user.password = hashedPassword;
+        user.reset_password_token = null; 
         await user.save();
-
+ 
         return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.set_new_password_success', user , req.headers.lang);
 
     } catch (err) {
