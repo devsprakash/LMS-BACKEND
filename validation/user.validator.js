@@ -20,14 +20,14 @@ exports.user_validator = [
     .isEmail().withMessage('please enter a valid email')
     .trim(),
 
-        
+
   body('password')
-  .not()
-  .isEmpty()
-  .withMessage('password is required')
-  .isString().withMessage('password mus be a string')
-  .isLength({ min: 8 }).withMessage('password must be at least 8 characters ')
-  .trim(),
+    .not()
+    .isEmpty()
+    .withMessage('password is required')
+    .isString().withMessage('password mus be a string')
+    .isLength({ min: 8 }).withMessage('password must be at least 8 characters ')
+    .trim(),
 
 
   body('phone')
@@ -65,20 +65,20 @@ exports.user_validator = [
 exports.login_validator = [
 
   body('email')
-  .not()
-  .isEmpty()
-  .withMessage('email is required')
-  .isString().withMessage('email mus be a string')
-  .isEmail().withMessage('please enter a valid email')
-  .trim(),
-      
-body('password')
-.not()
-.isEmpty()
-.withMessage('password is required')
-.isString().withMessage('password mus be a string')
-.isLength({ min: 8 }).withMessage('password must be at least 8 characters ')
-.trim(),
+    .not()
+    .isEmpty()
+    .withMessage('email is required')
+    .isString().withMessage('email mus be a string')
+    .isEmail().withMessage('please enter a valid email')
+    .trim(),
+
+  body('password')
+    .not()
+    .isEmpty()
+    .withMessage('password is required')
+    .isString().withMessage('password mus be a string')
+    .isLength({ min: 8 }).withMessage('password must be at least 8 characters ')
+    .trim(),
 
 
 ]
@@ -147,23 +147,23 @@ exports.brochure_download_validator = [
 exports.post_story_validation = [
 
   body('name')
-  .not()
-  .isEmpty().withMessage('name is required')
-  .isString().withMessage('name must be a string')
-  .trim(),
+    .not()
+    .isEmpty().withMessage('name is required')
+    .isString().withMessage('name must be a string')
+    .trim(),
 
-body('email')
-  .not()
-  .isEmpty().withMessage('email is required')
-  .isString().withMessage('email must be a string')
-  .isEmail().withMessage('please enter valid email')
-  .trim(),
+  body('email')
+    .not()
+    .isEmpty().withMessage('email is required')
+    .isString().withMessage('email must be a string')
+    .isEmail().withMessage('please enter valid email')
+    .trim(),
 
   body('descripation')
-  .not()
-  .isEmpty().withMessage('descripation is required')
-  .isString().withMessage('descripation must be a string')
-  .trim(),
+    .not()
+    .isEmpty().withMessage('descripation is required')
+    .isString().withMessage('descripation must be a string')
+    .trim(),
 
 ]
 
@@ -171,28 +171,28 @@ body('email')
 exports.post_blog_validation = [
 
   body('blog_name')
-  .not()
-  .isEmpty().withMessage('blog_name is required')
-  .isString().withMessage('blog_name must be a string')
-  .trim(),
+    .not()
+    .isEmpty().withMessage('blog_name is required')
+    .isString().withMessage('blog_name must be a string')
+    .trim(),
 
-body('blog_title')
-  .not()
-  .isEmpty().withMessage('blog_title is required')
-  .isString().withMessage('blog_title must be a string')
-  .trim(),
+  body('blog_title')
+    .not()
+    .isEmpty().withMessage('blog_title is required')
+    .isString().withMessage('blog_title must be a string')
+    .trim(),
 
   body('blog_category')
-  .not()
-  .isEmpty().withMessage('blog_category is required')
-  .isString().withMessage('blog_category must be a string')
-  .trim(),
+    .not()
+    .isEmpty().withMessage('blog_category is required')
+    .isString().withMessage('blog_category must be a string')
+    .trim(),
 
   body('blog_content')
-  .not()
-  .isEmpty().withMessage('blog_content is required')
-  .isString().withMessage('blog_content must be a string')
-  .trim(),
+    .not()
+    .isEmpty().withMessage('blog_content is required')
+    .isString().withMessage('blog_content must be a string')
+    .trim(),
 
 ]
 
@@ -221,7 +221,7 @@ exports.booking_validator = [
     .isLength({ min: 10, max: 12 }).withMessage('phone must be at least 10 characters')
     .trim(),
 
-    body('adharcard')
+  body('adharcard')
     .not()
     .isEmpty().withMessage('adharcard is required')
     .isNumeric().withMessage('adharcard must be a number')
@@ -341,36 +341,65 @@ exports.enroll_form_validator = [
 exports.contact_us_validator = [
 
   body('full_name')
-  .not()
-  .isEmpty().withMessage('full_name is required')
-  .isString().withMessage('full_name must be a string')
-  .trim(),
+    .not()
+    .isEmpty().withMessage('full_name is required')
+    .isString().withMessage('full_name must be a string')
+    .trim(),
 
-body('email')
-  .not()
-  .isEmpty()
-  .withMessage('email is required')
-  .isString().withMessage('email mus be a string')
-  .isEmail().withMessage('please enter a valid email')
-  .trim(),
+  body('email')
+    .not()
+    .isEmpty()
+    .withMessage('email is required')
+    .isString().withMessage('email mus be a string')
+    .isEmail().withMessage('please enter a valid email')
+    .trim(),
 
-body('phone')
-  .not()
-  .isEmpty().withMessage('phone is required')
-  .isString().withMessage('phone must be a string')
-  .isMobilePhone().withMessage('please enter a valid phone number')
-  .isLength({ min: 10, max: 12 }).withMessage('phone must be at least 10 characters')
-  .trim(),
+  body('phone')
+    .not()
+    .isEmpty().withMessage('phone is required')
+    .isString().withMessage('phone must be a string')
+    .isMobilePhone().withMessage('please enter a valid phone number')
+    .isLength({ min: 10, max: 12 }).withMessage('phone must be at least 10 characters')
+    .trim(),
 
   body('message')
-  .not()
-  .isEmpty().withMessage('message is required')
-  .isString().withMessage('message must be a string')
-  .trim(),
-
+    .not()
+    .isEmpty().withMessage('message is required')
+    .isString().withMessage('message must be a string')
+    .trim(),
 
 ]
 
+
+exports.forgot_password_validator = [
+
+  body('email')
+    .not()
+    .isEmpty()
+    .withMessage('email is required')
+    .isString().withMessage('email mus be a string')
+    .isEmail().withMessage('please enter a valid email')
+    .trim(),
+]
+
+exports.reset_password_validator = [
+
+  body('new_password')
+    .not()
+    .isEmpty()
+    .withMessage('new_password is required')
+    .isString().withMessage('new_password mus be a string')
+    .isLength({ min: 8 }).withMessage('new_password must be at least 8 characters ')
+    .trim(),
+
+  body('confirm_password')
+    .not()
+    .isEmpty()
+    .withMessage('confirm_password is required')
+    .isString().withMessage('confirm_password mus be a string')
+    .isLength({ min: 8 }).withMessage('confirm_password must be at least 8 characters ')
+    .trim(),
+]
 
 
 exports.ValidatorResult = (req, res, next) => {

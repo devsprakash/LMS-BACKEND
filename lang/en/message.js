@@ -1,4 +1,4 @@
-const { talk_to_expert, brochure_download } = require("../../v1/controllers/user.controller");
+const { talk_to_expert, brochure_download, forgot_password } = require("../../v1/controllers/user.controller");
 
 module.exports = {
 
@@ -34,7 +34,7 @@ module.exports = {
         inactive_account: 'Your account is deactivated by administrator.',
         account_verify_success: `Your account has been verified successfully. Please click 'Continue' in the app to proceed.`,
         account_verify_fail: 'Your account verify link expire or invalid.',
-        password_mismatch: 'password and confirm password not matched.',
+        password_mismatch: 'new password and confirm password not matched.',
         invalid_username_password: "Invalid email or password.",
         invalid_password: "Invalid password.",
         user_data_retrieved_success : 'User data retrieved successfully.',
@@ -59,7 +59,9 @@ module.exports = {
         your_documents_successfully:'your successfully sumbit your documents',
         successfully_created_contact_us:'Our support team will connect with you very soon',
         not_register : 'Your Are Not Register Please Register First',
-        loginedIn_success: 'Please Login First, Then Post Your Story or Blog'
+        loginedIn_success: 'Please Login First, Then Post Your Story or Blog',
+        forgot_password:'successfully forgot your password',
+        user_not_found:'User Data Not Found'
     },
     
     'GENERAL': {

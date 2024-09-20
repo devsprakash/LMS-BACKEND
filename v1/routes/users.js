@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { user_validator, login_validator , contact_us_validator , talk_to_expert_validator, enroll_form_validator, hiring_validator, brochure_download_validator , booking_validator , post_blog_validation, post_story_validation, ValidatorResult } = require('../../validation/user.validator')
-const { Register , talk_to_expert , post_your_story, post_blog, Booking, HiringRequirements, course_enroll, login, contact_us} = require('../controllers/user.controller')
+const { user_validator, login_validator , reset_password_validator, forgot_password_validator , contact_us_validator , talk_to_expert_validator, enroll_form_validator, hiring_validator, brochure_download_validator , booking_validator , post_blog_validation, post_story_validation, ValidatorResult } = require('../../validation/user.validator')
+const { Register , talk_to_expert , post_your_story, post_blog, Booking, HiringRequirements, course_enroll, login, contact_us, forgot_password, reset_password} = require('../controllers/user.controller')
 const upload  = require('../../middleware/multer');
 const authenticate = require('../../middleware/authenticate')
 
@@ -23,6 +23,9 @@ router.post('/course_enrollment_form', upload.fields([
         { name: 'adharcard', maxCount: 1 }
     ]), enroll_form_validator, ValidatorResult, authenticate , course_enroll);
 router.post('/contact_us' , contact_us_validator , ValidatorResult , contact_us)
+router.post('/forgot_password' , forgot_password_validator , ValidatorResult , forgot_password );
+router.post('/reset_password' , reset_password_validator , ValidatorResult , reset_password )
+
 
 
 

@@ -71,9 +71,7 @@ exports.Register = async (req, res, next) => {
             ]
         }
 
-     
    fetchZohoToken().then(token => {
-    
             return axios.post(ZOHO__LEAD_URL, newlead, {
                 headers: {
                     'Authorization': `Zoho-oauthtoken ${token}`,
@@ -230,6 +228,66 @@ exports.talk_to_expert = async (req, res, next) => {
 
 
 
+exports.forgot_password = async (req, res, next) => {
+
+    try {
+
+        const reqBody = req.body;
+        const checkMail = await isValid(reqBody.email);
+
+        if (!checkMail)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
+        
+        const user = await User.findOne({ email: reqBody.email });
+      
+        if(!user || user === null)
+            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
+
+        const responseData = {
+            _id: user._id,
+            email: user.email,
+        }
+
+        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.forgot_password', responseData, req.headers.lang);
+
+    } catch (err) {
+        console.log("err(forgot_password)........", err)
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
+    }
+}
+
+
+exports.reset_password = async (req, res, next) => {
+
+    try {
+
+        const reqBody = req.body;
+        const checkMail = await isValid(reqBody.email);
+
+        if (!checkMail)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
+        
+        if(reqBody.new_password !== reqBody.confirm_password)
+            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.password_mismatch', {}, req.headers.lang);
+        
+        const user = await User.findOne({ email: reqBody.email });
+      
+        if(!user || user === null)
+            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
+        
+        const update_password = await bcrypt.compare(user.password , reqBody.new_password);
+        user.password = update_password;
+        await user.save();
+
+        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.set_new_password_success', user , req.headers.lang);
+
+    } catch (err) {
+        console.log("err(reset_password)........", err)
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
+    }
+}
+
+
 exports.contact_us = async (req, res, next) => {
 
     try {
@@ -254,7 +312,6 @@ exports.contact_us = async (req, res, next) => {
         }
 
         fetchZohoToken().then(token => {
-    
             return axios.post(ZOHO__CONTACT_URL, newlead, {
                 headers: {
                     'Authorization': `Zoho-oauthtoken ${token}`,
@@ -518,10 +575,8 @@ exports.course_enroll = async (req, res, next) => {
         if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
 
-
         if (!req.files)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.no_file_uploaded', {}, req.headers.lang);
-
 
         const tenth_certificate_url = req.files.tenth_certificate ? `${BASEURL}/uploads/${req.files.tenth_certificate[0].filename}` : null;
         const plus_two_certificate_url = req.files.plus_two_certificate ? `${BASEURL}/uploads/${req.files.plus_two_certificate[0].filename}` : null;
@@ -530,10 +585,9 @@ exports.course_enroll = async (req, res, next) => {
         const adharcard_url = req.files.adharcard ? `${BASEURL}/uploads/${req.files.adharcard[0].filename}` : null;
 
 
-        if (!tenth_certificate_url || !plus_two_certificate_url || !graduation_certificate_url || !pancard_url || !adharcard_url) {
+        if (!tenth_certificate_url || !plus_two_certificate_url || !graduation_certificate_url || !pancard_url || !adharcard_url) 
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.missing_documents', {}, req.headers.lang);
-        }
-
+        
         reqBody.tenth_certificate = tenth_certificate_url;
         reqBody.plus_two_certificate = plus_two_certificate_url;
         reqBody.graduation_certificate = graduation_certificate_url;
@@ -580,3 +634,5 @@ exports.course_enroll = async (req, res, next) => {
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang);
     }
 };
+
+
