@@ -7,7 +7,6 @@ const { JWT_SECRET } = require('../keys/keys');
 
 
 
-
 // Define user schema
 const userSchema = new mongoose.Schema({
 
@@ -55,6 +54,10 @@ const userSchema = new mongoose.Schema({
     device_type: {
         type: Number,
         default: null
+    },
+    reset_password_token:{
+        type: String,
+        default:null
     },
     tokens: {
         type: String,

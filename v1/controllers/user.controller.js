@@ -242,10 +242,15 @@ exports.forgot_password = async (req, res, next) => {
       
         if(!user || user === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
+        
+        const token = jwt.sign(reqBody.email , JWT_SECRET);
+        user.reset_password_token = token;
+        await user.save()
 
         const responseData = {
             _id: user._id,
             email: user.email,
+            reset_password_token:token
         }
 
         return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.forgot_password', responseData, req.headers.lang);
@@ -262,20 +267,17 @@ exports.reset_password = async (req, res, next) => {
     try {
 
         const reqBody = req.body;
-        const checkMail = await isValid(reqBody.email);
-
-        if (!checkMail)
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
-        
-        if(reqBody.new_password !== reqBody.confirm_password)
+        const { token , new_password , confirm_password } = reqBody;
+    
+        if(new_password !== confirm_password)
             return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.password_mismatch', {}, req.headers.lang);
         
-        const user = await User.findOne({ email: reqBody.email });
+        const user = await User.findOne({ reset_password_token: token });
       
         if(!user || user === null)
-            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
+            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.invalid_token', {}, req.headers.lang);
         
-        const update_password = await bcrypt.compare(user.password , reqBody.new_password);
+        const update_password = await bcrypt.compare(user.password ,new_password);
         user.password = update_password;
         await user.save();
 

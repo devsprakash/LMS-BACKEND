@@ -61,7 +61,8 @@ module.exports = {
         not_register : 'Your Are Not Register Please Register First',
         loginedIn_success: 'Please Login First, Then Post Your Story or Blog',
         forgot_password:'successfully forgot your password',
-        user_not_found:'User Data Not Found'
+        user_not_found:'User Data Not Found',
+        invalid_token: "Invalid token.",
     },
     
     'GENERAL': {

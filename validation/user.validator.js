@@ -384,6 +384,13 @@ exports.forgot_password_validator = [
 
 exports.reset_password_validator = [
 
+  body('token')
+  .not()
+  .isEmpty()
+  .withMessage('token is required')
+  .isString().withMessage('token mus be a string')
+  .trim(),
+
   body('new_password')
     .not()
     .isEmpty()
