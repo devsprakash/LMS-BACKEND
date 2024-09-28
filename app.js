@@ -13,6 +13,7 @@ const adminRouter = require('./admin/routes/admin');
 const fs = require('fs')
 
 const app = express();
+app.use(cors());
 app.use(flash());
 
 app.use(

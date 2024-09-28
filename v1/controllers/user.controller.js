@@ -245,7 +245,7 @@ exports.forgot_password = async (req, res, next) => {
         
         const token = jwt.sign(reqBody.email , JWT_SECRET);
         user.reset_password_token = token;
-        await user.save()
+        await user.save();
 
         const responseData = {
             _id: user._id,
@@ -362,12 +362,7 @@ exports.post_your_story = async (req, res, next) => {
         if (!checkMail)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
 
-        const existing_email = await User.findOne({ email: reqBody.email });
-
-        if (existing_email === null)
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.not_register', {}, req.headers.lang);
-
-        const loginedIn = await User.findById(userId);
+        const loginedIn = await User.findOne({ _id: userId});
 
         if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
@@ -406,16 +401,10 @@ exports.post_blog = async (req, res, next) => {
         if (!checkMail)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
 
-        const existing_email = await User.findOne({ email: reqBody.email });
-
-        if (existing_email === null)
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.not_register', {}, req.headers.lang);
-
-        const loginedIn = await User.findById(userId);
+        const loginedIn = await User.findOne({ _id: userId});
 
         if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
-
 
         if (!req.file)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.no_image_upload', {}, req.headers.lang);
@@ -460,12 +449,7 @@ exports.Booking = async (req, res, next) => {
         if (!checkMail)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
 
-        const existing_email = await User.findOne({ email: reqBody.email });
-
-        if (existing_email === null)
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.not_register', {}, req.headers.lang);
-
-        const loginedIn = await User.findById(userId);
+        const loginedIn = await User.findOne({ _id: userId});
 
         if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
@@ -515,12 +499,7 @@ exports.HiringRequirements = async (req, res, next) => {
         if (!checkMail)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
 
-        const existing_email = await User.findOne({ email: reqBody.email });
-
-        if (existing_email === null)
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.not_register', {}, req.headers.lang);
-
-        const loginedIn = await User.findById(userId);
+        const loginedIn = await User.findOne({ _id: userId});
 
         if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
@@ -568,12 +547,7 @@ exports.course_enroll = async (req, res, next) => {
         if (!checkMail)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
 
-        const existing_email = await User.findOne({ email: reqBody.email });
-
-        if (existing_email === null)
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.not_register', {}, req.headers.lang);
-
-        const loginedIn = await User.findById(userId);
+        const loginedIn = await User.findOne({ email: reqBody.email , _id: userId});
 
         if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
