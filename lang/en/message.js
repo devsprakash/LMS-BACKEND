@@ -63,6 +63,7 @@ module.exports = {
         forgot_password:'successfully forgot your password',
         user_not_found:'User Data Not Found',
         invalid_token: "Invalid token.",
+        verify_email:'This email already verified'
     },
     
     'GENERAL': {

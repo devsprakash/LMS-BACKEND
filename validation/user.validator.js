@@ -382,6 +382,17 @@ exports.forgot_password_validator = [
     .trim(),
 ]
 
+exports.verify_email_validator = [
+
+  body('email')
+    .not()
+    .isEmpty()
+    .withMessage('email is required')
+    .isString().withMessage('email mus be a string')
+    .isEmail().withMessage('please enter a valid email')
+    .trim(),
+]
+
 exports.reset_password_validator = [
 
   body('token')

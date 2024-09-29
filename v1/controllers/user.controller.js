@@ -351,6 +351,35 @@ exports.contact_us = async (req, res, next) => {
 
 
 
+exports.verify_email = async (req, res, next) => {
+
+    try {
+
+        const reqBody = req.body;
+        const checkMail = await isValid(reqBody.email);
+
+        if (!checkMail)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
+        
+        const user = await User.findOne({ email: reqBody.email });
+      
+        if(!user || user === null)
+            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
+        
+        const responseData = {
+            _id: user._id,
+            email: user.email,
+        }
+
+        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.verify_email', responseData, req.headers.lang);
+
+    } catch (err) {
+        console.log("err(verify_email)........", err)
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
+    }
+}
+
+
 exports.post_your_story = async (req, res, next) => {
 
     try {
