@@ -370,6 +370,63 @@ exports.contact_us_validator = [
 
 ]
 
+exports.blog_contact_us_validator = [
+
+  body('name')
+    .not()
+    .isEmpty().withMessage('name is required')
+    .isString().withMessage('name must be a string')
+    .trim(),
+
+  body('email')
+    .not()
+    .isEmpty()
+    .withMessage('email is required')
+    .isString().withMessage('email mus be a string')
+    .isEmail().withMessage('please enter a valid email')
+    .trim(),
+
+  body('phone')
+    .not()
+    .isEmpty().withMessage('phone is required')
+    .isString().withMessage('phone must be a string')
+    .isMobilePhone().withMessage('please enter a valid phone number')
+    .isLength({ min: 10, max: 12 }).withMessage('phone must be at least 10 characters')
+    .trim(),
+]
+
+
+exports.refer_and_earn_validator = [
+
+  body('name')
+    .not()
+    .isEmpty().withMessage('name is required')
+    .isString().withMessage('name must be a string')
+    .trim(),
+
+  body('email')
+    .not()
+    .isEmpty()
+    .withMessage('email is required')
+    .isString().withMessage('email mus be a string')
+    .isEmail().withMessage('please enter a valid email')
+    .trim(),
+
+  body('phone')
+    .not()
+    .isEmpty().withMessage('phone is required')
+    .isString().withMessage('phone must be a string')
+    .isMobilePhone().withMessage('please enter a valid phone number')
+    .isLength({ min: 10, max: 12 }).withMessage('phone must be at least 10 characters')
+    .trim(),
+
+    body('course_name')
+    .not()
+    .isEmpty()
+    .withMessage('course_name is required')
+    .isString().withMessage('course_name mus be a string')
+    .trim(),
+]
 
 exports.forgot_password_validator = [
 

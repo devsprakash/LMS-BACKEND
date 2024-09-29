@@ -12,6 +12,8 @@ const Booking = require('../../models/pre_booking.modal');
 const Hiring = require('../../models/hiring_sharing.modal');
 const Enroll = require('../../models/course_enroll');
 const Contact = require('../../models/contact_us');
+const BlogContact = require('../../models/blog-contact-us');
+const ReferAndEarn = require('../../models/refer-and-earn')
 const {
     Usersave,
 } = require('../services/user.service');
@@ -345,6 +347,103 @@ exports.contact_us = async (req, res, next) => {
 
     } catch (err) {
         console.log("err(contact_us)........", err)
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
+    }
+}
+
+exports.blog_contact_us = async (req, res, next) => {
+
+    try {
+
+        const reqBody = req.body;
+        const checkMail = await isValid(reqBody.email);
+
+        if (!checkMail)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
+
+        reqBody.created_at = await dateFormat.set_current_timestamp();
+        reqBody.updated_at = await dateFormat.set_current_timestamp();
+
+        let newlead = {
+            "data": [
+                {
+                    "Last_Name": reqBody.name,
+                    "Email": reqBody.email,
+                    "Phone": reqBody.phone,
+                }
+            ]
+        }
+
+        fetchZohoToken().then(token => {
+            return axios.post(ZOHO__CONTACT_URL, newlead, {
+                headers: {
+                    'Authorization': `Zoho-oauthtoken ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+        })
+        .then(response => {
+            console.log('Contact created successfully:', response.data);
+        })
+        .catch(error => {
+            console.error('Error:', error.response ? error.response.data : error.message);
+        });
+
+
+        const user = await BlogContact.create(reqBody);
+        const responseData = {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            phone: user.phone,
+            created_at: user.created_at,
+            updated_at: user.updated_at
+        }
+
+        return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.successfully_created_contact_us', responseData, req.headers.lang);
+
+    } catch (err) {
+        console.log("err(blog_contact_us)........", err)
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
+    }
+}
+
+
+
+exports.refer_and_Earn = async (req, res, next) => {
+
+    try {
+
+        const reqBody = req.body;
+        const userId = req.user._id;
+        const checkMail = await isValid(reqBody.email);
+
+        if (!checkMail)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
+       
+        const loginedIn = await User.findOne({ _id: userId});
+
+        if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
+
+        reqBody.created_at = await dateFormat.set_current_timestamp();
+        reqBody.updated_at = await dateFormat.set_current_timestamp();
+
+        const user = await ReferAndEarn.create(reqBody);
+        const responseData = {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            phone: user.phone,
+            course_name:user.course_name,
+            created_at: user.created_at,
+            updated_at: user.updated_at
+        }
+
+        return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.refer_and_earn', responseData, req.headers.lang);
+
+    } catch (err) {
+        console.log("err(refer_and_Earn)........", err)
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
     }
 }
