@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { user_validator, login_validator , verify_email_validator , reset_password_validator, forgot_password_validator , contact_us_validator , talk_to_expert_validator, enroll_form_validator, hiring_validator, booking_validator , post_blog_validation, post_story_validation, ValidatorResult, blog_contact_us_validator, refer_and_earn_validator } = require('../../validation/user.validator')
-const { Register , talk_to_expert , post_your_story, post_blog, Booking, HiringRequirements, course_enroll, login, contact_us, forgot_password, reset_password, verify_email, blog_contact_us, refer_and_Earn } = require('../controllers/user.controller')
+const { user_validator, login_validator , call_back_validator , verify_email_validator , reset_password_validator, forgot_password_validator , contact_us_validator , talk_to_expert_validator, enroll_form_validator, hiring_validator, booking_validator , post_blog_validation, post_story_validation, ValidatorResult, blog_contact_us_validator, refer_and_earn_validator } = require('../../validation/user.validator')
+const { Register , talk_to_expert , post_your_story, post_blog, Booking, HiringRequirements, course_enroll, login, contact_us, forgot_password, reset_password, verify_email, blog_contact_us, refer_and_Earn, arrange_call_back } = require('../controllers/user.controller')
 const upload  = require('../../middleware/multer');
 const authenticate = require('../../middleware/authenticate')
 
@@ -28,7 +28,7 @@ router.post('/reset_password' , reset_password_validator , ValidatorResult , res
 router.post('/verify_email' , verify_email_validator , ValidatorResult , verify_email);
 router.post('/blog_contact_us' , blog_contact_us_validator , ValidatorResult , blog_contact_us);
 router.post('/refer_and_earn' , refer_and_earn_validator , ValidatorResult , authenticate , refer_and_Earn)
-
+router.post('/arrange_call_back' , call_back_validator , ValidatorResult , arrange_call_back)
 
 
 
