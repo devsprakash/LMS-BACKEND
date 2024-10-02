@@ -495,6 +495,7 @@ exports.refer_and_Earn = async (req, res, next) => {
         const user = await ReferAndEarn.create(reqBody);
         const responseData = {
             _id: user._id,
+            user: userId,
             name: user.name,
             email: user.email,
             phone: user.phone,
@@ -565,6 +566,7 @@ exports.post_your_story = async (req, res, next) => {
         const responseData = {
             _id: user._id,
             name: user.name,
+            user:userId,
             email: user.email,
             descripation: user.descripation,
             created_at: user.created_at,
@@ -587,10 +589,6 @@ exports.post_blog = async (req, res, next) => {
 
         const userId = req.user._id;
         const reqBody = req.body;
-        const checkMail = await isValid(reqBody.email);
-
-        if (!checkMail)
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
 
         const loginedIn = await User.findOne({ _id: userId});
 
@@ -610,6 +608,7 @@ exports.post_blog = async (req, res, next) => {
         const user = await Blog.create(reqBody);
         const responseData = {
             _id: user._id,
+            user:userId,
             blog_name: user.blog_name,
             blog_title: user.blog_title,
             blog_image: user.blog_image,
@@ -652,6 +651,7 @@ exports.Booking = async (req, res, next) => {
         const booking = await Booking.create(reqBody);
         const responseData = {
             _id: booking._id,
+            user:userId,
             full_name: booking.full_name,
             email: booking.email,
             gender: booking.gender,
@@ -708,6 +708,7 @@ exports.HiringRequirements = async (req, res, next) => {
         const hiring = await Hiring.create(reqBody);
         const responseData = {
             _id: hiring._id,
+            user:userId,
             name: hiring.name,
             work_email: hiring.work_email,
             phone_number: hiring.phone_number,
@@ -770,6 +771,7 @@ exports.course_enroll = async (req, res, next) => {
 
         const responseData = {
             _id: enroll._id,
+            user:userId,
             name: enroll.name,
             email: enroll.email,
             phone: enroll.phone,
@@ -809,9 +811,9 @@ exports.course_enroll = async (req, res, next) => {
 exports.apply_now = async (req, res, next) => {
 
     try {
+
         const userId = req.user._id;
         const reqBody = req.body;
-
 
         const checkMail = await isValid(reqBody.email);
         if (!checkMail) {
@@ -838,6 +840,7 @@ exports.apply_now = async (req, res, next) => {
 
         const responseData = {
             _id: newApplication._id,
+            user:userId,
             name: newApplication.name,
             email: newApplication.email,
             phone: newApplication.phone,
