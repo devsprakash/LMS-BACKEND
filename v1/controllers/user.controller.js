@@ -14,11 +14,12 @@ const Enroll = require('../../models/course_enroll');
 const Contact = require('../../models/contact_us');
 const BlogContact = require('../../models/blog-contact-us');
 const ReferAndEarn = require('../../models/refer-and-earn');
-const Callback = require('../../models/arrang_call_back')
+const Callback = require('../../models/arrang_call_back');
+const Apply = require('../../models/Apply_here');
 const {
     Usersave,
 } = require('../services/user.service');
-const constants = require('../../config/constants')
+const constants = require('../../config/constants');
 const {
     JWT_SECRET, BASEURL, ZOHO__LEAD_URL, ZOHO__CONTACT_URL
 } = require('../../keys/development.keys');
@@ -393,7 +394,7 @@ exports.arrange_call_back = async (req, res, next) => {
         });
 
         const user = await Callback.create(reqBody);
-        
+
         const responseData = {
             _id: user._id,
             name: user.name,
@@ -726,6 +727,7 @@ exports.HiringRequirements = async (req, res, next) => {
 }
 
 
+
 exports.course_enroll = async (req, res, next) => {
 
     try {
@@ -803,3 +805,56 @@ exports.course_enroll = async (req, res, next) => {
 };
 
 
+
+exports.apply_now = async (req, res, next) => {
+
+    try {
+        const userId = req.user._id;
+        const reqBody = req.body;
+
+
+        const checkMail = await isValid(reqBody.email);
+        if (!checkMail) {
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
+        }
+
+
+        const loggedInUser = await User.findById(userId);
+        if (!loggedInUser || (loggedInUser.tokens === null && loggedInUser.refresh_tokens === null)) {
+            return sendResponse(res, constants.WEB_STATUS_CODE.UNAUTHORIZED, constants.STATUS_CODE.FAIL, 'USER.loginedIn_failed', {}, req.headers.lang);
+        }
+
+
+        if (!req.file) {
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.no_file_uploaded', {}, req.headers.lang);
+        }
+
+        reqBody.resume = req.file.originalname ? `${BASEURL}/uploads/${req.file.originalname}` : null;
+        const currentTimestamp = await dateFormat.set_current_timestamp();
+        reqBody.created_at = currentTimestamp;
+        reqBody.updated_at = currentTimestamp;
+
+        const newApplication = await Apply.create(reqBody);
+
+        const responseData = {
+            _id: newApplication._id,
+            name: newApplication.name,
+            email: newApplication.email,
+            phone: newApplication.phone,
+            position: newApplication.position,
+            experience: newApplication.experience,
+            resume: newApplication.resume,
+            immediate_join: newApplication.immediate_join,
+            created_at: newApplication.created_at,
+            updated_at: newApplication.updated_at
+        };
+
+        // Return success response
+        return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.apply_successfully', responseData, req.headers.lang);
+
+    } catch (err) {
+        // Log the error and return a general error response
+        console.error("Error in apply_now:", err);
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang);
+    }
+};

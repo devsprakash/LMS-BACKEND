@@ -506,6 +506,52 @@ exports.call_back_validator = [
 ]
 
 
+exports.apply_now_validator = [
+
+  body('name')
+    .not()
+    .isEmpty().withMessage('name is required')
+    .isString().withMessage('name must be a string')
+    .trim(),
+
+  body('email')
+    .not()
+    .isEmpty()
+    .withMessage('email is required')
+    .isString().withMessage('email mus be a string')
+    .isEmail().withMessage('please enter a valid email')
+    .trim(),
+
+  body('phone')
+    .not()
+    .isEmpty().withMessage('phone is required')
+    .isString().withMessage('phone must be a string')
+    .isMobilePhone().withMessage('please enter a valid phone number')
+    .isLength({ min: 10, max: 12 }).withMessage('phone must be at least 10 characters')
+    .trim(),
+
+    body('position')
+    .not()
+    .isEmpty().withMessage('position is required')
+    .isString().withMessage('position must be a string')
+    .trim(),
+
+    body('experience')
+    .not()
+    .isEmpty().withMessage('experience is required')
+    .isNumeric().withMessage('experience must be a number')
+    .trim(),
+
+    body('immediate_join')
+    .not()
+    .isEmpty().withMessage('immediate_join is required')
+    .isString().withMessage('immediate_join must be a string')
+    .trim(),
+]
+
+
+
+
 exports.ValidatorResult = (req, res, next) => {
 
   try {

@@ -64,7 +64,8 @@ module.exports = {
         user_not_found:'User Data Not Found',
         invalid_token: "Invalid token.",
         verify_email:'This email already verified',
-        refer_and_earn:'successfully referd your friends'
+        refer_and_earn:'successfully referd your friends',
+        apply_successfully:'Apply successfully'
     },
     
     'GENERAL': {
