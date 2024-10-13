@@ -740,7 +740,7 @@ exports.course_enroll = async (req, res, next) => {
         if (!checkMail)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
 
-        const loginedIn = await User.findOne({ email: reqBody.email , _id: userId});
+        const loginedIn = await User.findOne({_id: userId});
 
         if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
@@ -786,7 +786,6 @@ exports.course_enroll = async (req, res, next) => {
             created_at: enroll.created_at,
             updated_at: enroll.updated_at
         };
-
 
         const password = passwordGenerator(12, false);
 
