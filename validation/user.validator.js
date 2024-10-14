@@ -58,6 +58,18 @@ exports.user_validator = [
     .isString().withMessage('course_name must be a string')
     .trim(),
 
+    body('term_and_condition')
+    .not()
+    .isEmpty().withMessage('term_and_condition is required')
+    .isBoolean().withMessage('term_and_condition must be a boolean')
+    .trim(),
+
+  body('privacy_policy')
+    .not()
+    .isEmpty().withMessage('privacy_policy is required')
+    .isBoolean().withMessage('privacy_policy must be a boolean')
+    .trim(),
+
 ];
 
 
