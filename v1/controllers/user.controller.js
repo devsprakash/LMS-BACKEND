@@ -687,7 +687,7 @@ exports.HiringRequirements = async (req, res, next) => {
 
         const userId = req.user._id;
         const reqBody = req.body;
-        const checkMail = await isValid(reqBody.email);
+        const checkMail = await isValid(reqBody.work_email);
 
         if (!checkMail)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
