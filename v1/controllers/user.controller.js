@@ -12,7 +12,6 @@ const Booking = require('../../models/pre_booking.modal');
 const Hiring = require('../../models/hiring_sharing.modal');
 const Enroll = require('../../models/course_enroll');
 const Contact = require('../../models/contact_us');
-const BlogContact = require('../../models/blog-contact-us');
 const ReferAndEarn = require('../../models/refer-and-earn');
 const Callback = require('../../models/arrang_call_back');
 const Apply = require('../../models/Apply_here');
@@ -413,7 +412,6 @@ exports.arrange_call_back = async (req, res, next) => {
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
     }
 }
-
 
 
 
