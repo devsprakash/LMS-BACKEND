@@ -11,6 +11,7 @@ const Blog = require('../../models/post_blog_modal');
 const Booking = require('../../models/pre_booking.modal');
 const Hiring = require('../../models/hiring_sharing.modal');
 const Enroll = require('../../models/course_enroll');
+const Brochure = require('../../models/brochure_download');
 const Contact = require('../../models/contact_us');
 const ReferAndEarn = require('../../models/refer-and-earn');
 const Callback = require('../../models/arrang_call_back');
@@ -486,6 +487,7 @@ exports.verify_email = async (req, res, next) => {
 }
 
 
+
 exports.post_your_story = async (req, res, next) => {
 
     try {
@@ -803,3 +805,35 @@ exports.apply_now = async (req, res, next) => {
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang);
     }
 };
+
+
+exports.brochure_download = async (req, res, next) => {
+
+    try {
+
+        const reqBody = req.body;
+        const checkMail = await isValid(reqBody.email);
+
+        if (!checkMail)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
+
+        reqBody.created_at = await dateFormat.set_current_timestamp();
+        reqBody.updated_at = await dateFormat.set_current_timestamp();
+
+        const user = await Brochure.create(reqBody);
+        const responseData = {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            phone: user.phone,
+            created_at: user.created_at,
+            updated_at: user.updated_at
+        }
+
+        return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.brochure_download_success', responseData, req.headers.lang);
+
+    } catch (err) {
+        console.log("err(brochure_download)........", err)
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
+    }
+}
