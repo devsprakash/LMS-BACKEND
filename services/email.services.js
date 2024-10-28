@@ -168,6 +168,52 @@ exports.EnrollSendMail = async (user , email, course_name , password) => {
 };
 
 
+exports.OtpSendMail = async (otp , email) => {
+
+    try {
+
+        let transporter = nodemailer.createTransport({
+            host: 'smtp.mailer91.com',  // SMTP host
+            port: 587,                  // SMTP port
+            secure: false,              // Use SSL if true
+            auth: {
+                user: 'emailer@atiitglobal.com', // your SMTP username
+                pass: 'nop5PDPOLYqyYKHk',        // your SMTP password
+            },
+        });
+
+        const templatePath = path.join(__dirname, 'otp-template.html');
+
+        if (!fs.existsSync(templatePath)) {
+            throw new Error(`Template file not found: ${templatePath}`);
+        }
+
+        const source = fs.readFileSync(templatePath, 'utf-8');
+        const template = handlebars.compile(source);
+
+        const replacements = {
+            otp: otp,
+        };
+
+        const htmlToSend = template(replacements);
+        let mailOptions = {
+            from: '<connect@atiitglobal.com>',
+            to: email, 
+            subject: "OTP VERIFICATION 🎉",
+            html: htmlToSend,
+        };
+
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully:', info.response);
+        return info;
+
+    } catch (error) {
+        console.error('Error sending email:', error.message || error);
+        throw error;
+    }
+};
+
+
 
 // Function to fetch the Zoho token
 exports.fetchZohoToken = async () => {
@@ -181,4 +227,9 @@ exports.fetchZohoToken = async () => {
         console.error('Error creating Token:', error.response ? error.response.data : error.message);
     }
     return ZOHO_TOKEN;
+}
+
+
+exports.generateFourDigitOTP = () => {
+    return Math.floor(1000 + Math.random() * 9000);
 }

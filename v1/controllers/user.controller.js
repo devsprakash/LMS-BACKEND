@@ -26,7 +26,7 @@ const {
 const {
     isValid
 } = require('../../services/blackListMail')
-const { sendMail, BookingSendMail, EnrollSendMail , fetchZohoToken } = require('../../services/email.services')
+const { sendMail, BookingSendMail, EnrollSendMail , fetchZohoToken , OtpSendMail , generateFourDigitOTP } = require('../../services/email.services')
 const passwordGenerator = require('password-generator');
 const axios = require('axios');
 
@@ -185,7 +185,6 @@ exports.talk_to_expert = async (req, res, next) => {
         reqBody.updated_at = await dateFormat.set_current_timestamp();
 
         let newlead = {
-
             "data": [
                 {
                     "Last_Name": reqBody.name,
@@ -195,9 +194,7 @@ exports.talk_to_expert = async (req, res, next) => {
             ]
         }
 
-        
         fetchZohoToken().then(token => {
-            
             return axios.post(ZOHO__LEAD_URL, newlead, {
                 headers: {
                     'Authorization': `Zoho-oauthtoken ${token}`,
@@ -807,23 +804,33 @@ exports.apply_now = async (req, res, next) => {
 };
 
 
+
+
 exports.brochure_download = async (req, res, next) => {
 
     try {
 
         const reqBody = req.body;
-        const checkMail = await isValid(reqBody.email);
+        const userId = req.user._id;
 
+        const userData = await User.findById(userId);
+        if(!userData)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.unauthorized_user', {}, req.headers.lang);
+
+        const checkMail = await isValid(reqBody.email);
         if (!checkMail)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
 
         reqBody.created_at = await dateFormat.set_current_timestamp();
         reqBody.updated_at = await dateFormat.set_current_timestamp();
 
+        reqBody.user = userId;
         const user = await Brochure.create(reqBody);
+
         const responseData = {
             _id: user._id,
             name: user.name,
+            user:user.user,
             email: user.email,
             phone: user.phone,
             created_at: user.created_at,
@@ -837,3 +844,5 @@ exports.brochure_download = async (req, res, next) => {
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
     }
 }
+
+

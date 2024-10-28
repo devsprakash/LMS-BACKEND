@@ -491,7 +491,6 @@ exports.reset_password_validator = [
 ]
 
 
-
 exports.call_back_validator = [
 
   body('name')
@@ -516,6 +515,7 @@ exports.call_back_validator = [
     .isLength({ min: 10, max: 12 }).withMessage('phone must be at least 10 characters')
     .trim(),
 ]
+
 
 
 exports.apply_now_validator = [
@@ -561,6 +561,16 @@ exports.apply_now_validator = [
     .trim(),
 ]
 
+
+exports.otp_validator = [
+    
+     body('otp')
+     .not()
+     .isEmpty().withMessage('otp is required')
+     .isString().withMessage('otp must be a string')
+     .isLength({ max:4 }).withMessage('otp max length is 4')
+     .trim(),
+]
 
 
 
