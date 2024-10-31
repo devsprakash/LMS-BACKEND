@@ -13,6 +13,7 @@ const adminRouter = require('./admin/routes/admin');
 const fs = require('fs')
 
 const app = express();
+app.use(cors());
 app.use(flash());
 
 app.use(
@@ -41,12 +42,6 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use('/uploads', express.static(uploadDir));
 
-
-app.use(cors({
-  origin: '*', // Allows all origins
-  credentials: true // Note: `credentials: true` does not work with `origin: '*'`, 
-                    // so if you need credentials (e.g., cookies), specify allowed origins explicitly
-}));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({
