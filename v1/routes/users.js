@@ -19,7 +19,7 @@ router.post('/hiring_requirements' , upload.single('additional_file') , hiring_v
 router.post('/course_enrollment_form', upload.fields([
         { name: 'tenth_certificate', maxCount: 1 },
         { name: 'plus_two_certificate', maxCount: 1 },
-        { name: 'graduation_certificate', maxCount: 1 },
+        { name: 'other_certificate', maxCount: 1 },
         { name: 'pancard', maxCount: 1 },
         { name: 'adharcard', maxCount: 1 }
     ]), enroll_form_validator, ValidatorResult, authenticate , course_enroll);
@@ -31,6 +31,7 @@ router.post('/refer_and_earn' , refer_and_earn_validator , ValidatorResult , aut
 router.post('/arrange_call_back' , call_back_validator , ValidatorResult , arrange_call_back)
 router.post('/apply_here' , ResumeUpload.single('resume') , apply_now_validator , ValidatorResult , authenticate ,  apply_now)
 router.post('/brochure_download' , brochure_download_validator , ValidatorResult , authenticate , brochure_download)
+
 
 
 
