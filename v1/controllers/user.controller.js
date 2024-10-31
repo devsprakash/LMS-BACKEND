@@ -692,7 +692,7 @@ exports.course_enroll = async (req, res, next) => {
 
         const tenth_certificate_url = req.files.tenth_certificate ? `${BASEURL}/uploads/${req.files.tenth_certificate[0].filename}` : null;
         const plus_two_certificate_url = req.files.plus_two_certificate ? `${BASEURL}/uploads/${req.files.plus_two_certificate[0].filename}` : null;
-        const graduation_certificate_url = req.files.graduation_certificate ? `${BASEURL}/uploads/${req.files.graduation_certificate[0].filename}` : null;
+        const other_certificate_url = req.files.other_certificate ? `${BASEURL}/uploads/${req.files.other_certificate[0].filename}` : null;
         const pancard_url = req.files.pancard ? `${BASEURL}/uploads/${req.files.pancard[0].filename}` : null;
         const adharcard_url = req.files.adharcard ? `${BASEURL}/uploads/${req.files.adharcard[0].filename}` : null;
 
@@ -702,7 +702,7 @@ exports.course_enroll = async (req, res, next) => {
         
         reqBody.tenth_certificate = tenth_certificate_url;
         reqBody.plus_two_certificate = plus_two_certificate_url;
-        reqBody.graduation_certificate = graduation_certificate_url;
+        reqBody.other_certificate = other_certificate_url;
         reqBody.pancard = pancard_url;
         reqBody.adharcard = adharcard_url;
         reqBody.user = userId;
@@ -722,13 +722,12 @@ exports.course_enroll = async (req, res, next) => {
             course_name: enroll.course_name,
             tenth_certificate: enroll.tenth_certificate,
             plus_two_certificate: enroll.plus_two_certificate,
-            graduation_certificate: enroll.graduation_ertificate,
+            other_certificate: enroll.other_certificate,
             pancard: enroll.pancard,
             adharcard: enroll.adharcard,
             created_at: enroll.created_at,
             updated_at: enroll.updated_at
         };
-
 
 
         return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.enrollment_form_submit_successfully', responseData, req.headers.lang);

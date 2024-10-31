@@ -19,7 +19,7 @@ router.post('/hiring_requirements' , upload.single('additional_file') , hiring_v
 router.post('/course_enrollment_form', upload.fields([
         { name: 'tenth_certificate', maxCount: 1 },
         { name: 'plus_two_certificate', maxCount: 1 },
-        { name: 'graduation_certificate', maxCount: 1 },
+        { name: 'other_certificate', maxCount: 1 },
         { name: 'pancard', maxCount: 1 },
         { name: 'adharcard', maxCount: 1 }
     ]), enroll_form_validator, ValidatorResult, authenticate , course_enroll);

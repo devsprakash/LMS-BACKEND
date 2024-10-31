@@ -303,7 +303,6 @@ exports.hiring_validator = [
 ];
 
 
-
 exports.enroll_form_validator = [
 
   body('name')
@@ -319,7 +318,6 @@ exports.enroll_form_validator = [
     .isString().withMessage('email mus be a string')
     .isEmail().withMessage('please enter a valid email')
     .trim(),
-
 
   body('phone')
     .not()
@@ -345,7 +343,7 @@ exports.enroll_form_validator = [
     .not()
     .isEmpty().withMessage('pincode is required')
     .isNumeric().withMessage('pincode must be a number')
-    .isLength({ min: 6, max: 6 }).withMessage('phone must be at least 6 digits')
+    .isLength({ min: 6, max: 6 }).withMessage('pincode must be at least 6 digits')
     .trim(),
 ];
 

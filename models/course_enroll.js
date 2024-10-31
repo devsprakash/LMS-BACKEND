@@ -33,7 +33,7 @@ const EnrollSchema = new mongoose.Schema({
     plus_two_certificate: {
         type: String
     },
-    graduation_ertificate: {
+    other_certificate: {
         type: String
     },
     pancard: {
