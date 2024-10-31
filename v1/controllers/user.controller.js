@@ -670,10 +670,11 @@ exports.HiringRequirements = async (req, res, next) => {
 }
 
 
+
 exports.course_enroll = async (req, res, next) => {
 
     try {
-        
+
         const userId = req.user._id;
         const reqBody = req.body;
         const checkMail = await isValid(reqBody.email);
@@ -681,60 +682,59 @@ exports.course_enroll = async (req, res, next) => {
         if (!checkMail)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
 
-        const loggedInUser = await User.findOne({ _id: userId });
+        const loginedIn = await User.findOne({_id: userId});
 
-        if (!loggedInUser || (loggedInUser.tokens === null && loggedInUser.refresh_tokens === null))
-            return sendResponse(res, constants.WEB_STATUS_CODE.UNAUTHORIZED, constants.STATUS_CODE.FAIL, 'USER.not_logged_in', {}, req.headers.lang);
+        if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
 
         if (!req.files)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.no_file_uploaded', {}, req.headers.lang);
 
-        // File URL setup
         const tenth_certificate_url = req.files.tenth_certificate ? `${BASEURL}/uploads/${req.files.tenth_certificate[0].filename}` : null;
         const plus_two_certificate_url = req.files.plus_two_certificate ? `${BASEURL}/uploads/${req.files.plus_two_certificate[0].filename}` : null;
-        const other_certificate_url = req.files.other_certificate ? `${BASEURL}/uploads/${req.files.other_certificate[0].filename}` : null;
+        const graduation_certificate_url = req.files.graduation_certificate ? `${BASEURL}/uploads/${req.files.graduation_certificate[0].filename}` : null;
         const pancard_url = req.files.pancard ? `${BASEURL}/uploads/${req.files.pancard[0].filename}` : null;
         const adharcard_url = req.files.adharcard ? `${BASEURL}/uploads/${req.files.adharcard[0].filename}` : null;
 
-        // Check if mandatory documents are uploaded
+
         if (!tenth_certificate_url || !plus_two_certificate_url || !pancard_url || !adharcard_url) 
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.missing_documents', {}, req.headers.lang);
-
-        // Assign data to reqBody
+        
         reqBody.tenth_certificate = tenth_certificate_url;
         reqBody.plus_two_certificate = plus_two_certificate_url;
-        reqBody.other_certificate = other_certificate_url;
+        reqBody.graduation_certificate = graduation_certificate_url;
         reqBody.pancard = pancard_url;
         reqBody.adharcard = adharcard_url;
         reqBody.user = userId;
         reqBody.created_at = await dateFormat.set_current_timestamp();
         reqBody.updated_at = await dateFormat.set_current_timestamp();
 
-        // Save the enrollment data
-        const enrollment = await Enroll.create(reqBody);
+        const enroll = await Enroll.create(reqBody);
 
         const responseData = {
-            _id: enrollment._id,
-            user: userId,
-            name: enrollment.name,
-            email: enrollment.email,
-            phone: enrollment.phone,
-            city: enrollment.city,
-            pincode: enrollment.pincode,
-            course_name: enrollment.course_name,
-            tenth_certificate: enrollment.tenth_certificate,
-            plus_two_certificate: enrollment.plus_two_certificate,
-            other_certificate: enrollment.other_certificate,
-            pancard: enrollment.pancard,
-            adharcard: enrollment.adharcard,
-            created_at: enrollment.created_at,
-            updated_at: enrollment.updated_at
+            _id: enroll._id,
+            user:userId,
+            name: enroll.name,
+            email: enroll.email,
+            phone: enroll.phone,
+            city: enroll.city,
+            pincode: enroll.pincode,
+            course_name: enroll.course_name,
+            tenth_certificate: enroll.tenth_certificate,
+            plus_two_certificate: enroll.plus_two_certificate,
+            graduation_certificate: enroll.graduation_ertificate,
+            pancard: enroll.pancard,
+            adharcard: enroll.adharcard,
+            created_at: enroll.created_at,
+            updated_at: enroll.updated_at
         };
+
+
 
         return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.enrollment_form_submit_successfully', responseData, req.headers.lang);
 
     } catch (err) {
-        console.error("Error in course_enroll:", err);
+        console.log("Error in course_enroll: ", err);
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang);
     }
 };
