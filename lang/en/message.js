@@ -67,6 +67,7 @@ module.exports = {
         invalid_otp:'Invalid otp please enter valid otp',
         refer_and_earn:'successfully referd your friends',
         apply_successfully:'Apply successfully',
+        resend_otp:'otp resend successfull',
     },
     
     'GENERAL': {

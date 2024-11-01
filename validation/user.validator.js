@@ -579,6 +579,25 @@ exports.otp_validator = [
 ]
 
 
+exports.resend_otp_validator = [
+    
+  body('email')
+    .not()
+    .isEmpty()
+    .withMessage('email is required')
+    .isString().withMessage('email mus be a string')
+    .isEmail().withMessage('please enter a valid email')
+    .trim(),
+
+  body('userId')
+  .notEmpty().withMessage('User ID is required')
+  .isString().withMessage('User ID must be a string')
+  .isLength({ min: 24, max: 24 }).withMessage('User ID length should be 24 characters')
+  .isMongoId().withMessage('Please enter a valid User ID')
+  .trim(),
+
+]
+
 
 exports.ValidatorResult = (req, res, next) => {
 

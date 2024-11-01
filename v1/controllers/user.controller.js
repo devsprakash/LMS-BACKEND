@@ -153,6 +153,38 @@ exports.verify_otp = async (req, res) => {
       return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', { error: error.message }, req.headers.lang);
     }
   };
+
+
+
+  exports.resend_otp = async (req, res) => {
+
+    try {
+          
+        const { email , userId } = req.body;
+
+        const user = await User.findOne({ email : email , _id: userId });
+  
+        if (!user) 
+          return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);  
+
+        const otp = generateFourDigitOTP();
+
+        OtpSendMail(otp , email).then(() => {
+            console.log('successfully send the otp.............')
+        }).catch((err) => {
+            console.log('otp not send.........', err)
+        });
+
+       user.otp = otp;
+       await user.save();
+
+       return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.resend_otp', {}, req.headers.lang);  
+
+    } catch (error) {
+      console.error('Error resend OTP:', error);
+      return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', { error: error.message }, req.headers.lang);
+    }
+  };
   
 
 
@@ -827,54 +859,62 @@ exports.apply_now = async (req, res, next) => {
 };
 
 
-
-
 exports.brochure_download = async (req, res, next) => {
 
     try {
 
-        const reqBody = req.body;
-        const userId = req.user._id;
+      const reqBody = req.body;
+      const userId = req.user._id;
+  
+      const userData = await User.findById(userId);
+      if (!userData) 
+        return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.unauthorized_user', {}, req.headers.lang);
+      
+  
+      const checkMail = await isValid(reqBody.email);
+      if (!checkMail) 
+        return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
+      
 
-        const userData = await User.findById(userId);
-        if(!userData)
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.unauthorized_user', {}, req.headers.lang);
-
-        const checkMail = await isValid(reqBody.email);
-        if (!checkMail)
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
-
-        reqBody.created_at = await dateFormat.set_current_timestamp();
-        reqBody.updated_at = await dateFormat.set_current_timestamp();
-        const otp = generateFourDigitOTP();
-        reqBody.otp = otp;
+      let user = await Brochure.findOne({ user: userId });
+      const otp = generateFourDigitOTP();
+      reqBody.otp = otp;
+      reqBody.updated_at = await dateFormat.set_current_timestamp();
+  
+      if (user) {
+        user.otp = otp;
+        user.updated_at = reqBody.updated_at;
+        await user.save();
+      } else {
         reqBody.user = userId;
-        const user = await Brochure.create(reqBody);
-
-        const responseData = {
-            _id: user._id,
-            name: user.name,
-            user:user.user,
-            email: user.email,
-            phone: user.phone,
-            created_at: user.created_at,
-            updated_at: user.updated_at
-        }
-
-        OtpSendMail(otp , user.email).then(() => {
-            console.log('successfully send the otp.............')
-        }).catch((err) => {
-            console.log('otp not send.........', err)
-        })
-
-        return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.brochure_download_success', responseData, req.headers.lang);
-
+        reqBody.created_at = reqBody.updated_at;
+        user = await Brochure.create(reqBody);
+      }
+  
+      const responseData = {
+        _id: user._id,
+        name: user.name,
+        user: user.user,
+        email: user.email,
+        phone: user.phone,
+        created_at: user.created_at,
+        updated_at: user.updated_at
+      };
+  
+      OtpSendMail(otp, user.email).then(() => {
+        console.log('Successfully sent the OTP.');
+      }).catch((err) => {
+        console.log('Failed to send OTP:', err);
+      });
+  
+      return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.brochure_download_success', responseData, req.headers.lang);
+  
     } catch (err) {
-        console.log("err(brochure_download)........", err)
-        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
+      console.log("Error (brochure_download):", err);
+      return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', { error: err.message }, req.headers.lang);
     }
-}
-
+  };
+  
 
 
 exports.brochure_verify_otp = async (req, res) => {
@@ -902,3 +942,33 @@ exports.brochure_verify_otp = async (req, res) => {
     }
   };
   
+
+  exports.brchure_resend_otp = async (req, res) => {
+
+    try {
+          
+        const { email , userId } = req.body;
+
+        const user = await Brochure.findOne({ email : email , user: userId });
+  
+        if (!user) 
+          return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);  
+
+        const otp = generateFourDigitOTP();
+
+        OtpSendMail(otp , email).then(() => {
+            console.log('successfully send the otp.............')
+        }).catch((err) => {
+            console.log('otp not send.........', err)
+        });
+
+       user.otp = otp;
+       await user.save();
+
+       return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.resend_otp', {}, req.headers.lang);  
+
+    } catch (error) {
+      console.error('Error brchure_resend_otp:', error);
+      return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', { error: error.message }, req.headers.lang);
+    }
+  };
