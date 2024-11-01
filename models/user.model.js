@@ -76,6 +76,9 @@ const userSchema = new mongoose.Schema({
     privacy_policy:{
         type:Boolean
     },
+    otp:{
+        type:Number
+    },
     created_at: {
         type: String
     },

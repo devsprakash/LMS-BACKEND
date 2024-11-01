@@ -565,9 +565,17 @@ exports.otp_validator = [
      body('otp')
      .not()
      .isEmpty().withMessage('otp is required')
-     .isString().withMessage('otp must be a string')
-     .isLength({ max:4 }).withMessage('otp max length is 4')
+     .isNumeric().withMessage('otp must be a number')
+     .isLength({ min:4 , max:4 }).withMessage('otp max length is 4')
      .trim(),
+
+     body('userId')
+     .notEmpty().withMessage('User ID is required')
+     .isString().withMessage('User ID must be a string')
+     .isLength({ min: 24, max: 24 }).withMessage('User ID length should be 24 characters')
+     .isMongoId().withMessage('Please enter a valid User ID')
+     .trim(),
+   
 ]
 
 

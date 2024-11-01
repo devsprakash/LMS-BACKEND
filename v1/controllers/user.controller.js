@@ -26,12 +26,8 @@ const {
 const {
     isValid
 } = require('../../services/blackListMail')
-const { sendMail, BookingSendMail, EnrollSendMail , fetchZohoToken , OtpSendMail , generateFourDigitOTP } = require('../../services/email.services')
-const passwordGenerator = require('password-generator');
+const { sendMail, BookingSendMail, fetchZohoToken , OtpSendMail , generateFourDigitOTP } = require('../../services/email.services')
 const axios = require('axios');
-
-
-
 
 
 
@@ -90,7 +86,9 @@ exports.Register = async (req, res, next) => {
             console.error('Error:', error.response ? error.response.data : error.message);
         });
 
-     
+        const otp = generateFourDigitOTP();
+
+        reqBody.otp = otp;
         const user = await Usersave(reqBody);
         const responseData = {
             _id: user._id,
@@ -107,7 +105,13 @@ exports.Register = async (req, res, next) => {
             term_and_condition:user.term_and_condition,
             created_at: user.created_at,
             updated_at: user.updated_at
-        }
+        };
+
+        OtpSendMail(otp , user.email).then(() => {
+            console.log('successfully send the otp.............')
+        }).catch((err) => {
+            console.log('otp not send.........', err)
+        })
 
         sendMail(user.email, user.full_name).then(() => {
             console.log('successfully send the email.............')
@@ -121,7 +125,35 @@ exports.Register = async (req, res, next) => {
         console.log("err(Register)........", err)
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
     }
-}
+};
+
+
+exports.verify_otp = async (req, res) => {
+
+    try {
+
+      const { otp, userId } = req.body; 
+    
+      const user = await User.findById(userId);
+  
+      if (!user) 
+        return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
+
+      // Verify OTP
+      if (user.otp == otp) {
+        user.otp = null; // Clear OTP after successful verification
+        await user.save(); // Save the updated user data
+        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.verify_otp', {}, req.headers.lang);
+      } else {
+        return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.invalid_otp', {}, req.headers.lang);
+      }
+  
+    } catch (error) {
+      console.error('Error verifying OTP:', error);
+      return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', { error: error.message }, req.headers.lang);
+    }
+  };
+  
 
 
 
@@ -814,7 +846,8 @@ exports.brochure_download = async (req, res, next) => {
 
         reqBody.created_at = await dateFormat.set_current_timestamp();
         reqBody.updated_at = await dateFormat.set_current_timestamp();
-
+        const otp = generateFourDigitOTP();
+        reqBody.otp = otp;
         reqBody.user = userId;
         const user = await Brochure.create(reqBody);
 
@@ -828,6 +861,12 @@ exports.brochure_download = async (req, res, next) => {
             updated_at: user.updated_at
         }
 
+        OtpSendMail(otp , user.email).then(() => {
+            console.log('successfully send the otp.............')
+        }).catch((err) => {
+            console.log('otp not send.........', err)
+        })
+
         return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.brochure_download_success', responseData, req.headers.lang);
 
     } catch (err) {
@@ -837,3 +876,29 @@ exports.brochure_download = async (req, res, next) => {
 }
 
 
+
+exports.brochure_verify_otp = async (req, res) => {
+
+    try {
+
+      const { otp, userId } = req.body; 
+    
+      const user = await Brochure.findOne({user: userId});
+  
+      if (!user) 
+        return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
+
+      if (user.otp == otp) {
+        user.otp = null; // Clear OTP after successful verification
+        await user.save(); // Save the updated user data
+        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.verify_otp', {}, req.headers.lang);
+      } else {
+        return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.invalid_otp', {}, req.headers.lang);
+      }
+  
+    } catch (error) {
+      console.error('Error brochure_verify_otp :', error);
+      return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', { error: error.message }, req.headers.lang);
+    }
+  };
+  

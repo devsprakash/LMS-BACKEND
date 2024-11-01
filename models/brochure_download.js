@@ -18,6 +18,9 @@ const BrochureSchema = new mongoose.Schema({
     phone: {
         type: String
     },
+    otp:{
+        type:Number
+    },
     created_at: {
         type: String
     },
