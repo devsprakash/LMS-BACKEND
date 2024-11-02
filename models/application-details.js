@@ -3,13 +3,16 @@ const mongoose = require('mongoose');
 
 
 // Define user schema
-const EnrollSchema = new mongoose.Schema({
+const ApplicationDeatilsSchema = new mongoose.Schema({
 
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users', 
     },
-    name: {
+    first_name: {
+        type: String
+    },
+    last_name: {
         type: String
     },
     email: {
@@ -18,29 +21,17 @@ const EnrollSchema = new mongoose.Schema({
     phone: {
         type: String
     },
-    course_name: {
-        type: String
+    gender:{
+        type:String
     },
-    pincode:{
+    date_of_birth:{
+        type:String
+    },
+    education:{
+        type:String
+    },
+    experience:{
         type:Number
-    },
-    city:{
-        type:String
-    },
-    tenth_certificate: {
-        type: String
-    },
-    plus_two_certificate: {
-        type: String
-    },
-    other_certificate: {
-        type: String
-    },
-    pancard: {
-        type: String
-    },
-    adharcard:{
-        type:String
     },
     created_at: {
         type: String
@@ -55,5 +46,5 @@ const EnrollSchema = new mongoose.Schema({
 });
 
 
-const Enroll = mongoose.model('course_enroll', EnrollSchema);
-module.exports = Enroll;
+const ApplicationDeatils = mongoose.model('ApplicationDeatils', ApplicationDeatilsSchema);
+module.exports = ApplicationDeatils;

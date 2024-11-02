@@ -303,51 +303,6 @@ exports.hiring_validator = [
 ];
 
 
-exports.enroll_form_validator = [
-
-  body('name')
-    .not()
-    .isEmpty().withMessage('name is required')
-    .isString().withMessage('name must be a string')
-    .trim(),
-
-  body('email')
-    .not()
-    .isEmpty()
-    .withMessage('email is required')
-    .isString().withMessage('email mus be a string')
-    .isEmail().withMessage('please enter a valid email')
-    .trim(),
-
-  body('phone')
-    .not()
-    .isEmpty().withMessage('phone is required')
-    .isString().withMessage('phone must be a string')
-    .isMobilePhone().withMessage('please enter a valid phone number')
-    .isLength({ min: 10, max: 12 }).withMessage('phone must be at least 10 characters')
-    .trim(),
-
-  body('city')
-    .not()
-    .isEmpty().withMessage('city is required')
-    .isString().withMessage('city must be a string')
-    .trim(),
-
-  body('course_name')
-    .not()
-    .isEmpty().withMessage('course_name is required')
-    .isString().withMessage('course_name must be a string')
-    .trim(),
-
-  body('pincode')
-    .not()
-    .isEmpty().withMessage('pincode is required')
-    .isNumeric().withMessage('pincode must be a number')
-    .isLength({ min: 6, max: 6 }).withMessage('pincode must be at least 6 digits')
-    .trim(),
-];
-
-
 exports.contact_us_validator = [
 
   body('full_name')
@@ -597,6 +552,90 @@ exports.resend_otp_validator = [
   .trim(),
 
 ]
+
+
+exports.application_deatils_validator = [
+
+  body('first_name')
+    .not()
+    .isEmpty().withMessage('first_name is required')
+    .isString().withMessage('first_name must be a string')
+    .trim(),
+
+    body('last_name')
+    .not()
+    .isEmpty().withMessage('last_name is required')
+    .isString().withMessage('last_name must be a string')
+    .trim(),
+
+  body('email')
+    .not()
+    .isEmpty()
+    .withMessage('email is required')
+    .isString().withMessage('email mus be a string')
+    .isEmail().withMessage('please enter a valid email')
+    .trim(),
+
+  body('phone')
+    .not()
+    .isEmpty().withMessage('phone is required')
+    .isString().withMessage('phone must be a string')
+    .isMobilePhone().withMessage('please enter a valid phone number')
+    .isLength({ min: 10, max: 12 }).withMessage('phone must be at least 10 characters')
+    .trim(),
+
+  body('gender')
+    .not()
+    .isEmpty().withMessage('gender is required')
+    .isString().withMessage('gender must be a string')
+    .trim(),
+
+  body('date_of_birth')
+    .not()
+    .isEmpty().withMessage('date_of_birth is required')
+    .isString().withMessage('date_of_birth must be a string')
+    .trim(),
+
+  body('education')
+    .not()
+    .isEmpty().withMessage('education is required')
+    .isString().withMessage('education must be a string')
+    .trim(),
+
+    body('experience')
+    .not()
+    .isEmpty().withMessage('experience is required')
+    .isNumeric().withMessage('experience must be a number')
+    .trim(),
+
+];
+
+
+exports.application_fees_validator = [
+
+  body('course_name')
+    .not()
+    .isEmpty().withMessage('course_name is required')
+    .isString().withMessage('course_name must be a string')
+    .trim(),
+
+    body('batch_date')
+    .not()
+    .isEmpty().withMessage('batch_date is required')
+    .isString().withMessage('batch_date must be a string')
+    .trim(),
+
+  body('amount')
+    .not()
+    .isEmpty()
+    .withMessage('amount is required')
+    .isNumeric().withMessage('amount mus be a string')
+    .trim(),
+
+];
+
+
+
 
 
 exports.ValidatorResult = (req, res, next) => {

@@ -53,7 +53,7 @@ module.exports = {
         successfully_post_your_blog:'Your Blog Post Successfully',
         successfully_booking_your_seat:'Successfully Booked Your Seat',
         your_hiring_requirements:'Successfully Sumbit Your Requirements',
-        enrollment_form_sumbit_successfully:'successfully sumbit your enrollment form',
+        application_details_successfully:'successfully sumbit application deatils',
         no_file_uploaded: 'No files were uploaded. Please upload the required documents.',
         missing_documnets:'Some required documents are missing. Please upload all documents.',
         your_documents_successfully:'your successfully sumbit your documents',

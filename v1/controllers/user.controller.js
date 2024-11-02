@@ -10,7 +10,8 @@ const Story = require('../../models/success_story_modal');
 const Blog = require('../../models/post_blog_modal');
 const Booking = require('../../models/pre_booking.modal');
 const Hiring = require('../../models/hiring_sharing.modal');
-const Enroll = require('../../models/course_enroll');
+const ApplicationDeatils = require('../../models/application-details');
+const ApplicationFees = require('../../models/application-fees');
 const Brochure = require('../../models/brochure_download');
 const Contact = require('../../models/contact_us');
 const ReferAndEarn = require('../../models/refer-and-earn');
@@ -28,6 +29,7 @@ const {
 } = require('../../services/blackListMail')
 const { sendMail, BookingSendMail, fetchZohoToken , OtpSendMail , generateFourDigitOTP } = require('../../services/email.services')
 const axios = require('axios');
+
 
 
 
@@ -735,75 +737,6 @@ exports.HiringRequirements = async (req, res, next) => {
 
 
 
-exports.course_enroll = async (req, res, next) => {
-
-    try {
-
-        const userId = req.user._id;
-        const reqBody = req.body;
-        const checkMail = await isValid(reqBody.email);
-
-        if (!checkMail)
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
-
-        const loginedIn = await User.findOne({_id: userId});
-
-        if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
-
-        if (!req.files)
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.no_file_uploaded', {}, req.headers.lang);
-
-        const tenth_certificate_url = req.files.tenth_certificate ? `${BASEURL}/uploads/${req.files.tenth_certificate[0].filename}` : null;
-        const plus_two_certificate_url = req.files.plus_two_certificate ? `${BASEURL}/uploads/${req.files.plus_two_certificate[0].filename}` : null;
-        const other_certificate_url = req.files.other_certificate ? `${BASEURL}/uploads/${req.files.other_certificate[0].filename}` : null;
-        const pancard_url = req.files.pancard ? `${BASEURL}/uploads/${req.files.pancard[0].filename}` : null;
-        const adharcard_url = req.files.adharcard ? `${BASEURL}/uploads/${req.files.adharcard[0].filename}` : null;
-
-
-        if (!tenth_certificate_url || !plus_two_certificate_url || !pancard_url || !adharcard_url) 
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.missing_documents', {}, req.headers.lang);
-        
-        reqBody.tenth_certificate = tenth_certificate_url;
-        reqBody.plus_two_certificate = plus_two_certificate_url;
-        reqBody.other_certificate = other_certificate_url;
-        reqBody.pancard = pancard_url;
-        reqBody.adharcard = adharcard_url;
-        reqBody.user = userId;
-        reqBody.created_at = await dateFormat.set_current_timestamp();
-        reqBody.updated_at = await dateFormat.set_current_timestamp();
-
-        const enroll = await Enroll.create(reqBody);
-
-        const responseData = {
-            _id: enroll._id,
-            user:userId,
-            name: enroll.name,
-            email: enroll.email,
-            phone: enroll.phone,
-            city: enroll.city,
-            pincode: enroll.pincode,
-            course_name: enroll.course_name,
-            tenth_certificate: enroll.tenth_certificate,
-            plus_two_certificate: enroll.plus_two_certificate,
-            other_certificate: enroll.other_certificate,
-            pancard: enroll.pancard,
-            adharcard: enroll.adharcard,
-            created_at: enroll.created_at,
-            updated_at: enroll.updated_at
-        };
-
-
-        return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.enrollment_form_submit_successfully', responseData, req.headers.lang);
-
-    } catch (err) {
-        console.log("Error in course_enroll: ", err);
-        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang);
-    }
-};
-
-
-
 exports.apply_now = async (req, res, next) => {
 
     try {
@@ -972,3 +905,116 @@ exports.brochure_verify_otp = async (req, res) => {
       return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', { error: error.message }, req.headers.lang);
     }
   };
+
+
+
+exports.application_details = async (req, res, next) => {
+
+    try {
+
+        const userId = req.user._id;
+        const reqBody = req.body;
+        const checkMail = await isValid(reqBody.email);
+
+        if (!checkMail)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
+
+        const loginedIn = await User.findOne({_id: userId});
+
+        if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
+
+        reqBody.user = userId;
+        reqBody.created_at = await dateFormat.set_current_timestamp();
+        reqBody.updated_at = await dateFormat.set_current_timestamp();
+
+        const enroll = await ApplicationDeatils.create(reqBody);
+
+        const responseData = {
+            _id: enroll._id,
+            user:userId,
+            first_name:enroll.first_name,
+            last_name: enroll.last_name,
+            email: enroll.email,
+            phone: enroll.phone,
+            gender:enroll.gender,
+            date_of_birth: enroll.date_of_birth,
+            education:enroll.education,
+            experience:enroll.experience,
+            created_at: enroll.created_at,
+            updated_at: enroll.updated_at
+        };
+
+        return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.application_details_successfully', responseData, req.headers.lang);
+
+    } catch (err) {
+        console.log("Error in application_details: ", err);
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang);
+    }
+};
+
+
+
+exports.application_fees = async (req, res, next) => {
+
+    try {
+
+        const userId = req.user._id;
+        const reqBody = req.body;
+      
+        const loginedIn = await User.findOne({ _id: userId });
+
+        if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
+
+        const options = {
+            method: 'POST',
+            url: 'https://api.razorpay.com/v1/orders',
+            auth: {
+                username: 'rzp_live_6pmqjNtXITyYIv',  // Replace with your Razorpay Key ID
+                password: 'x4S4xdEYSxgaNk4Bu5y6JrmX' // Replace with your Razorpay Key Secret
+            },
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: {
+                amount: reqBody.amount * 100, // Amount in paise (10000 paise = ₹100.00)
+                currency: 'INR'
+            }
+        };
+
+        let response;
+
+        try {
+            response = await axios(options);
+            console.log('Order created successfully:', response.data);
+        } catch (error) {
+            console.error('Error creating order:', error.response ? error.response.data : error.message);
+        }
+
+        reqBody.user = userId;
+        reqBody.amount = response.data.amount;
+        reqBody.order_id = response.data.id;
+        reqBody.created_at = await dateFormat.set_current_timestamp();
+        reqBody.updated_at = await dateFormat.set_current_timestamp();
+
+        const fees = await ApplicationFees.create(reqBody);
+
+        const responseData = {
+            _id: fees._id,
+            user: userId,
+            batch_date: fees.batch_date,
+            course_name: fees.course_name,
+            amount: fees.amount,
+            order_id: fees.order_id,
+            created_at: fees.created_at,
+            updated_at: fees.updated_at
+        };
+
+        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.application_details_successfully', responseData, req.headers.lang);
+
+    } catch (err) {
+        console.log("Error in application_fees: ", err);
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang);
+    }
+};
