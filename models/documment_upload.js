@@ -15,13 +15,7 @@ const DocumentUploadSchema = new mongoose.Schema({
     tenth_certificate: {
         type: String
     },
-    amount: {
-        type: Number
-    },
     plus_two_certificate:{
-        type:String
-    },
-    order_id:{
         type:String
     },
     created_at: {

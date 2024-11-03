@@ -1034,31 +1034,6 @@ exports.upload_documents = async (req, res, next) => {
         if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
 
-        const options = {
-            method: 'POST',
-            url: 'https://api.razorpay.com/v1/orders',
-            auth: {
-                username: 'rzp_live_6pmqjNtXITyYIv',  // Replace with your Razorpay Key ID
-                password: 'x4S4xdEYSxgaNk4Bu5y6JrmX' // Replace with your Razorpay Key Secret
-            },
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: {
-                amount: reqBody.amount * 100, // Amount in paise (10000 paise = ₹100.00)
-                currency: 'INR'
-            }
-        };
-
-        let response;
-
-        try {
-            response = await axios(options);
-            console.log('Order created successfully:', response.data);
-        } catch (error) {
-            console.error('Error creating order:', error.response ? error.response.data : error.message);
-        }
-
         if (!req.files || !req.files['adharcard'] || !req.files['tenth_certificate'] || !req.files['plus_two_certificate']) 
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.no_file_uploaded', {}, req.headers.lang);
         
@@ -1067,8 +1042,6 @@ exports.upload_documents = async (req, res, next) => {
         reqBody.plus_two_certificate = req.files['plus_two_certificate'] ? `${BASEURL}/uploads/${req.files['plus_two_certificate'][0].filename}` : null;
 
         reqBody.user = userId;
-        reqBody.amount = response.data.amount;
-        reqBody.order_id = response.data.id;
         reqBody.created_at = await dateFormat.set_current_timestamp();
         reqBody.updated_at = await dateFormat.set_current_timestamp();
 
@@ -1077,11 +1050,9 @@ exports.upload_documents = async (req, res, next) => {
         const responseData = {
             _id: document._id,
             user: userId,
-            amount: document.amount,
             adharcard:document.adharcard,
             tenth_certificate:document.tenth_certificate,
             plus_two_certificate:document.plus_two_certificate,
-            order_id: document.order_id,
             created_at: document.created_at,
             updated_at: document.updated_at
         };
