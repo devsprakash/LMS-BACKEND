@@ -56,7 +56,7 @@ module.exports = {
         application_details_successfully:'successfully sumbit application deatils',
         no_file_uploaded: 'No files were uploaded. Please upload the required documents.',
         missing_documnets:'Some required documents are missing. Please upload all documents.',
-        your_documents_successfully:'your successfully sumbit your documents',
+        documents_successfully:'successfully upload your documents',
         successfully_created_contact_us:'Our support team will connect with you very soon',
         not_register : 'Your Are Not Register Please Register First',
         loginedIn_success: 'Please Login First, Then Post Your Story or Blog',
