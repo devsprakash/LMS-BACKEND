@@ -635,6 +635,18 @@ exports.application_fees_validator = [
 ];
 
 
+exports.document_upload_validator = [
+
+  body('amount')
+    .not()
+    .isEmpty()
+    .withMessage('amount is required')
+    .isNumeric().withMessage('amount mus be a string')
+    .trim(),
+
+];
+
+
 
 
 

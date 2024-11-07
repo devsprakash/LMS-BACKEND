@@ -1035,6 +1035,35 @@ exports.upload_documents = async (req, res, next) => {
         reqBody.tenth_certificate = req.files['tenth_certificate'] ? `${BASEURL}/uploads/${req.files['tenth_certificate'][0].filename}` : null;
         reqBody.plus_two_certificate = req.files['plus_two_certificate'] ? `${BASEURL}/uploads/${req.files['plus_two_certificate'][0].filename}` : null;
 
+        
+        const options = {
+            method: 'POST',
+            url: 'https://api.razorpay.com/v1/orders',
+            auth: {
+                username: 'rzp_live_6pmqjNtXITyYIv',  // Replace with your Razorpay Key ID
+                password: 'x4S4xdEYSxgaNk4Bu5y6JrmX' // Replace with your Razorpay Key Secret
+            },
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: {
+                amount: reqBody.amount * 100, // Amount in paise (10000 paise = ₹100.00)
+                currency: 'INR'
+            }
+        };
+
+        let response;
+
+        try {
+            response = await axios(options);
+            console.log('Order created successfully:', response.data);
+        } catch (error) {
+            console.error('Error creating order:', error.response ? error.response.data : error.message);
+        }
+
+        reqBody.amount = response.data.amount;
+        reqBody.order_id = response.data.id;
+
         reqBody.created_at = await dateFormat.set_current_timestamp();
         reqBody.updated_at = await dateFormat.set_current_timestamp();
 
@@ -1044,6 +1073,9 @@ exports.upload_documents = async (req, res, next) => {
             _id: document._id,
             user: document.user,
             adharcard:document.adharcard,
+            course_name:document.course_name,
+            amount:document.amount,
+            order_id:document.order_id,
             tenth_certificate:document.tenth_certificate,
             plus_two_certificate:document.plus_two_certificate,
             created_at: document.created_at,
@@ -1057,3 +1089,5 @@ exports.upload_documents = async (req, res, next) => {
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang);
     }
 };
+
+

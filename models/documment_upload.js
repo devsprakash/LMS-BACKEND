@@ -18,6 +18,18 @@ const DocumentUploadSchema = new mongoose.Schema({
     plus_two_certificate:{
         type:String
     },
+    order_id:{
+       type:String
+    },
+    course_name:{
+        type:String
+    },
+    payment_status:{
+        type:String
+    },
+    amount:{
+        type:String
+    },
     created_at: {
         type: String
     },
