@@ -1026,13 +1026,7 @@ exports.upload_documents = async (req, res, next) => {
 
     try {
 
-        const userId = req.user._id;
         const reqBody = req.body;
-      
-        const loginedIn = await User.findOne({ _id: userId });
-
-        if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
 
         if (!req.files || !req.files['adharcard'] || !req.files['tenth_certificate'] || !req.files['plus_two_certificate']) 
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.no_file_uploaded', {}, req.headers.lang);
@@ -1041,7 +1035,6 @@ exports.upload_documents = async (req, res, next) => {
         reqBody.tenth_certificate = req.files['tenth_certificate'] ? `${BASEURL}/uploads/${req.files['tenth_certificate'][0].filename}` : null;
         reqBody.plus_two_certificate = req.files['plus_two_certificate'] ? `${BASEURL}/uploads/${req.files['plus_two_certificate'][0].filename}` : null;
 
-        reqBody.user = userId;
         reqBody.created_at = await dateFormat.set_current_timestamp();
         reqBody.updated_at = await dateFormat.set_current_timestamp();
 
@@ -1049,7 +1042,7 @@ exports.upload_documents = async (req, res, next) => {
 
         const responseData = {
             _id: document._id,
-            user: userId,
+            user: document.user,
             adharcard:document.adharcard,
             tenth_certificate:document.tenth_certificate,
             plus_two_certificate:document.plus_two_certificate,

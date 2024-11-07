@@ -34,7 +34,7 @@ router.post('/uploadDocuments' , upload.fields([
     { name: 'adharcard', maxCount: 1 },
     { name: 'tenth_certificate', maxCount: 1 },
     { name: 'plus_two_certificate', maxCount: 1 }
-]) , authenticate , upload_documents)
+]) , upload_documents);
 
 
 
