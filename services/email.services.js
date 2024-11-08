@@ -239,15 +239,15 @@ exports.generateFourDigitOTP = () => {
 // Course details with the course name and its net fee
 const courseDetails = [
     { name: "IOT-Industrial-Automation", netFee: 129000 },
-    { name: "Wireless-Technology-3", netFee: 129000 },
-    { name: "Wireless-Technology-6", netFee: 76999 },
-    { name: "Wireless-Technology-9", netFee: 129999 },
-    { name: "Microelectronics-Semiconductor", netFee: 149999 },
-    { name: "Exploring-Space-Science", netFee: 16999 },
-    { name: "Generative-AI", netFee: 21999 },
+    { name: "Wireless-Technology-3", netFee: 76999 },
+    { name: "Wireless-Technology-6", netFee: 129000 },
+    { name: "Wireless-Technology-9", netFee: 149999 },
+    { name: "Microelectronics-Semiconductor", netFee: 129000 },
+    { name: "Exploring-Space-Science", netFee: 21999 },
+    { name: "Generative-AI", netFee: 129000 },
     { name: "CFD", netFee: 129000 },
     { name: "Hydrocarbon-Resource-Exploration", netFee: 555555 },
-    { name: "Probing-Space-Science", netFee: 1 }
+    { name: "Probing-Space-Science", netFee: 16999}
 ];
 
 
