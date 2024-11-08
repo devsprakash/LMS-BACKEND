@@ -68,6 +68,7 @@ module.exports = {
         refer_and_earn:'successfully referd your friends',
         apply_successfully:'Apply successfully',
         resend_otp:'otp resend successfull',
+        invalid_course_name:'this course name is not invalid'
     },
     
     'GENERAL': {

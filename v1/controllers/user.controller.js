@@ -27,7 +27,7 @@ const {
 const {
     isValid
 } = require('../../services/blackListMail')
-const { sendMail, BookingSendMail, fetchZohoToken , OtpSendMail , generateFourDigitOTP } = require('../../services/email.services')
+const { sendMail, BookingSendMail, fetchZohoToken , OtpSendMail , generateFourDigitOTP , findCourseFee } = require('../../services/email.services')
 const axios = require('axios');
 const DocumentUpload = require('../../models/documment_upload');
 
@@ -1024,65 +1024,70 @@ exports.application_fees = async (req, res, next) => {
 
 exports.upload_documents = async (req, res, next) => {
 
-    try {
+try {
 
-        const reqBody = req.body;
+    const reqBody = req.body;
 
-        if (!req.files || !req.files['adharcard'] || !req.files['tenth_certificate'] || !req.files['plus_two_certificate']) 
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.no_file_uploaded', {}, req.headers.lang);
-        
-        reqBody.adharcard = req.files['adharcard'] ? `${BASEURL}/uploads/${req.files['adharcard'][0].filename}` : null;
-        reqBody.tenth_certificate = req.files['tenth_certificate'] ? `${BASEURL}/uploads/${req.files['tenth_certificate'][0].filename}` : null;
-        reqBody.plus_two_certificate = req.files['plus_two_certificate'] ? `${BASEURL}/uploads/${req.files['plus_two_certificate'][0].filename}` : null;
+    // Validate if required files are uploaded
+    if (!req.files || !req.files['adharcard'] || !req.files['tenth_certificate'] || !req.files['plus_two_certificate']) {
+        return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.no_file_uploaded', {}, req.headers.lang);
+    }
 
-        
-        const options = {
-            method: 'POST',
-            url: 'https://api.razorpay.com/v1/orders',
-            auth: {
-                username: 'rzp_live_6pmqjNtXITyYIv',  // Replace with your Razorpay Key ID
-                password: 'x4S4xdEYSxgaNk4Bu5y6JrmX' // Replace with your Razorpay Key Secret
-            },
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: {
-                amount: reqBody.amount * 100, // Amount in paise (10000 paise = ₹100.00)
-                currency: 'INR'
-            }
-        };
+    // Assign file paths to reqBody
+    reqBody.adharcard = req.files['adharcard'] ? `${BASEURL}/uploads/${req.files['adharcard'][0].filename}` : null;
+    reqBody.tenth_certificate = req.files['tenth_certificate'] ? `${BASEURL}/uploads/${req.files['tenth_certificate'][0].filename}` : null;
+    reqBody.plus_two_certificate = req.files['plus_two_certificate'] ? `${BASEURL}/uploads/${req.files['plus_two_certificate'][0].filename}` : null;
 
-        let response;
+    const amount = findCourseFee(reqBody.course_name, reqBody.fees);
+    reqBody.total_fees = amount;
 
-        try {
-            response = await axios(options);
-            console.log('Order created successfully:', response.data);
-        } catch (error) {
-            console.error('Error creating order:', error.response ? error.response.data : error.message);
+    // Razorpay API setup to create an order
+    const razorpayOptions = {
+        method: 'POST',
+        url: 'https://api.razorpay.com/v1/orders',
+        auth: {
+            username: 'rzp_live_6pmqjNtXITyYIv',
+            password: 'x4S4xdEYSxgaNk4Bu5y6JrmX' 
+        },
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: {
+            amount: amount * 100, 
+            currency: 'INR'
         }
+    };
 
-        reqBody.amount = response.data.amount;
-        reqBody.order_id = response.data.id;
+    let razorpayResponse;
+    try {
+        razorpayResponse = await axios(razorpayOptions);
+        console.log('Order created successfully:', razorpayResponse.data);
+    } catch (error) {
+        console.error('Error creating Razorpay order:', error.response ? error.response.data : error.message);
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'USER.order_creation_failed', error.message, req.headers.lang);
+    }
 
-        reqBody.created_at = await dateFormat.set_current_timestamp();
-        reqBody.updated_at = await dateFormat.set_current_timestamp();
+    reqBody.order_id = razorpayResponse.data.id;
+    reqBody.application_fee = reqBody.feeId
+    reqBody.created_at = await dateFormat.set_current_timestamp();
+    reqBody.updated_at = await dateFormat.set_current_timestamp();
 
-        const document = await DocumentUpload.create(reqBody);
+    const document = await DocumentUpload.create(reqBody);
 
-        const responseData = {
-            _id: document._id,
-            user: document.user,
-            adharcard:document.adharcard,
-            course_name:document.course_name,
-            amount:document.amount,
-            order_id:document.order_id,
-            tenth_certificate:document.tenth_certificate,
-            plus_two_certificate:document.plus_two_certificate,
-            created_at: document.created_at,
-            updated_at: document.updated_at
-        };
+    const responseData = {
+        _id: document._id,
+        user: document.user,
+        adharcard: document.adharcard,
+        application_fee: document.application_fee,
+        total_fees: document.total_fees,
+        order_id: document.order_id,
+        tenth_certificate: document.tenth_certificate,
+        plus_two_certificate: document.plus_two_certificate,
+        created_at: document.created_at,
+        updated_at: document.updated_at
+    };
 
-        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.documents_successfully', responseData, req.headers.lang);
+    return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.documents_successfully', responseData, req.headers.lang);
 
     } catch (err) {
         console.log("Error in upload_documents: ", err);

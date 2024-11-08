@@ -9,6 +9,10 @@ const DocumentUploadSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users', 
     },
+    application_fee: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ApplicationFees', 
+    },
     adharcard:{
         type:String
     },
@@ -21,14 +25,12 @@ const DocumentUploadSchema = new mongoose.Schema({
     order_id:{
        type:String
     },
-    course_name:{
+    total_fees:{
         type:String
     },
     payment_status:{
-        type:String
-    },
-    amount:{
-        type:String
+        type:String,
+        default:'paid'
     },
     created_at: {
         type: String
