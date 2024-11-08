@@ -247,7 +247,7 @@ const courseDetails = [
     { name: "Generative-AI", netFee: 129000 },
     { name: "CFD", netFee: 129000 },
     { name: "Hydrocarbon-Resource-Exploration", netFee: 555555 },
-    { name: "Probing-Space-Science", netFee: 16999}
+    { name: "Probing-Space-Science", netFee: 1}
 ];
 
 
