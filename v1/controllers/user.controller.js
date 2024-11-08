@@ -1067,8 +1067,10 @@ try {
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'USER.order_creation_failed', error.message, req.headers.lang);
     }
 
+    const users = await ApplicationFees.findById(reqBody.feeId)
     reqBody.order_id = razorpayResponse.data.id;
-    reqBody.application_fee = reqBody.feeId
+    reqBody.application_fee = reqBody.feeId;
+    reqBody.user = users.user
     reqBody.created_at = await dateFormat.set_current_timestamp();
     reqBody.updated_at = await dateFormat.set_current_timestamp();
 
