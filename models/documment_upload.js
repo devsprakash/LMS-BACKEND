@@ -9,10 +9,6 @@ const DocumentUploadSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users', 
     },
-    application_fee: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'ApplicationFees', 
-    },
     adharcard:{
         type:String
     },

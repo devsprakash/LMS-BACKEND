@@ -1027,6 +1027,7 @@ exports.upload_documents = async (req, res, next) => {
 try {
 
     const reqBody = req.body;
+    const userId = req.user._id;
 
     // Validate if required files are uploaded
     if (!req.files || !req.files['adharcard'] || !req.files['tenth_certificate'] || !req.files['plus_two_certificate']) {
@@ -1067,10 +1068,8 @@ try {
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'USER.order_creation_failed', error.message, req.headers.lang);
     }
 
-    const users = await ApplicationFees.findById(reqBody.feeId)
     reqBody.order_id = razorpayResponse.data.id;
-    reqBody.application_fee = reqBody.feeId;
-    reqBody.user = users.user
+    reqBody.user = userId
     reqBody.created_at = await dateFormat.set_current_timestamp();
     reqBody.updated_at = await dateFormat.set_current_timestamp();
 
