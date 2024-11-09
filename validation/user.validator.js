@@ -644,6 +644,12 @@ exports.document_upload_validator = [
     .isNumeric().withMessage('amount mus be a string')
     .trim(),
 
+    body('course_name')
+    .not()
+    .isEmpty().withMessage('course_name is required')
+    .isString().withMessage('course_name must be a string')
+    .trim(),
+
 ];
 
 

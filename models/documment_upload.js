@@ -21,12 +21,15 @@ const DocumentUploadSchema = new mongoose.Schema({
     order_id:{
        type:String
     },
-    total_fees:{
+    amount:{
         type: Number
     },
     payment_status:{
         type:String,
         default:'paid'
+    },
+    course_name:{
+        type:String
     },
     created_at: {
         type: String

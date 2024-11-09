@@ -1039,9 +1039,6 @@ try {
     reqBody.tenth_certificate = req.files['tenth_certificate'] ? `${BASEURL}/uploads/${req.files['tenth_certificate'][0].filename}` : null;
     reqBody.plus_two_certificate = req.files['plus_two_certificate'] ? `${BASEURL}/uploads/${req.files['plus_two_certificate'][0].filename}` : null;
 
-    const amount = findCourseFee(reqBody.course_name, reqBody.fees);
-    reqBody.total_fees = amount;
-
     // Razorpay API setup to create an order
     const razorpayOptions = {
         method: 'POST',
@@ -1054,7 +1051,7 @@ try {
             'Content-Type': 'application/json'
         },
         data: {
-            amount: amount * 100, 
+            amount: reqBody.amount * 100, 
             currency: 'INR'
         }
     };
@@ -1080,7 +1077,8 @@ try {
         user: document.user,
         adharcard: document.adharcard,
         application_fee: document.application_fee,
-        total_fees: document.total_fees,
+        amount: document.amount,
+        course_name:document.course_name,
         order_id: document.order_id,
         tenth_certificate: document.tenth_certificate,
         plus_two_certificate: document.plus_two_certificate,
