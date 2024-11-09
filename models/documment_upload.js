@@ -26,7 +26,7 @@ const DocumentUploadSchema = new mongoose.Schema({
        type:String
     },
     total_fees:{
-        type:String
+        type: Number
     },
     payment_status:{
         type:String,
