@@ -613,25 +613,12 @@ exports.application_deatils_validator = [
 
 exports.application_fees_validator = [
 
-  body('course_name')
-    .not()
-    .isEmpty().withMessage('course_name is required')
-    .isString().withMessage('course_name must be a string')
-    .trim(),
-
-    body('batch_date')
-    .not()
-    .isEmpty().withMessage('batch_date is required')
-    .isString().withMessage('batch_date must be a string')
-    .trim(),
-
   body('amount')
     .not()
     .isEmpty()
     .withMessage('amount is required')
     .isNumeric().withMessage('amount mus be a string')
     .trim(),
-
 ];
 
 

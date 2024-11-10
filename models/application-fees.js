@@ -10,12 +10,6 @@ const ApplicationFeesSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users', 
     },
-    course_name:{
-        type:String
-    },
-    batch_date: {
-        type: String
-    },
     amount: {
         type: Number
     },

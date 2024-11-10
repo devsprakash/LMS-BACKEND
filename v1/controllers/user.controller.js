@@ -1004,8 +1004,6 @@ exports.application_fees = async (req, res, next) => {
         const responseData = {
             _id: fees._id,
             user: userId,
-            batch_date: fees.batch_date,
-            course_name: fees.course_name,
             amount: fees.amount,
             order_id: fees.order_id,
             created_at: fees.created_at,
