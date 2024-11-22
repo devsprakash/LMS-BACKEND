@@ -119,7 +119,7 @@ exports.logout = async (req, res) => {
 
     try {
 
-        const reqBody = req.superAdmin
+        const reqBody = req.admin
         let UserData = await Admin.findById(reqBody._id)
 
         UserData.tokens = null
