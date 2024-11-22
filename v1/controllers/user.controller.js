@@ -27,7 +27,7 @@ const {
 const {
     isValid
 } = require('../../services/blackListMail')
-const { sendMail, BookingSendMail, fetchZohoToken , OtpSendMail , generateFourDigitOTP , findCourseFee } = require('../../services/email.services')
+const { sendMail, BookingSendMail, fetchZohoToken , OtpSendMail , generateFourDigitOTP } = require('../../services/email.services')
 const axios = require('axios');
 const DocumentUpload = require('../../models/documment_upload');
 

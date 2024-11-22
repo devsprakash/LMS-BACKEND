@@ -215,6 +215,56 @@ exports.OtpSendMail = async (otp , email) => {
 
 
 
+
+exports.NewUserWelcomeEmail = async (user, email, password) => {
+
+    try {
+    
+        let transporter = nodemailer.createTransport({
+            host: 'smtp.mailer91.com',  // SMTP host
+            port: 587,                  // SMTP port
+            secure: false,              // Use SSL if true
+            auth: {
+                user: 'emailer@atiitglobal.com', // your SMTP username
+                pass: 'nop5PDPOLYqyYKHk',        // your SMTP password
+            },
+        });
+
+        const templatePath = path.join(__dirname, 'new_user_email.html');
+
+        if (!fs.existsSync(templatePath)) {
+            throw new Error(`Template file not found: ${templatePath}`);
+        }
+
+        const source = fs.readFileSync(templatePath, 'utf-8');
+        const template = handlebars.compile(source);
+
+        const replacements = {
+            name: user,
+            email:email,
+            password:password
+        };
+        const htmlToSend = template(replacements);
+        let mailOptions = {
+            from: '<connect@atiitglobal.com>',
+            to: email, 
+            subject: "Welcome, Admin! 🎉",
+            html: htmlToSend,
+        };
+
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully:', info.response);
+        return info;
+
+    } catch (error) {
+        console.error('Error sending email:', error.message || error);
+        throw error;
+    }
+};
+
+
+
+
 // Function to fetch the Zoho token
 exports.fetchZohoToken = async () => {
     let ZOHO_TOKEN;
@@ -235,36 +285,3 @@ exports.generateFourDigitOTP = () => {
 }
 
 
-
-// Course details with the course name and its net fee
-const courseDetails = [
-    { name: "IOT-Industrial-Automation", netFee: 129000 },
-    { name: "Wireless-Technology-3", netFee: 76999 },
-    { name: "Wireless-Technology-6", netFee: 129000 },
-    { name: "Wireless-Technology-9", netFee: 149999 },
-    { name: "Microelectronics-Semiconductor", netFee: 129000 },
-    { name: "Exploring-Space-Science", netFee: 21999 },
-    { name: "Generative-AI", netFee: 129000 },
-    { name: "CFD", netFee: 129000 },
-    { name: "Hydrocarbon-Resource-Exploration", netFee: 555555 },
-    { name: "Probing-Space-Science", netFee: 1}
-];
-
-
-const calculateTotalAmount = (netFee, applicationFee) => {
-    const totalGST = netFee * 0.18; // 18% GST
-    return netFee + totalGST - applicationFee; 
-};
-
-
-exports.findCourseFee = (courseName, applicationFee) => {
-  
-    const course = courseDetails.find(course => course.name === courseName);
-    if (course) {
-        const totalAmount = calculateTotalAmount(course.netFee, applicationFee);
-        return totalAmount; // Return the calculated total amount
-    } else {
-        // If the course is not found, return an error message
-        throw new Error('Course not found');
-    }
-};

@@ -9,12 +9,10 @@ module.exports = {
 	'DEFAULT_LANGUAGE': "en",
 	'APP_LANGUAGE': ['en', 'hn'],
 	'URL_EXPIRE_TIME': '2h',
-	'PROGRAM_DEFAULT_STATUS': 'program_remaing',
-	'WORKOUT_DEFAULT_STATUS': 'workout_remaing',
-	'DRILL_DEFAULT_STATUS': 'drill_remaing',
 	'USER_TYPE': {
-		'ADMIN': 1,
-		'USER': 2
+		'SUPERADMIN': 1,
+		'USER': 2,
+		'ADMIN': 3
 	},
 	'STATUS_CODE': {
 		'SUCCESS': '1',

@@ -1,3 +1,4 @@
+const { invalid } = require("moment");
 const { talk_to_expert, brochure_download, forgot_password } = require("../../v1/controllers/user.controller");
 
 module.exports = {
@@ -70,7 +71,15 @@ module.exports = {
         resend_otp:'otp resend successfull',
         invalid_course_name:'this course name is not invalid'
     },
-    
+    'ADMIN':{
+         user: 'successfully add user',
+         invalid_user_type:"invalid user type",
+         role_change:'succesfully changed user role',
+         admin_list:'successfully get the admin list',
+         update_admin_details: 'admin details successfully updated',
+         delete_admin: 'admin successfully delete',
+         admin_not_found:'admin details not found'
+    },
     'GENERAL': {
         
         general_error_content: 'Something went wrong. Please try again later.',

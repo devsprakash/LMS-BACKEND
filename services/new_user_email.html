@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Account Created</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    .email-container {
+      max-width: 600px;
+      margin: 30px auto;
+      background: #ffffff;
+      border: 1px solid #dddddd;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .email-header {
+      background-color: #1d72b8;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      border-radius: 8px 8px 0 0;
+    }
+    .email-body {
+      padding: 20px;
+    }
+    .email-footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #666;
+      padding: 10px 0;
+      border-top: 1px solid #dddddd;
+    }
+    .btn {
+      display: inline-block;
+      background: #1d72b8;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+    .btn:hover {
+      background-color: #155a8c;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="email-header">
+      <h1>Welcome, Admin!</h1>
+    </div>
+    <div class="email-body">
+      <p>Dear <strong>{{name}}</strong>,</p>
+      <p>
+        Congratulations! Your admin account has been successfully created. You can now log in and manage the system using the following credentials:
+      </p>
+      <ul>
+        <li><strong>Email:</strong> {{email}}</li>
+        <li><strong>Password:</strong> {{password}}</li>
+      </ul>
+      <p>
+        Please make sure to change your password after logging in to ensure your account's security.
+      </p>
+      <a href="http://localhost:3000/" class="btn" style="color: white;">Log In Now</a>
+      <p>If you have any questions, feel free to reach out to our support team.</p>
+      <p>Best regards,</p>
+      <p><strong>The ATIIT Team</strong></p>
+    </div>
+    <div class="email-footer">
+      <p>&copy; 2024 ATIIT Global. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

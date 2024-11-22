@@ -130,7 +130,7 @@ userSchema.methods.generateAuthToken = async function () {
     const user = this;
     const token = await jwt.sign({
         _id: user._id.toString()
-    }, JWT_SECRET, { expiresIn: '24h' });
+    }, JWT_SECRET, { expiresIn: '48h' });
     user.tokens = token;
     user.updated_at = await dateFormat.set_current_timestamp();
     user.refresh_tokens_expires = await dateFormat.add_time_current_date(7, 'days');
