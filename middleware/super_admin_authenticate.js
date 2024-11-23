@@ -18,7 +18,7 @@ let superAdminAuthenticate = async (req, res, next) => {
         if (!token) sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.not_token', {}, req.headers.lang)
 
         const decoded = await jwt.verify(token, JWT_SECRET);
-        const superAdmin = await Admin.findOne({ _id: decoded._id, 'tokens': token , 'user_type' : 1 }).lean();
+        const superAdmin = await Admin.findOne({ _id: decoded._id, 'tokens': token , 'user_type' : 'SUPER ADMIN'}).lean();
         console.log("user_data" , superAdmin)
 
         if (!superAdmin) return sendResponse(res, constants.WEB_STATUS_CODE.UNAUTHORIZED, constants.STATUS_CODE.UNAUTHENTICATED, 'GENERAL.unauthorized_user', {}, req.headers.lang)

@@ -20,8 +20,8 @@ const adminSchema = new mongoose.Schema({
         type: String
     },
     user_type: {
-        type: Number,
-        default: 1
+        type: String,
+        default: "SUPER ADMIN"
     },
     status: {
         type: Number, default:

@@ -23,8 +23,8 @@ const userSchema = new mongoose.Schema({
         type: String
     },
     user_type: {
-        type: Number,
-        default: 2
+        type: String,
+        default: "USER"
     },
     status: {
         type: Number, default:

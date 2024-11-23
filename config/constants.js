@@ -10,9 +10,9 @@ module.exports = {
 	'APP_LANGUAGE': ['en', 'hn'],
 	'URL_EXPIRE_TIME': '2h',
 	'USER_TYPE': {
-		'SUPERADMIN': 1,
-		'USER': 2,
-		'ADMIN': 3
+		'SUPERADMIN': "SUPER ADMIN",
+		'USER': "USER",
+		'ADMIN': "ADMIN"
 	},
 	'STATUS_CODE': {
 		'SUCCESS': '1',

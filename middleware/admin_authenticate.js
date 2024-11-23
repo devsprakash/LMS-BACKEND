@@ -20,7 +20,7 @@ let adminAuthenticate = async (req, res, next) => {
         const admin = await Admin.findOne({
             _id: decoded._id,
             tokens: token,
-            user_type: { $in: [1, 3] }
+            user_type: { $in: ['SUPER ADMIN', 'ADMIN'] }
         }).lean();
         
         console.log("user_data" , admin)
