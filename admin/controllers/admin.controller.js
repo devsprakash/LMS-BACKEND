@@ -173,7 +173,6 @@ exports.forgot_password = async (req, res, next) => {
     try {
 
         const reqBody = req.body;
-        const userId = req.admin._id;
 
         const { new_password , confirm_password } = reqBody;
         const checkMail = await isValid(reqBody.email);
@@ -184,7 +183,7 @@ exports.forgot_password = async (req, res, next) => {
         if(new_password !== confirm_password)
             return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.password_mismatch', {}, req.headers.lang);
         
-        const user = await Admin.findOne({ email: reqBody.email , _id: userId });
+        const user = await Admin.findOne({ email: reqBody.email });
       
         if(!user)
             return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
@@ -194,7 +193,6 @@ exports.forgot_password = async (req, res, next) => {
         await user.save();
 
         return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.forgot_password', user,  req.headers.lang);
-
 
     } catch (err) {
         console.log("err(forgot_password)........", err)
