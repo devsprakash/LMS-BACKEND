@@ -113,7 +113,7 @@ exports.reset_password_validator = [
     .not()
     .isEmpty()
     .withMessage('userType is required')
-    .isNumeric().withMessage('userType mus be a number')
+    .isString().withMessage('userType mus be a string')
     .trim(),
   ]
 
