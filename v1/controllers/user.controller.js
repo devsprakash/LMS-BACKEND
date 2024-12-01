@@ -198,7 +198,7 @@ exports.login = async (req, res, next) => {
 
         const reqBody = req.body
 
-        let user = await User.findByCredentials(reqBody.email, reqBody.password, reqBody.user_type || '2');
+        let user = await User.findByCredentials(reqBody.email, reqBody.password, reqBody.user_type || 'USER');
         if (user == 1) return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.email_not_found', {}, req.headers.lang);
         if (user == 2) return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.invalid_password', {}, req.headers.lang);
         if (user.status == 0) return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.inactive_account', {}, req.headers.lang);

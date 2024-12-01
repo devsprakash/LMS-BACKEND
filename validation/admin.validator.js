@@ -1,6 +1,6 @@
 
 
-const { body, validationResult , query } = require('express-validator');
+const { body, validationResult , query , param } = require('express-validator');
 
 
 
@@ -108,6 +108,14 @@ exports.reset_password_validator = [
 
 
   exports.chnage_role_validator = [
+
+    body('userid')
+    .not()
+    .isEmpty()
+    .withMessage('userid is required')
+    .isString().withMessage('userid mus be a string')
+    .isMongoId().withMessage('please enter valid userid')
+    .trim(),
 
     body('userType')
     .not()

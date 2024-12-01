@@ -205,14 +205,15 @@ exports.change_role = async (req, res, next) => {
 
     try {
         
-        const reqBody = req.body;
+        const { userid } = req.param
         const userId = req.superAdmin._id;
         const user = await Admin.findOne({ _id: userId });
       
         if(!user)
             return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
         
-        user.user_type = reqBody.userType;
+        const users = await Admin.findById(userid);
+        users.user_type = reqBody.userType;
         await user.save();
         return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'ADMIN.role_change', user,  req.headers.lang);
 
