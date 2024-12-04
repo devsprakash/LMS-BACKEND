@@ -69,7 +69,10 @@ module.exports = {
         refer_and_earn:'successfully referd your friends',
         apply_successfully:'Apply successfully',
         resend_otp:'otp resend successfull',
-        invalid_course_name:'this course name is not invalid'
+        invalid_course_name:'this course name is not invalid',
+        user_list:'successfully get the user list',
+        delete_users:'successfully delete users'
+
     },
     'ADMIN':{
          user: 'successfully add user',

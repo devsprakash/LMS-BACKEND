@@ -224,7 +224,6 @@ exports.change_role = async (req, res, next) => {
 }
 
 
-
 exports.admin_list = async (req, res, next) => {
 
     try {
@@ -255,7 +254,6 @@ exports.admin_list = async (req, res, next) => {
              users,
          };
  
-
         return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'ADMIN.admin_list', responseData,  req.headers.lang);
 
     } catch (err) {
@@ -263,6 +261,7 @@ exports.admin_list = async (req, res, next) => {
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
     }
 }
+
 
 
 exports.update_admin = async (req, res, next) => {
@@ -312,7 +311,6 @@ exports.delete_admin = async (req, res, next) => {
 
         if(!admin)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'ADMIN.admin_not_found', {}, req.headers.lang);
-        
 
         return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'ADMIN.delete_admin', admin, req.headers.lang);
 
