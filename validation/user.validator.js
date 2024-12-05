@@ -20,42 +20,12 @@ exports.user_validator = [
     .isEmail().withMessage('please enter a valid email')
     .trim(),
 
-
-  body('password')
-    .not()
-    .isEmpty()
-    .withMessage('password is required')
-    .isString().withMessage('password mus be a string')
-    .isLength({ min: 8 }).withMessage('password must be at least 8 characters ')
-    .trim(),
-
-
   body('phone')
     .not()
     .isEmpty().withMessage('phone is required')
     .isString().withMessage('phone must be a string')
     .isMobilePhone().withMessage('please enter a valid phone number')
     .isLength({ min: 10, max: 12 }).withMessage('phone must be at least 10 characters')
-    .trim(),
-
-  body('gender')
-    .not()
-    .isEmpty().withMessage('gender is required')
-    .isString().withMessage('gender must be a string')
-    .isIn(valid_gender)
-    .withMessage('please enter a valid gender type')
-    .trim(),
-
-  body('city')
-    .not()
-    .isEmpty().withMessage('city is required')
-    .isString().withMessage('city must be a string')
-    .trim(),
-
-  body('course_name')
-    .not()
-    .isEmpty().withMessage('course_name is required')
-    .isString().withMessage('course_name must be a string')
     .trim(),
 
     body('term_and_condition')

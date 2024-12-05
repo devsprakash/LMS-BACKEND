@@ -7,7 +7,7 @@ const axios = require('axios'); // Ensure axios is imported
 
 
 
-exports.sendMail = async (email, user) => {
+exports.sendMail = async (email, user , password) => {
     try {
         // Create transporter object using SMTP
         let transporter = nodemailer.createTransport({
@@ -35,6 +35,8 @@ exports.sendMail = async (email, user) => {
         // Replace placeholder values with actual data
         const replacements = {
             name: user,  // Replace {{username}} in the template
+            email:email,
+            password:password
         };
         const htmlToSend = template(replacements);
 

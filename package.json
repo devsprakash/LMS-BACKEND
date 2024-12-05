@@ -37,7 +37,8 @@
     "nodemon": "^3.1.0",
     "password-generator": "^2.3.2",
     "path": "^0.12.7",
-    "pm2": "^5.4.2"
+    "pm2": "^5.4.2",
+    "random-password": "^0.1.2"
   },
   "nodemonConfig": {
     "ignore": [

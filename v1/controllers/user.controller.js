@@ -30,6 +30,7 @@ const {
 const { sendMail, BookingSendMail, fetchZohoToken , OtpSendMail , generateFourDigitOTP } = require('../../services/email.services')
 const axios = require('axios');
 const DocumentUpload = require('../../models/documment_upload');
+const generator=require('random-password');
 
 
 
@@ -49,8 +50,9 @@ exports.Register = async (req, res, next) => {
 
         if (existing_email)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.exist_email', {}, req.headers.lang);
-
-        reqBody.password = await bcrypt.hash(reqBody.password, 10);
+        
+        let passwords = generator(10);   
+        reqBody.password = await bcrypt.hash(passwords, 10);
         reqBody.created_at = await dateFormat.set_current_timestamp();
         reqBody.updated_at = await dateFormat.set_current_timestamp();
 
@@ -100,10 +102,7 @@ exports.Register = async (req, res, next) => {
             password: user.password,
             user_type: user.user_type,
             social_media: user.social_media,
-            gender: user.gender,
             phone: user.phone,
-            course_name: user.course_name,
-            city: user.city,
             privacy_policy:user.privacy_policy,
             term_and_condition:user.term_and_condition,
             created_at: user.created_at,
@@ -116,7 +115,7 @@ exports.Register = async (req, res, next) => {
             console.log('otp not send.........', err)
         })
 
-        sendMail(user.email, user.full_name).then(() => {
+        sendMail(user.email, user.full_name , passwords).then(() => {
             console.log('successfully send the email.............')
         }).catch((err) => {
             console.log('email not send.........', err)

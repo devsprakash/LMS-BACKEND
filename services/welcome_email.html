@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
-
-
+        /* General Styles */
 body {
   font-family: 'Poppins', sans-serif;
   background-color: #f4f4f4;
@@ -15,90 +13,58 @@ body {
 }
 
 .email-container {
-  width: 100%;
   max-width: 800px;
   margin: 0 auto;
-  background-color: #ffffff;
+  background: #fff;
   border-radius: 10px;
   padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: left;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-.email-container img {
+img {
   width: 100%;
-  height: auto;
-  margin-left: 0;
-}
-
-.content {
-  padding: 20px;
+  border-radius: 10px;
 }
 
 .section-title {
-  font-weight: bold;
-  margin-top: 20px;
-  color: #3c3ff0;
   font-size: 18px;
-  text-align: center;
-}
-
-.partnerships {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin: 20px 0;
+  color: #3c3ff0;
+  font-weight: 600;
+  margin: 20px 0 10px;
 }
 
 .partnerships img {
   max-width: 120px;
-  width: 100%;
-  height: auto;
-}
-
-.testimonials {
-  padding: 10px 0;
-}
-
-.testimonial {
-  margin-bottom: 20px;
-}
-
-.testimonial p {
-  margin: 0;
-  font-style: italic;
+  margin: 0 10px;
+  border-radius: 8px;
 }
 
 .read-more {
-  color: orangered;
+  color: #ff5722;
   text-decoration: none;
   font-weight: bold;
 }
 
+.testimonials .testimonial {
+  margin-bottom: 20px;
+  font-style: italic;
+}
+
 .footer {
-  background-color: #f4f4f4;
-  padding: 20px;
+  margin-top: 20px;
   text-align: center;
   font-size: 12px;
   color: #777;
 }
 
 .footer a {
-  text-decoration: none;
   color: #333;
-}
-
-.social-icons {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin: 20px 0;
-  align-items: center;
+  text-decoration: none;
 }
 
 .social-icons img {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  margin: 5px;
   transition: transform 0.3s ease;
 }
 
@@ -106,119 +72,29 @@ body {
   transform: scale(1.1);
 }
 
-/* Extra small devices (phones, 600px and down) */
-@media only screen and (max-width: 600px) {
+.login-link {
+   padding: 6px;
+   color: white;
+   background-color: #3c3ff0;
+   cursor: pointer;
+   border-radius: 8px;
+   transition: 0.3 ease;
+   text-decoration: none;
+   font-size: 14px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
   .email-container {
     padding: 10px;
-  }
-
-  .email-container img {
-    width: 100%;
-    height: auto;
   }
 
   .section-title {
     font-size: 16px;
   }
 
-  .partnerships img {
-    max-width: 80px;
-  }
-
-  .social-icons img {
-    width: 30px;
-    height: 30px;
-  }
-
-  .content {
-    padding: 10px;
-  }
-
-  .testimonial p {
-    font-size: 14px;
-  }
-
-  .footer {
-    font-size: 10px;
-  }
-}
-
-/* Small devices (portrait tablets and large phones, 600px and up) */
-@media only screen and (min-width: 600px) and (max-width: 767px) {
-  .email-container {
-    padding: 15px;
-  }
-
-  .email-container img {
-    width: 90%;
-    height: auto;
-    margin-left: 5%;
-  }
-
-  .partnerships img {
-    max-width: 100px;
-  }
-
   .social-icons img {
     width: 25px;
-    height: 25px;
-  }
-}
-
-/* Medium devices (landscape tablets, 768px and up) */
-@media only screen and (min-width: 768px) and (max-width: 991px) {
-  .email-container img {
-    width: 80%;
-    height: auto;
-    margin-left: 10%;
-  }
-
-  .partnerships img {
-    max-width: 110px;
-  }
-
-  .social-icons img {
-    width: 28px;
-    height: 28px;
-  }
-}
-
-/* Large devices (laptops/desktops, 992px and up) */
-@media only screen and (min-width: 992px) and (max-width: 1199px) {
-  .email-container img {
-    width: 600px;
-    margin-left: 12%;
-  }
-
-  .partnerships img {
-    max-width: 120px;
-  }
-
-  .social-icons img {
-    width: 30px;
-    height: 30px;
-  }
-}
-
-/* Extra large devices (large laptops and desktops, 1200px and up) */
-@media only screen and (min-width: 1200px) {
-  .email-container img {
-    width: 600px;
-    margin-left: 12%;
-  }
-
-  .email-container img {
-    width: 600px;
-    margin-left: 12%;
-  }
-
-  .partnerships img {
-    max-width: 120px;
-  }
-
-  .social-icons img {
-    width: 30px;
-    height: 30px;
   }
 }
 
@@ -226,52 +102,57 @@ body {
 </head>
 <body>
     <div class="email-container">
-        <img src="https://atiit-website-images-and-videos.s3.ap-south-1.amazonaws.com/Email-Template/website+banner.jpg" alt="banner-image" />
-        
-        <!-- Course Information -->
+        <!-- Banner Image -->
+        <img src="https://atiit-website-images-and-videos.s3.ap-south-1.amazonaws.com/Email-Template/website+banner.jpg" alt="ATIIT Banner" />
+
+        <!-- Welcome Message -->
         <div class="content">
-            <p>Dear [{{name}}],</p>
+            <p>Dear <span>{{name}}</span>,</p>
             <p>
-                Welcome to <strong>ATIITGLOBAL PVT LTD</strong>! We are thrilled that you have embarked on a journey to upgrade your skills with us. Our expert learning consultants will reach out to you shortly to help you navigate this transformative program. Get ready to acquire in-demand skills and unlock your potential. We're here to support you every step of the way.
+                Welcome to <strong>ATIITGLOBAL PVT LTD</strong>! We are thrilled that you have embarked on a journey to upgrade your skills with us. Our expert learning consultants will reach out to you shortly to guide you on this transformative program. Get ready to acquire in-demand skills and unlock your potential. We're here to support you every step of the way.
             </p>
 
-            <!-- Global Partnerships -->
-            <div class="section-title" style="text-align: left;">Our Prestigious Global Partnerships</div>
-            <p>We have partnered with top-tier universities and industry giants to bring you cutting-edge, industry-aligned courses.</p>
+            <!-- Partnerships -->
+            <div class="section-title">Our Prestigious Global Partnerships</div>
+            <p>We have partnered with top-tier universities and industry leaders to bring you cutting-edge, industry-aligned courses.</p>
             <div class="partnerships">
                 <img src="https://www.mathworks.com/content/dam/mathworks/mathworks-dot-com/images/responsive/supporting/academia/tah-portal/school-logo/Indian-Institute-of-Technology-Mandi-40677820.jpg" alt="IIT Mandi">
                 <img src="https://www.pavitr.net/images/portfolio/partner-thumb16.jpg" alt="IIT (ISM) Dhanbad">
             </div>
 
-            <!-- Program Information -->
-            <div class="section-title" style="text-align: left;">Dive Into the Program</div>
+            <!-- Program Details -->
+            <div class="section-title">Dive Into the Program</div>
             <p>
-                Your journey in the <strong>Advanced Certification in Gen AI </strong> has begun! Discover a wealth of industry insights, practical lessons, and a curriculum designed to push your career to the next level. <a href="https://atiitglobal.com/courses-list.html" class="read-more">EXPLORE THE COURSE</a>
-            </p>
+              Your journey at <strong>ATIIT PVT LTD</strong> has just begun! Explore a wide range of industry-relevant courses tailored to equip you with in-demand skills. From Generative AI to Wireless Technology, our programs are designed to meet your career aspirations and help you stay ahead in the competitive world. <a href="https://atiitglobal.com/courses-list.html" class="read-more">EXPLORE ALL COURSES</a>
+          </p>
+          
+            <p>Email: {{email}} <br> Password: <span>{{password}}</p>
+            <a href="https://atiitglobal.com/login.html" class="login-link" style="color: white;">please login</a>
 
             <!-- Testimonials -->
-            <div class="section-title" style="text-align: left;">What Our Learners Have to Say</div>
+            <div class="section-title">What Our Learners Have to Say</div>
             <div class="testimonials">
                 <div class="testimonial">
                     <p>“This program reshaped my career trajectory. The combination of live classes and real-world projects made all the difference.”</p>
-                    <p><strong>- [Priyank Nayak], [IOT Engineer ]</strong></p>
+                    <p><strong>- Priyank Nayak, IoT Engineer</strong></p>
                 </div>
                 <div class="testimonial">
                     <p>“The instructors were brilliant, and the content was incredibly relevant. I felt well-prepared to apply my new skills in the workplace.”</p>
-                    <p><strong>- [Prasant Mishra], [Generative Engineer]</strong></p>
+                    <p><strong>- Prasant Mishra, Generative Engineer</strong></p>
                 </div>
             </div>
 
-        <!-- Footer -->
-        <div class="footer">
-            <div class="social-icons">
-                <a href="https://www.instagram.com/atiit_edu/?igsh=MWN3NmpiazcxdzM5Nw%3D%3D"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram"></a>
-                <a href="https://www.facebook.com/atiitglobal?mibextid=ZbWKwL"><img src="https://th.bing.com/th/id/OIP.8fuwUKKabGb2F8w32U5rgAHaHa?w=512&h=512&rs=1&pid=ImgDetMain" alt="Facebook"></a>
-                <a href="https://www.linkedin.com/company/atiit-pvt-ltd/"><img src="https://th.bing.com/th/id/R.968ea62882943e88bbd318ae5fa67429?rik=02GRssIi97Ll3A&riu=http%3a%2f%2fpngimg.com%2fuploads%2flinkedIn%2flinkedIn_PNG38.png&ehk=BbKDpU51%2bymaYWrmiG5x0QAfanWpkombnVGrKC50uIQ%3d&risl=&pid=ImgRaw&r=0" alt="LinkedIn"></a>
-                <a href="https://www.youtube.com/@atiit-education"><img src="https://hdclipartall.com/images/youtube-clipart-youtube-square-icons-1600x1600.png" alt="YouTube"></a>
+            <!-- Footer -->
+            <div class="footer">
+                <div class="social-icons">
+                    <a href="https://www.instagram.com/atiit_edu/"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram"></a>
+                    <a href="https://www.facebook.com/atiitglobal"><img src="https://th.bing.com/th/id/OIP.8fuwUKKabGb2F8w32U5rgAHaHa?w=512&h=512&rs=1&pid=ImgDetMain" alt="Facebook"></a>
+                    <a href="https://www.linkedin.com/company/atiit-pvt-ltd/"><img src="https://pngimg.com/uploads/linkedIn/linkedIn_PNG38.png" alt="LinkedIn"></a>
+                    <a href="https://www.youtube.com/@atiit-education"><img src="https://hdclipartall.com/images/youtube-clipart-youtube-square-icons-1600x1600.png" alt="YouTube"></a>
+                </div>
+                <p>If you have any questions, feel free to <a href="https://atiitglobal.com/contact-us.html">contact us</a>.</p>
+                <p>© 2024 ATIITGLOBAL PVT LTD. All Rights Reserved.</p>
             </div>
-            <p>If you have any questions, feel free to <a href="https://atiitglobal.com/contact-us.html">contact us</a>.</p>
-            <p>© 2024 ATIITGLOBAL PVT LTD. All Rights Reserved.</p>
         </div>
     </div>
 </body>

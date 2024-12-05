@@ -57,12 +57,11 @@ exports.delete_user = async (req, res, next) => {
         const adminId = req.superAdmin._id;
 
         const user = await Admin.findById(adminId);
-
         if(!user)
             return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
         
+        
         const users = await User.findByIdAndDelete(userId);
-
         if(!users)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
 
