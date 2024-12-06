@@ -83,7 +83,8 @@ exports.reset_passwords = async (req, res, next) => {
 
         const reqBody = req.body;
         const adminId = req.superAdmin._id;
-        const { new_password , confirm_password , userId  } = reqBody;
+        const { userId } = req.query;
+        const { new_password , confirm_password} = reqBody;
 
         const admin = await Admin.findById(adminId);
 
