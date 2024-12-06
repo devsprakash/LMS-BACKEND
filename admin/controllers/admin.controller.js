@@ -319,3 +319,4 @@ exports.delete_admin = async (req, res, next) => {
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
     }
 }
+

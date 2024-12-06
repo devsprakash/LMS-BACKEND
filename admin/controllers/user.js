@@ -5,7 +5,8 @@ const {
 const User = require('../../models/user.model');
 const constants = require('../../config/constants');
 const Admin = require('../../admin_models/user.model');
-
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 
 
@@ -70,6 +71,37 @@ exports.delete_user = async (req, res, next) => {
 
     } catch (err) {
         console.log("err(delete_user)........", err)
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
+    }
+}
+
+
+
+exports.reset_passwords = async (req, res, next) => {
+
+    try {
+
+        const reqBody = req.body;
+        const adminId = req.superAdmin._id;
+        const { new_password , confirm_password , userId  } = reqBody;
+
+        const admin = await Admin.findById(adminId);
+
+        if(!admin)
+            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
+        
+        if(new_password !== confirm_password)
+            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.password_mismatch', {}, req.headers.lang);
+
+        const user = await User.findById(userId)
+        const hashedPassword = await bcrypt.hash(new_password, 10); 
+        user.password = hashedPassword;
+        await user.save();
+ 
+        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.set_new_password_success', user , req.headers.lang);
+
+    } catch (err) {
+        console.log("err(reset_password)........", err)
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
     }
 }
