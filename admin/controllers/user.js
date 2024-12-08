@@ -22,14 +22,9 @@ exports.user_list = async (req, res, next) => {
             return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
         
          const page = parseInt(req.query.page, 10) || 1; 
-         const limit = parseInt(req.query.limit, 10) || 10; 
-         const skip = (page - 1) * limit;
  
          const totalUsers = await User.countDocuments();
-         const users = await User.find({ user_type: "USER" })
-             .skip(skip)
-             .limit(limit)
-             .lean(); 
+         const users = await User.find({ user_type: "USER" }).lean(); 
 
         if(!users || users.length == 0)
             return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', [], req.headers.lang);
@@ -37,7 +32,6 @@ exports.user_list = async (req, res, next) => {
          const responseData = {
              totalUsers,
              currentPage: page,
-             totalPages: Math.ceil(totalUsers / limit),
              users,
          };
  
