@@ -21,7 +21,7 @@ const { admin_validator , delete_admin_validator , login_validator , update_admi
 router.post('/addUsers' , admin_validator , ValidatorResult , addUsers);
 router.post('/login', login_validator , ValidatorResult , login);
 router.get('/logout', adminAuthenticate , logout);
-router.post('/resetPassword', reset_password_validator , ValidatorResult, adminAuthenticate , reset_password)
+router.post('/resetPassword', reset_password_validator , ValidatorResult, superAdminAuthenticate, reset_password)
 router.post('/forgotPassword' , forgot_password_validator , ValidatorResult , forgot_password)
 router.post('/change_role' , chnage_role_validator , ValidatorResult , superAdminAuthenticate , change_role )
 router.get('/adminList' , superAdminAuthenticate , admin_list)

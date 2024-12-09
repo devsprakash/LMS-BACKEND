@@ -141,24 +141,29 @@ exports.reset_password = async (req, res, next) => {
 
     try {
 
-        const reqBody = req.body;
-        const userId = req.admin._id
-        const { new_password , confirm_password } = reqBody;
+        const { userId } = req.query
+        const adminId = req.superAdmin._id;
+        const { new_password , confirm_password } = req.body;
     
         if(new_password !== confirm_password)
             return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.password_mismatch', {}, req.headers.lang);
         
-        const user = await Admin.findById(userId);
+        const user = await Admin.findById(adminId);
       
-        if(!user || user === null)
-            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.invalid_token', {}, req.headers.lang);
+        if(!user || user.user_type !== "SUPER ADMIN")
+            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
+        
+        const admin = await Admin.findById(userId)
+
+        if(!admin)
+            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
         
         const hashedPassword = await bcrypt.hash(new_password, 10); 
-        user.password = hashedPassword;
-        user.reset_password_token = null; 
-        await user.save();
+        admin.password = hashedPassword;
+        admin.reset_password_token = null; 
+        await admin.save();
  
-        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.set_new_password_success', user , req.headers.lang);
+        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.set_new_password_success', admin , req.headers.lang);
 
     } catch (err) {
         console.log("err(reset_password)........", err)
@@ -205,16 +210,16 @@ exports.change_role = async (req, res, next) => {
 
     try {
         
-        const { userid } = req.param
-        const userId = req.superAdmin._id;
-        const user = await Admin.findOne({ _id: userId });
+        const { userId } = req.query
+        const adminId = req.superAdmin._id;
+        const user = await Admin.findById( adminId );
       
-        if(!user)
+        if(!user || user.user_type !== "SUPER ADMIN")
             return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
         
-        const users = await Admin.findById(userid);
-        users.user_type = reqBody.userType;
-        await user.save();
+        const users = await Admin.findById(userId);
+        users.user_type = req.body.userType;
+        await users.save();
         return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'ADMIN.role_change', user,  req.headers.lang);
 
     } catch (err) {
