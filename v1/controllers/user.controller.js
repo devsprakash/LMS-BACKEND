@@ -72,6 +72,9 @@ exports.Register = async (req, res, next) => {
                     "Last_Name": reqBody.full_name,
                     "Email": reqBody.email,
                     "Phone": reqBody.phone,
+                    "Lead_Source": reqBody.social_media,
+                    "Description": reqBody.course_name,
+                    "Company": reqBody.qualification
                 }
             ]
         }

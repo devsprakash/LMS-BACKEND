@@ -22,6 +22,9 @@ const userSchema = new mongoose.Schema({
     course_name: {
         type: String
     },
+    qualification:{
+        type:String
+    },
     user_type: {
         type: String,
         default: "USER"
