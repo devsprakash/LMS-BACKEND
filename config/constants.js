@@ -12,7 +12,8 @@ module.exports = {
 	'USER_TYPE': {
 		'SUPERADMIN': "SUPER ADMIN",
 		'USER': "USER",
-		'ADMIN': "ADMIN"
+		'ADMIN': "ADMIN",
+		'INSTRUCTOR' : 'INSTRUCTOR'
 	},
 	'STATUS_CODE': {
 		'SUCCESS': '1',
