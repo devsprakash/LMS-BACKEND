@@ -100,3 +100,29 @@ exports.reset_passwords = async (req, res, next) => {
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
     }
 }
+
+
+
+exports.user_status_updated = async (req, res, next) => {
+
+    try {
+
+        const adminId = req.superAdmin._id;
+        const { userId } = req.query;
+
+        const admin = await Admin.findById(adminId);
+
+        if(!admin)
+            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
+        
+        const user = await User.findById(userId);
+        user.status = user.status === 1 ? 0 : 1; 
+        await user.save();
+
+        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.user_status_updated', user , req.headers.lang);
+
+    } catch (err) {
+        console.log("err(user_status_updated)........", err)
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
+    }
+}

@@ -9,7 +9,8 @@ const {
   change_role,
   admin_list,
   update_admin,
-  delete_admin
+  delete_admin,
+  status_updated
 } = require('../controllers/admin.controller');
 const superAdminAuthenticate = require('../../middleware/super_admin_authenticate');
 const adminAuthenticate = require('../../middleware/admin_authenticate');
@@ -27,7 +28,7 @@ router.post('/change_role' , chnage_role_validator , ValidatorResult , superAdmi
 router.get('/adminList' , superAdminAuthenticate , admin_list)
 router.put('/update_admin_details' , update_admin_details_validator, ValidatorResult , superAdminAuthenticate , update_admin)
 router.delete('/delete_admin', delete_admin_validator , ValidatorResult , superAdminAuthenticate , delete_admin)
-
+router.put('/status_updated' , superAdminAuthenticate , status_updated)
 
 
 

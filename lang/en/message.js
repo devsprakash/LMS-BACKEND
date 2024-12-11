@@ -71,7 +71,8 @@ module.exports = {
         resend_otp:'otp resend successfull',
         invalid_course_name:'this course name is not invalid',
         user_list:'successfully get the user list',
-        delete_users:'successfully delete users'
+        delete_users:'successfully delete users',
+        user_status_updated:'status updated successfully'
 
     },
     'ADMIN':{

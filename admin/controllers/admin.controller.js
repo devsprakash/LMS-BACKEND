@@ -325,3 +325,27 @@ exports.delete_admin = async (req, res, next) => {
     }
 }
 
+
+exports.status_updated = async (req, res, next) => {
+
+    try {
+
+        const superAdminId = req.superAdmin._id;
+        const { adminId } = req.query;
+
+        const admin = await Admin.findById(superAdminId);
+
+        if(!admin)
+            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
+        
+        const user = await Admin.findById(adminId);
+        user.status = user.status === 1 ? 0 : 1; 
+        await user.save();
+
+        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.user_status_updated', user , req.headers.lang);
+
+    } catch (err) {
+        console.log("err(status_updated)........", err)
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
+    }
+}
