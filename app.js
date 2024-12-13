@@ -10,7 +10,8 @@ const indexRouter = require('./v1/routes/index');
 const usersRouter = require('./v1/routes/users');
 const indexAdminRouter = require('./admin/routes/index');
 const adminRouter = require('./admin/routes/admin');
-const UserAdminRouter = require('./admin/routes/user')
+const UserAdminRouter = require('./admin/routes/user');
+const coursesRouter = require("./admin/routes/courses")
 const crypto = require('crypto');
 const fs = require('fs')
 
@@ -104,6 +105,7 @@ app.use('/v1/users', usersRouter);
 app.use('/v1/', indexAdminRouter);
 app.use('/admin', adminRouter);
 app.use('/admin/users', UserAdminRouter);
+app.use('/admin/course' , coursesRouter);
 
 
 // catch 404 and forward to error handler

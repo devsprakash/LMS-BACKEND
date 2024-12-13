@@ -84,8 +84,16 @@ module.exports = {
          delete_admin: 'admin successfully delete',
          admin_not_found:'admin details not found'
     },
+    'COURSE' : {
+        add_course:'course add successfully',
+        already_add_course:'this course already added please add new course',
+        course_list:'successfully get all the course',
+        course_not_found:'course list not found',
+        course_edit_successfully :'course data updated successfully',
+        course_delete_successfully :'course data delete successfully',
+        course_status_updated:'course status updated successfully'
+    },
     'GENERAL': {
-        
         general_error_content: 'Something went wrong. Please try again later.',
         unauthorized_user: 'Unauthorized, please login.',
         invalid_user: 'You are not authorized to do this operation.',
