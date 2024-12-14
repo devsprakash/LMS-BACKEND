@@ -202,7 +202,7 @@ exports.editStatus = async (req, res, next) => {
         if (!course) 
             return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'COURSE.course_not_found', {}, req.headers.lang);
         
-        course.isPublished = course.isPublished === true ? true : false;
+        course.isPublished = course.isPublished === "published" ? "published" : "unpublished";
         await course.save();
 
         const responseData = {
