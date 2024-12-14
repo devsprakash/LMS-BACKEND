@@ -72,7 +72,7 @@ exports.CourseList = async (req, res, next) => {
 
         const [courses, totalPublished, totalCourse] = await Promise.all([
             Course.find().skip(skip).limit(limit),
-            Course.countDocuments({ isPublished: true }),
+            Course.countDocuments({ isPublished: "published" }),
             Course.countDocuments()
         ]);
 

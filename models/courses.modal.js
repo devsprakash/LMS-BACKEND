@@ -14,7 +14,7 @@ const courseSchema = new mongoose.Schema({
         type: String
     },
     isPublished:{
-        type:Boolean
+        type:String
     },
     created_at: {
         type: String
