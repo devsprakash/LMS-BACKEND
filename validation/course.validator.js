@@ -21,7 +21,7 @@ exports.add_course_validator = [
   body('isPublished')
     .not()
     .isEmpty().withMessage('isPublished is required')
-    .isString().withMessage('isPublished must be a string')
+    .isBoolean().withMessage('isPublished must be a true or false')
     .trim(),
 ];
 
