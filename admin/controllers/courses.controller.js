@@ -9,7 +9,6 @@ const { BASEURL } = require('../../keys/development.keys');
 
 
 
-
 exports.addCourse = async (req, res, next) => {
 
     try {
@@ -38,7 +37,7 @@ exports.addCourse = async (req, res, next) => {
         const course = await Course.create(reqBody);
 
         const responseData = {
-            _id: user._id,
+            _id: course._id,
             course_name: course.course_name,
             course_image: course.course_image,
             course_duration: course.course_duration,
@@ -219,3 +218,47 @@ exports.editStatus = async (req, res, next) => {
     }
 };
 
+
+
+exports.editCourseImage = async (req, res, next) => {
+
+    try {
+
+        const { courseId } = req.query;
+        const adminId = req.superAdmin._id;
+
+        const user = await Admin.findById(adminId);
+
+        if (!user)
+            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
+
+        if (!req.file)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.no_image_upload', {}, req.headers.lang);
+
+        const course = await Course.findById(courseId);
+
+        if (!course) 
+            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'COURSE.course_not_found', {}, req.headers.lang);
+        
+    
+        const course_image_url = `${BASEURL}/uploads/${req.file.filename}`;
+        course.course_image = course_image_url;
+        await course.save();
+        
+        const responseData = {
+            _id: course._id,
+            course_name: course.course_name,
+            course_image: course.course_image,
+            course_duration: course.course_duration,
+            isPublished: course.isPublished,
+            created_at: course.created_at,
+            updated_at: course.updated_at
+        };
+
+        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'COURSE.course_image_updated', responseData, req.headers.lang);
+
+    } catch (err) {
+        console.log("err(editcourseimage)........", err)
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
+    }
+};

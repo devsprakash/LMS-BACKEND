@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const superAdminAuthenticate = require('../../middleware/super_admin_authenticate');
-const { addCourse, CourseList, editCourse, deleteCourse, editStatus } = require('../controllers/courses.controller');
+const { addCourse, CourseList, editCourse, deleteCourse, editStatus, editCourseImage } = require('../controllers/courses.controller');
 const {add_course_validator , courseId_validator , ValidatorResult} = require('../../validation/course.validator');
 const upload = require('../../middleware/multer')
 
@@ -11,7 +11,8 @@ router.post('/addcourse', upload.single('course_image') , add_course_validator ,
 router.get('/courseList' , superAdminAuthenticate , CourseList);
 router.put('/editCourse' , courseId_validator , ValidatorResult , superAdminAuthenticate , editCourse);
 router.delete('/deleteCourse' , courseId_validator , ValidatorResult , superAdminAuthenticate , deleteCourse);
-router.patch('/editStatus' , courseId_validator , ValidatorResult , superAdminAuthenticate , editStatus)
+router.patch('/editStatus' , courseId_validator , ValidatorResult , superAdminAuthenticate , editStatus);
+router.put('/editCourseImage' , upload.single('course_image') , courseId_validator , ValidatorResult , superAdminAuthenticate , editCourseImage);
 
 
 

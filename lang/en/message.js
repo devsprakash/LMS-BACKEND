@@ -91,7 +91,8 @@ module.exports = {
         course_not_found:'course list not found',
         course_edit_successfully :'course data updated successfully',
         course_delete_successfully :'course data delete successfully',
-        course_status_updated:'course status updated successfully'
+        course_status_updated:'course status updated successfully',
+        course_image_updated: 'successfully updated the course image'
     },
     'GENERAL': {
         general_error_content: 'Something went wrong. Please try again later.',
