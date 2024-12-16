@@ -15,7 +15,6 @@ const courseSchema = new mongoose.Schema({
     },
     isPublished:{
         type:String,
-        default:"unpublished"
     },
     created_at: {
         type: String
