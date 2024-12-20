@@ -106,6 +106,7 @@ exports.Register = async (req, res, next) => {
             user_type: user.user_type,
             social_media: user.social_media,
             phone: user.phone,
+            qualification:user.qualification,
             course_name:user.course_name,
             privacy_policy:user.privacy_policy,
             term_and_condition:user.term_and_condition,
