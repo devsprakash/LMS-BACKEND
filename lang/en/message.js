@@ -72,8 +72,10 @@ module.exports = {
         invalid_course_name:'this course name is not invalid',
         user_list:'successfully get the user list',
         delete_users:'successfully delete users',
-        user_status_updated:'status updated successfully'
-
+        user_status_updated:'status updated successfully',
+        registartion_successfully:'user successfully registration completed',
+        seat_booking_list:'successfully get all the seatbooking list',
+        seat_booking_data_not_found:'booking data found'
     },
     'ADMIN':{
          user: 'successfully add user',
@@ -93,6 +95,11 @@ module.exports = {
         course_delete_successfully :'course data delete successfully',
         course_status_updated:'course status updated successfully',
         course_image_updated: 'successfully updated the course image'
+    },
+    'BATCH':{
+       add_batch:'batch add successfully',
+       batch_not_found:'batch data not found',
+       get_batch_list:'successfully get the batch list'
     },
     'GENERAL': {
         general_error_content: 'Something went wrong. Please try again later.',

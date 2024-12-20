@@ -37,18 +37,11 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: 1
     },
-    gender: {
-        type: String,
-        default: null
-    },
     social_media: {
         type: String
     },
     password:{
         type:String
-    },
-    city: {
-        type: String,
     },
     device_token: {
         type: String,

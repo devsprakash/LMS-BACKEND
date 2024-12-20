@@ -11,9 +11,11 @@ const usersRouter = require('./v1/routes/users');
 const indexAdminRouter = require('./admin/routes/index');
 const adminRouter = require('./admin/routes/admin');
 const UserAdminRouter = require('./admin/routes/user');
-const coursesRouter = require("./admin/routes/courses")
+const coursesRouter = require("./admin/routes/courses");
+const batchRouter = require('./admin/routes/batch');
+const seatBookingRouter = require('./v1/routes/seat_booking')
 const crypto = require('crypto');
-const fs = require('fs')
+const fs = require('fs');
 
 const app = express();
 app.use(cors());
@@ -106,6 +108,8 @@ app.use('/v1/', indexAdminRouter);
 app.use('/admin', adminRouter);
 app.use('/admin/users', UserAdminRouter);
 app.use('/admin/course' , coursesRouter);
+app.use('/admin/batch' , batchRouter);
+app.use('/user/book' , seatBookingRouter);
 
 
 // catch 404 and forward to error handler
