@@ -1,30 +1,8 @@
 
-const { body, validationResult} = require('express-validator');
+const { body, validationResult , query} = require('express-validator');
 
 
 exports.seat_booking_validator = [
-
-  body('name')
-    .not()
-    .isEmpty().withMessage('name is required')
-    .isString().withMessage('name must be a string')
-    .trim(),
-
-  body('email')
-    .not()
-    .isEmpty()
-    .withMessage('email is required')
-    .isString().withMessage('email mus be a string')
-    .isEmail().withMessage('please enter a valid email')
-    .trim(),
-
-  body('phone')
-    .not()
-    .isEmpty().withMessage('phone is required')
-    .isString().withMessage('phone must be a string')
-    .isMobilePhone().withMessage('please enter a valid phone number')
-    .isLength({ min: 10, max: 12 }).withMessage('phone must be at least 10 characters')
-    .trim(),
 
     body('course_name')
     .not()
@@ -37,17 +15,18 @@ exports.seat_booking_validator = [
     .isEmpty().withMessage('amount is required')
     .isNumeric().withMessage('amount must be a number')
     .trim(),
-
-    body('payment_status')
-    .not()
-    .isEmpty().withMessage('payment_status is required')
-    .isString().withMessage('payment_status must be a String')
-    .trim(),
-
 ];
 
 
+exports.delete_booking_validator = [
 
+  query('bookingId')
+  .not()
+  .isEmpty().withMessage('bookingId is required')
+  .isString().withMessage('bookingId must be a string')
+  .isMongoId().withMessage('please enter a valid bookingId')
+  .trim(),
+]
 
 exports.ValidatorResult = (req, res, next) => {
 

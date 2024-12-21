@@ -75,7 +75,8 @@ module.exports = {
         user_status_updated:'status updated successfully',
         registartion_successfully:'user successfully registration completed',
         seat_booking_list:'successfully get all the seatbooking list',
-        seat_booking_data_not_found:'booking data found'
+        seat_booking_data_not_found:'booking data found',
+        booking_data_delete:'successfully delete the booking data'
     },
     'ADMIN':{
          user: 'successfully add user',

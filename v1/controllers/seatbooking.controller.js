@@ -21,11 +21,7 @@ exports.seatBooking = async (req, res, next) => {
 
         const reqBody = req.body;
         const userId = req.user._id;
-        const checkMail = await isValid(reqBody.email);
-
-        if (!checkMail)
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
-
+    
         const loginedIn = await User.findOne({ _id: userId });
 
         if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
@@ -67,9 +63,6 @@ exports.seatBooking = async (req, res, next) => {
         const responseData = {
             _id: user._id,
             user:user.user,
-            name: user.name,
-            email: user.email,
-            phone: user.phone,
             course_name:user.course_name,
             amount:user.amount,
             payment_status:user.payment_status,
@@ -86,8 +79,7 @@ exports.seatBooking = async (req, res, next) => {
 };
 
 
-
-exports.BatchList = async (req, res, next) => {
+exports.SeatBookingList = async (req, res, next) => {
 
     try {
 
@@ -101,36 +93,69 @@ exports.BatchList = async (req, res, next) => {
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
 
-        const [booking, totalBookings] = await Promise.all([
-            booking.find().skip(skip).limit(limit),   
-            booking.countDocuments()
-        ]);
 
-        if (!booking || booking.length === 0) 
+        const bookings = await seatBooking.find().skip(skip).limit(limit).populate('user' , '_id full_name email phone')
+        const totalBookings = await  seatBooking.countDocuments();
+
+        if (!bookings || bookings.length === 0) 
             return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.seat_booking_data_not_found', [], req.headers.lang);
         
         const responseData = {
             totalBookings,
             currentPage: page,
             totalPages: Math.ceil(totalBookings / limit),
-            bookings: booking.map(batch => ({
-                _id: batch._id,
-                batch_name: batch.batch_name,
-                course_name: batch.course_name,
-                duration: batch.duration,
-                start_date: batch.start_date,
-                end_date: batch.end_date,
-                batch_manager: batch.batch_manager,
-                instructor_name: batch.instructor_name,
-                created_at: batch.created_at,
-                updated_at: batch.updated_at
+            bookings: bookings.map(book => ({
+                _id: book._id,
+                user: book.user,
+                course_name:book.course_name,
+                amount:book.amount,
+                payment_status:book.payment_status,
+                created_at: book.created_at,
+                updated_at: book.updated_at
             }))
         };
 
         return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.seat_booking_list', responseData, req.headers.lang);
 
     } catch (err) {
-        console.log("err(BatchList)........", err);
+        console.log("err(SeatBookingList)........", err);
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang);
     }
 };
+
+
+
+exports.deleteBooking = async (req, res, next) => {
+
+    try {
+
+        const { bookingId } = req.query;
+        const adminId = req.superAdmin._id;
+        const user = await Admin.findById(adminId);
+
+        if (!user)
+            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
+
+        const book = await seatBooking.findByIdAndDelete(bookingId);
+
+        if (!book) 
+            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.seat_booking_data_not_found', {}, req.headers.lang);
+
+        const responseData = {
+            _id: book._id,
+            user: book.user,
+            course_name:book.course_name,
+            amount:book.amount,
+            payment_status:book.payment_status,
+            created_at: book.created_at,
+            updated_at: book.updated_at
+        };
+
+        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.booking_data_delete', responseData, req.headers.lang);
+
+    } catch (err) {
+        console.log("err(deleteBooking)........", err)
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
+    }
+};
+
