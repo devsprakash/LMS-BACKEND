@@ -27,19 +27,6 @@ exports.user_validator = [
     .isMobilePhone().withMessage('please enter a valid phone number')
     .isLength({ min: 10, max: 12 }).withMessage('phone must be at least 10 characters')
     .trim(),
-
-    body('term_and_condition')
-    .not()
-    .isEmpty().withMessage('term_and_condition is required')
-    .isBoolean().withMessage('term_and_condition must be a boolean')
-    .trim(),
-
-  body('privacy_policy')
-    .not()
-    .isEmpty().withMessage('privacy_policy is required')
-    .isBoolean().withMessage('privacy_policy must be a boolean')
-    .trim(),
-
 ];
 
 

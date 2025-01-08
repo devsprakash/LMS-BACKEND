@@ -66,12 +66,6 @@ const userSchema = new mongoose.Schema({
     tempTokens: {
         type: String
     },
-    term_and_condition:{
-        type:Boolean
-    },
-    privacy_policy:{
-        type:Boolean
-    },
     otp:{
         type:Number
     },
