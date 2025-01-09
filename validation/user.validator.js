@@ -376,13 +376,14 @@ exports.verify_email_validator = [
 
 exports.reset_password_validator = [
 
-  body('token')
-  .not()
-  .isEmpty()
-  .withMessage('token is required')
-  .isString().withMessage('token mus be a string')
-  .trim(),
-
+  body('email')
+    .not()
+    .isEmpty()
+    .withMessage('email is required')
+    .isString().withMessage('email mus be a string')
+    .isEmail().withMessage('please enter a valid email')
+    .trim(),
+    
   body('new_password')
     .not()
     .isEmpty()

@@ -17,7 +17,6 @@ router.post('/post_blog' , upload.single('blog_image') , post_blog_validation, V
 router.post('/booking_seat' , booking_validator , ValidatorResult , authenticate , Booking)
 router.post('/hiring_requirements' , upload.single('additional_file') , hiring_validator , ValidatorResult , authenticate,  HiringRequirements)
 router.post('/contact_us' , contact_us_validator , ValidatorResult , contact_us)
-router.post('/forgot_password' , forgot_password_validator , ValidatorResult , forgot_password );
 router.post('/reset_password' , reset_password_validator , ValidatorResult , reset_password )
 router.post('/verify_email' , verify_email_validator , ValidatorResult , verify_email);
 router.post('/refer_and_earn' , refer_and_earn_validator , ValidatorResult , authenticate , refer_and_Earn)

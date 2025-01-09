@@ -51,10 +51,6 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: null
     },
-    reset_password_token:{
-        type: String,
-        default:null
-    },
     tokens: {
         type: String,
         default: null
@@ -65,9 +61,6 @@ const userSchema = new mongoose.Schema({
     },
     tempTokens: {
         type: String
-    },
-    otp:{
-        type:Number
     },
     created_at: {
         type: String

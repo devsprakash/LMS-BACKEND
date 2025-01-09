@@ -94,9 +94,6 @@ exports.Register = async (req, res, next) => {
             console.error('Error:', error.response ? error.response.data : error.message);
         });
 
-        const otp = generateFourDigitOTP();
-
-        reqBody.otp = otp;
         const user = await Usersave(reqBody);
         const responseData = {
             _id: user._id,
@@ -111,12 +108,6 @@ exports.Register = async (req, res, next) => {
             created_at: user.created_at,
             updated_at: user.updated_at
         };
-
-        OtpSendMail(otp , user.email).then(() => {
-            console.log('successfully send the otp.............')
-        }).catch((err) => {
-            console.log('otp not send.........', err)
-        })
 
         sendMail(user.email, user.full_name , passwords).then(() => {
             console.log('successfully send the email.............')
@@ -300,51 +291,17 @@ exports.talk_to_expert = async (req, res, next) => {
 
 
 
-exports.forgot_password = async (req, res, next) => {
-
-    try {
-
-        const reqBody = req.body;
-        const checkMail = await isValid(reqBody.email);
-
-        if (!checkMail)
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
-        
-        const user = await User.findOne({ email: reqBody.email });
-      
-        if(!user || user === null)
-            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
-        
-        const token = jwt.sign(reqBody.email , JWT_SECRET);
-        user.reset_password_token = token;
-        await user.save();
-
-        const responseData = {
-            _id: user._id,
-            email: user.email,
-            reset_password_token:token
-        }
-
-        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.forgot_password', responseData, req.headers.lang);
-
-    } catch (err) {
-        console.log("err(forgot_password)........", err)
-        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
-    }
-}
-
-
 exports.reset_password = async (req, res, next) => {
 
     try {
 
         const reqBody = req.body;
-        const { token , new_password , confirm_password } = reqBody;
+        const { email , new_password , confirm_password } = reqBody;
     
         if(new_password !== confirm_password)
             return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.password_mismatch', {}, req.headers.lang);
         
-        const user = await User.findOne({ reset_password_token: token });
+        const user = await User.findOne({ email });
       
         if(!user || user === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.invalid_token', {}, req.headers.lang);
