@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        .invoice-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid #3b43d6;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .header img {
+            height: 80px;
+        }
+
+        .header h3 {
+            margin: 0;
+            text-align: left;
+        }
+
+        .header p {
+            margin: 0;
+            font-size: 0.9em;
+            color: #555;
+            text-align: left;
+        }
+
+        .invoice-title {
+            text-align: center;
+            color: #3715cf;
+            margin-bottom: 20px;
+        }
+
+        .invoice-title h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+
+        .invoice-details {
+            margin-bottom: 20px;
+            color: #2e2e2e;
+        }
+
+        .invoice-details p {
+            margin: 10px 0;
+            color: #2e2e2e;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            color: #2e2e2e;
+        }
+
+        table th, table td {
+            text-align: left;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #f4f4f4;
+        }
+
+        .total {
+            text-align: right;
+            font-size: 1em;
+            font-weight: bold;
+            color: #181717;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 0.9em;
+            color: #636262;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header img {
+                margin-bottom: 10px;
+            }
+
+            .header .company-info {
+                text-align: center;
+            }
+
+            table th, table td {
+                font-size: 0.9em;
+                padding: 8px;
+            }
+
+            .invoice-title h1 {
+                font-size: 1.8em;
+            }
+
+            .invoice-details p {
+                font-size: 0.9em;
+            }
+
+            .total {
+                font-size: 1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header img {
+                height: 60px;
+            }
+
+            .invoice-container {
+                padding: 15px;
+            }
+
+            .invoice-title h1 {
+                font-size: 1.5em;
+            }
+
+            table th, table td {
+                font-size: 0.8em;
+                padding: 6px;
+            }
+
+            .invoice-details p {
+                font-size: 0.8em;
+            }
+
+            .total {
+                font-size: 0.9em;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <div class="header">
+            <div>
+                <img src="https://atiitglobal.com/asset/logo/Logo_ATIIT.avif?width=800" alt="Company Logo">
+                <p>Plot number - 385 2nd floor, TBS work space</p>
+                <p>Sishu vihar, Patia, Bhubaneswar, India, Odisha</p>
+                <p>Email: connect@atiitglobal.com</p>
+                <p>Phone: 72909 38999</p>
+            </div>
+        </div>
+        <div class="invoice-title">
+            <h1>INVOICE</h1>
+        </div>
+        <div class="invoice-details">
+            <p><strong>Invoice Date:</strong> {{date}}</p>
+            <p><strong>Invoice Number:</strong> {{invoiceNumber}}</p>
+            <p><strong>Registrant Name:</strong> {{name}}</p>
+            <p><strong>Email:</strong> {{email}}</p>
+            <p><strong>Phone:</strong> {{phone}}</p>
+            <p><strong>Course Name:</strong> {{course_name}}</p>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Description</th>
+                    <th>Unit Cost</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Course Registration Fees</td>
+                    <td>₹5000</td>
+                    <td>1</td>
+                    <td>₹5000</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Total Course Price</td>
+                    <td>₹129000</td>
+                    <td>1</td>
+                    <td>₹129000</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>GST (18%)</td>
+                    <td>₹23220</td>
+                    <td>1</td>
+                    <td>₹23220</td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="total">Total Course Price (including GST): ₹152220</p>
+        <p class="total">Less Registration Fee: ₹5000</p>
+        <p class="total">Balance Due: ₹147220</p>
+        <div class="footer">
+            <p>Thank you for registering with ATIIT Global!</p>
+            <p>For queries, contact connect@atiitglobal.com</p>
+        </div>
+    </div>
+</body>
+</html>

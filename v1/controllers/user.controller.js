@@ -27,7 +27,7 @@ const {
 const {
     isValid
 } = require('../../services/blackListMail')
-const { sendMail, BookingSendMail, fetchZohoToken , OtpSendMail , generateFourDigitOTP } = require('../../services/email.services')
+const { sendMail, BookingSendMail, fetchZohoToken , OtpSendMail , generateFourDigitOTP , registrationInvoice , generateInvoiceNumber } = require('../../services/email.services')
 const axios = require('axios');
 const DocumentUpload = require('../../models/documment_upload');
 const generator=require('random-password');
@@ -968,10 +968,22 @@ exports.application_fees = async (req, res, next) => {
             email:users.email,
             phone:users.phone,
             amount: fees.amount,
+            course_name:fees.course_name,
             order_id: fees.order_id,
             created_at: fees.created_at,
             updated_at: fees.updated_at
         };
+      
+        let invoiceNumber = generateInvoiceNumber();
+        const currentDate = new Date();
+        const option = { day: '2-digit', month: 'long', year: 'numeric' };
+        const formattedDate = currentDate.toLocaleDateString('en-US', option);
+
+        registrationInvoice(users.full_name, users.email , users.phone , fees.course_name , invoiceNumber , formattedDate).then(() => {
+            console.log('successfully send the email.............')
+        }).catch((err) => {
+            console.log('email not send.........', err);
+        })
 
         return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.application_details_successfully', responseData, req.headers.lang);
 

@@ -265,6 +265,59 @@ exports.NewUserWelcomeEmail = async (user, email, password) => {
 };
 
 
+/*================================== registration invoice email template ==============================*/
+
+
+
+exports.registrationInvoice = async (name, email,phone ,courseName ,invoiceNumber  , date) => {
+
+    try {
+    
+        let transporter = nodemailer.createTransport({
+            host: 'smtp.mailer91.com',  // SMTP host
+            port: 587,                  // SMTP port
+            secure: false,              // Use SSL if true
+            auth: {
+                user: 'emailer@atiitglobal.com', // your SMTP username
+                pass: 'nop5PDPOLYqyYKHk',        // your SMTP password
+            },
+        });
+
+        const templatePath = path.join(__dirname, 'registration-fees.html');
+
+        if (!fs.existsSync(templatePath)) {
+            throw new Error(`Template file not found: ${templatePath}`);
+        }
+
+        const source = fs.readFileSync(templatePath, 'utf-8');
+        const template = handlebars.compile(source);
+
+        const replacements = {
+            name: name,
+            email:email,
+            phone:phone,
+            course_name:courseName,
+            invoiceNumber:invoiceNumber,
+            date: date,
+        };
+        const htmlToSend = template(replacements);
+        let mailOptions = {
+            from: '<connect@atiitglobal.com>',
+            to: email, 
+            subject: "Your Registration Fees Invoice is Ready, Admin!",
+            html: htmlToSend,
+        };
+
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully:', info.response);
+        return info;
+
+    } catch (error) {
+        console.error('Error sending email:', error.message || error);
+        throw error;
+    }
+};
+
 
 
 // Function to fetch the Zoho token
@@ -287,3 +340,12 @@ exports.generateFourDigitOTP = () => {
 }
 
 
+exports.generateInvoiceNumber  = () => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let invoiceNumber = '';
+    for (let i = 0; i < 10; i++) {
+      invoiceNumber += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return invoiceNumber;
+  }
+  
