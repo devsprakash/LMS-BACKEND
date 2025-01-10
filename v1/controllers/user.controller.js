@@ -958,11 +958,15 @@ exports.application_fees = async (req, res, next) => {
         reqBody.created_at = await dateFormat.set_current_timestamp();
         reqBody.updated_at = await dateFormat.set_current_timestamp();
 
+        const users = await User.findById(userId)
         const fees = await ApplicationFees.create(reqBody);
 
         const responseData = {
             _id: fees._id,
             user: userId,
+            name:users.full_name,
+            email:users.email,
+            phone:users.phone,
             amount: fees.amount,
             order_id: fees.order_id,
             created_at: fees.created_at,
