@@ -9,10 +9,7 @@ const ApplicationDeatilsSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users', 
     },
-    first_name: {
-        type: String
-    },
-    last_name: {
+    name: {
         type: String
     },
     email: {
@@ -21,17 +18,41 @@ const ApplicationDeatilsSchema = new mongoose.Schema({
     phone: {
         type: String
     },
+    state:{
+        type:String
+    },
+    location:{
+        type:String
+    },
+    city:{
+        type:String
+    },
     gender:{
         type:String
     },
     date_of_birth:{
         type:String
     },
-    education:{
+    highest_qualification:{
         type:String
     },
-    experience:{
+    specialization:{
         type:Number
+    },
+    institute_name:{
+        type:String
+    },
+    passing_year:{
+        type:String
+    },
+    working_professional:{
+        type:String
+    },
+    work_experience:{
+        type:Number
+    },
+    company_name:{
+        type:String
     },
     created_at: {
         type: String

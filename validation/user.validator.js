@@ -512,25 +512,20 @@ exports.resend_otp_validator = [
 ]
 
 
+
 exports.application_deatils_validator = [
 
-  body('first_name')
+  body('name')
     .not()
-    .isEmpty().withMessage('first_name is required')
-    .isString().withMessage('first_name must be a string')
-    .trim(),
-
-    body('last_name')
-    .not()
-    .isEmpty().withMessage('last_name is required')
-    .isString().withMessage('last_name must be a string')
+    .isEmpty().withMessage('name is required')
+    .isString().withMessage('name must be a string')
     .trim(),
 
   body('email')
     .not()
     .isEmpty()
     .withMessage('email is required')
-    .isString().withMessage('email mus be a string')
+    .isString().withMessage('email must be a string')
     .isEmail().withMessage('please enter a valid email')
     .trim(),
 
@@ -554,19 +549,55 @@ exports.application_deatils_validator = [
     .isString().withMessage('date_of_birth must be a string')
     .trim(),
 
-  body('education')
+  body('state')
     .not()
-    .isEmpty().withMessage('education is required')
-    .isString().withMessage('education must be a string')
+    .isEmpty().withMessage('state is required')
+    .isString().withMessage('state must be a string')
     .trim(),
 
-    body('experience')
+  body('location')
     .not()
-    .isEmpty().withMessage('experience is required')
-    .isNumeric().withMessage('experience must be a number')
+    .isEmpty().withMessage('location is required')
+    .isString().withMessage('location must be a string')
     .trim(),
 
+  body('city')
+    .not()
+    .isEmpty().withMessage('city is required')
+    .isString().withMessage('city must be a string')
+    .trim(),
+
+  body('highest_qualification')
+    .not()
+    .isEmpty().withMessage('highest_qualification is required')
+    .isString().withMessage('highest_qualification must be a string')
+    .trim(),
+
+  body('specialization')
+    .not()
+    .isEmpty().withMessage('specialization is required')
+    .isNumeric().withMessage('specialization must be a number')
+    .trim(),
+
+  body('institute_name')
+    .not()
+    .isEmpty().withMessage('institute_name is required')
+    .isString().withMessage('institute_name must be a string')
+    .trim(),
+
+  body('passing_year')
+    .not()
+    .isEmpty().withMessage('passing_year is required')
+    .isString().withMessage('passing_year must be a string')
+    .trim(),
+
+  body('working_professional')
+    .not()
+    .isEmpty().withMessage('working_professional is required')
+    .isString().withMessage('working_professional must be a string')
+    .trim(),
 ];
+
 
 
 exports.application_fees_validator = [
@@ -576,6 +607,14 @@ exports.application_fees_validator = [
     .isEmpty()
     .withMessage('amount is required')
     .isNumeric().withMessage('amount mus be a string')
+    .trim(),
+
+    body('email')
+    .not()
+    .isEmpty()
+    .withMessage('email is required')
+    .isString().withMessage('email mus be a string')
+    .isEmail().withMessage('please enter a valid email')
     .trim(),
 ];
 

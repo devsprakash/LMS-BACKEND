@@ -16,6 +16,9 @@ const ApplicationFeesSchema = new mongoose.Schema({
     course_name:{
         type:String
     },
+    email:{
+        type:String,
+    },
     order_id:{
         type:String
     },

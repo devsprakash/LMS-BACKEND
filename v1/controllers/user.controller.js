@@ -892,19 +892,27 @@ exports.application_details = async (req, res, next) => {
 
         const responseData = {
             _id: enroll._id,
-            user:userId,
-            first_name:enroll.first_name,
-            last_name: enroll.last_name,
+            user: userId, 
+            name: enroll.name, 
             email: enroll.email,
             phone: enroll.phone,
-            gender:enroll.gender,
+            state: enroll.state, 
+            location: enroll.location, 
+            city: enroll.city, 
+            gender: enroll.gender,
             date_of_birth: enroll.date_of_birth,
-            education:enroll.education,
-            experience:enroll.experience,
+            highest_qualification: enroll.highest_qualification, 
+            specialization: enroll.specialization, 
+            institute_name: enroll.institute_name, 
+            passing_year: enroll.passing_year, 
+            working_professional: enroll.working_professional, 
+            work_experience: enroll.work_experience, 
+            company_name: enroll.company_name, 
             created_at: enroll.created_at,
-            updated_at: enroll.updated_at
+            updated_at: enroll.updated_at,
+            deleted_at: enroll.deleted_at || null
         };
-
+        
         return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.application_details_successfully', responseData, req.headers.lang);
 
     } catch (err) {
@@ -979,7 +987,7 @@ exports.application_fees = async (req, res, next) => {
         const option = { day: '2-digit', month: 'long', year: 'numeric' };
         const formattedDate = currentDate.toLocaleDateString('en-US', option);
 
-        registrationInvoice(users.full_name, users.email , users.phone , fees.course_name , invoiceNumber , formattedDate).then(() => {
+        registrationInvoice(users.full_name, fees.email , users.phone , fees.course_name , invoiceNumber , formattedDate).then(() => {
             console.log('successfully send the email.............')
         }).catch((err) => {
             console.log('email not send.........', err);
