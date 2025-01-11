@@ -37,7 +37,7 @@ const ApplicationDeatilsSchema = new mongoose.Schema({
         type:String
     },
     specialization:{
-        type:Number
+        type:String
     },
     institute_name:{
         type:String
