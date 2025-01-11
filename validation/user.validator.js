@@ -576,7 +576,7 @@ exports.application_deatils_validator = [
   body('specialization')
     .not()
     .isEmpty().withMessage('specialization is required')
-    .isNumeric().withMessage('specialization must be a number')
+    .isString().withMessage('specialization must be a string')
     .trim(),
 
   body('institute_name')
