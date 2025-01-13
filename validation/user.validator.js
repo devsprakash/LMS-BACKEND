@@ -631,6 +631,17 @@ exports.order_summary_validator = [
 ];
 
 
+exports.application_fees_details_validator = [
+
+  body('course_name')
+  .not()
+  .isEmpty().withMessage('course_name is required')
+  .isString().withMessage('course_name must be a string')
+  .trim(),
+
+]
+
+
 
 exports.ValidatorResult = (req, res, next) => {
 
