@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { user_validator, login_validator , order_summary_validator , application_deatils_validator , application_fees_validator , apply_now_validator , resend_otp_validator , otp_validator , brochure_download_validator, call_back_validator , verify_email_validator , reset_password_validator, forgot_password_validator , contact_us_validator , talk_to_expert_validator, hiring_validator, booking_validator , post_blog_validation, post_story_validation, ValidatorResult, refer_and_earn_validator } = require('../../validation/user.validator')
-const { Register , talk_to_expert , post_your_story, post_blog,  Booking, HiringRequirements, login, contact_us, forgot_password, reset_password, verify_email, refer_and_Earn, arrange_call_back, apply_now, brochure_download, verify_otp, brochure_verify_otp, resend_otp, brchure_resend_otp, application_details, application_fees, upload_documents, order_summary, create_promocode, apply_promocode } = require('../controllers/user.controller')
+const { user_validator, login_validator , application_fees_details_validator , application_deatils_validator , application_fees_validator , apply_now_validator , resend_otp_validator , otp_validator , brochure_download_validator, call_back_validator , verify_email_validator , reset_password_validator, forgot_password_validator , contact_us_validator , talk_to_expert_validator, hiring_validator, booking_validator , post_blog_validation, post_story_validation, ValidatorResult, refer_and_earn_validator } = require('../../validation/user.validator')
+const { Register , talk_to_expert , post_your_story, post_blog,  Booking, HiringRequirements, login, contact_us, forgot_password, reset_password, verify_email, refer_and_Earn, arrange_call_back, apply_now, brochure_download, verify_otp, brochure_verify_otp, resend_otp, brchure_resend_otp, application_details, application_fees, upload_documents, order_summary, create_promocode, apply_promocode, get_application_fees_details } = require('../controllers/user.controller')
 const upload  = require('../../middleware/multer');
 const ResumeUpload  = require('../../middleware/resume_file');
 const authenticate = require('../../middleware/authenticate')
@@ -30,8 +30,7 @@ router.post('/application-details' , application_deatils_validator , ValidatorRe
 router.post('/application-fees' , application_fees_validator , ValidatorResult , authenticate , application_fees)
 router.post('/order_summary' , authenticate , order_summary);
 router.post('/generate_promocode' ,  authenticate , create_promocode);
-router.get('/applied_promocode', authenticate , apply_promocode)
-
+router.get('/applied_promocode', authenticate , apply_promocode);
 
 
 

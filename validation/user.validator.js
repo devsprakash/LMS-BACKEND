@@ -1,5 +1,5 @@
 
-const { body, validationResult } = require('express-validator');
+const { body, validationResult , query } = require('express-validator');
 
 
 const valid_gender = ['male', 'female', 'other'];
@@ -629,7 +629,6 @@ exports.order_summary_validator = [
   .trim(),
 
 ];
-
 
 
 

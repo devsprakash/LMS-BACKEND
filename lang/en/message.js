@@ -82,6 +82,7 @@ module.exports = {
         promo_code_expired:'Promo code has expired',
         payment_complete:'Your payment has been successfully',
         apply_promo_code:'successfully applied promocode',
+        registration_fees_completed:'this course registration proccess already completed'
     },
     'ADMIN':{
          user: 'successfully add user',

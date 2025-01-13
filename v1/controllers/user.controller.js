@@ -937,6 +937,13 @@ exports.application_fees = async (req, res, next) => {
         if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
 
+
+        const existingCourse = await ApplicationFees.findOne({ course_name: reqBody.course_name , user : userId});
+
+        if(existingCourse)
+            return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.registration_fees_completed', existingCourse, req.headers.lang);
+
+
         const options = {
             method: 'POST',
             url: 'https://api.razorpay.com/v1/orders',
@@ -1002,7 +1009,6 @@ exports.application_fees = async (req, res, next) => {
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang);
     }
 };
-
 
 
 exports.order_summary = async (req, res, next) => {
