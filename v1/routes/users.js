@@ -28,7 +28,7 @@ router.post('/brochure_verify_otp' , otp_validator , ValidatorResult , brochure_
 router.post('/brochure_resend_otp' , resend_otp_validator , ValidatorResult , brchure_resend_otp);
 router.post('/application-details' , application_deatils_validator , ValidatorResult , authenticate , application_details  )
 router.post('/application-fees' , application_fees_validator , ValidatorResult , authenticate , application_fees)
-router.get('/order_summary' , authenticate , order_summary);
+router.post('/order_summary' , authenticate , order_summary);
 router.post('/generate_promocode' ,  authenticate , create_promocode);
 router.get('/applied_promocode', authenticate , apply_promocode)
 

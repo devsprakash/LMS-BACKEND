@@ -1011,18 +1011,23 @@ try {
 
     const userId = req.user._id;
     const reqBody = req.body;
-    const { promo_code } = req.query;
-    console.log(promo_code)
 
     const loginedIn = await User.findOne({ _id: userId });
 
     if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
         return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
    
-    const promo = await promoCode.findOne({ promo_code: promo_code, isActive: true });
+    let totalAmount = reqBody.total_amount; 
+    let discountAmount = 0;
 
-    if (!promo) 
-        return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.promo_code_not_found', {} , req.headers.lang);
+    if(reqBody.promo_code){
+        const promo = await promoCode.findOne({ promo_code: reqBody.promo_code, isActive: true });
+        if (!promo) 
+            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.promo_code_not_found', {} , req.headers.lang);
+
+        discountAmount = promo.discount_amount || 0;
+        totalAmount = totalAmount - discountAmount; // Ensure total amount is not negative
+    }
 
     const options = {
         method: 'POST',
@@ -1035,7 +1040,7 @@ try {
             'Content-Type': 'application/json'
         },
         data: {
-            amount: promo.total_amount * 100, // Amount in paise (10000 paise = ₹100.00)
+            amount: totalAmount * 100, // Amount in paise (10000 paise = ₹100.00)
             currency: 'INR'
         }
     };
@@ -1051,7 +1056,7 @@ try {
 
     reqBody.user = userId;
     reqBody.order_id = response.data.id;
-    reqBody.total_amount = promo.total_amount;
+    reqBody.total_amount = totalAmount;
     reqBody.created_at = await dateFormat.set_current_timestamp();
     reqBody.updated_at = await dateFormat.set_current_timestamp();
 
