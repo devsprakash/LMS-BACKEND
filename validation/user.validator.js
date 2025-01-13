@@ -619,22 +619,17 @@ exports.application_fees_validator = [
 ];
 
 
-exports.document_upload_validator = [
+exports.order_summary_validator = [
 
-  body('amount')
-    .not()
-    .isEmpty()
-    .withMessage('amount is required')
-    .isNumeric().withMessage('amount mus be a string')
-    .trim(),
-
-    body('course_name')
-    .not()
-    .isEmpty().withMessage('course_name is required')
-    .isString().withMessage('course_name must be a string')
-    .trim(),
+  body('total_amount')
+  .not()
+  .isEmpty()
+  .withMessage('amount is required')
+  .isNumeric().withMessage('amount mus be a string')
+  .trim(),
 
 ];
+
 
 
 

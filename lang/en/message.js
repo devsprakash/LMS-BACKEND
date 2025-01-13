@@ -76,7 +76,12 @@ module.exports = {
         registartion_successfully:'user successfully registration completed',
         seat_booking_list:'successfully get all the seatbooking list',
         seat_booking_data_not_found:'booking data found',
-        booking_data_delete:'successfully delete the booking data'
+        booking_data_delete:'successfully delete the booking data',
+        create_promo_code:"successfully create a new promocode",
+        promo_code_not_found:'promo code not found',
+        promo_code_expired:'Promo code has expired',
+        payment_complete:'Your payment has been successfully',
+        apply_promo_code:'successfully applied promocode',
     },
     'ADMIN':{
          user: 'successfully add user',

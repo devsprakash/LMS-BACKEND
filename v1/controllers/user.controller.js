@@ -16,6 +16,7 @@ const Brochure = require('../../models/brochure_download');
 const Contact = require('../../models/contact_us');
 const ReferAndEarn = require('../../models/refer-and-earn');
 const Callback = require('../../models/arrang_call_back');
+const promoCode = require('../../models/promo_code');
 const Apply = require('../../models/Apply_here');
 const {
     Usersave,
@@ -27,9 +28,9 @@ const {
 const {
     isValid
 } = require('../../services/blackListMail')
-const { sendMail, BookingSendMail, fetchZohoToken , OtpSendMail , generateFourDigitOTP , registrationInvoice , generateInvoiceNumber } = require('../../services/email.services')
+const { sendMail, BookingSendMail, fetchZohoToken , OtpSendMail , generateFourDigitOTP , finalInvoice , registrationInvoice , generateInvoiceNumber } = require('../../services/email.services')
 const axios = require('axios');
-const DocumentUpload = require('../../models/documment_upload');
+const OrderSummary = require('../../models/final_payment');
 const generator=require('random-password');
 
 
@@ -51,7 +52,8 @@ exports.Register = async (req, res, next) => {
         if (existing_email)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.exist_email', {}, req.headers.lang);
         
-        let passwords = generator(10);   
+        let passwords = generator(10); 
+        console.log(passwords)  
         reqBody.password = await bcrypt.hash(passwords, 10);
         reqBody.created_at = await dateFormat.set_current_timestamp();
         reqBody.updated_at = await dateFormat.set_current_timestamp();
@@ -1003,76 +1005,175 @@ exports.application_fees = async (req, res, next) => {
 
 
 
-exports.upload_documents = async (req, res, next) => {
+exports.order_summary = async (req, res, next) => {
 
 try {
 
-    const reqBody = req.body;
     const userId = req.user._id;
+    const reqBody = req.body;
+    const { promo_code } = req.query;
+    console.log(promo_code)
 
-    // Validate if required files are uploaded
-    if (!req.files || !req.files['adharcard'] || !req.files['tenth_certificate'] || !req.files['plus_two_certificate']) {
-        return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.no_file_uploaded', {}, req.headers.lang);
-    }
+    const loginedIn = await User.findOne({ _id: userId });
 
-    // Assign file paths to reqBody
-    reqBody.adharcard = req.files['adharcard'] ? `${BASEURL}/uploads/${req.files['adharcard'][0].filename}` : null;
-    reqBody.tenth_certificate = req.files['tenth_certificate'] ? `${BASEURL}/uploads/${req.files['tenth_certificate'][0].filename}` : null;
-    reqBody.plus_two_certificate = req.files['plus_two_certificate'] ? `${BASEURL}/uploads/${req.files['plus_two_certificate'][0].filename}` : null;
+    if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
+        return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
+   
+    const promo = await promoCode.findOne({ promo_code: promo_code, isActive: true });
 
-    // Razorpay API setup to create an order
-    const razorpayOptions = {
+    if (!promo) 
+        return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.promo_code_not_found', {} , req.headers.lang);
+
+    const options = {
         method: 'POST',
         url: 'https://api.razorpay.com/v1/orders',
         auth: {
-            username: 'rzp_live_6pmqjNtXITyYIv',
+            username: 'rzp_live_6pmqjNtXITyYIv',  
             password: 'x4S4xdEYSxgaNk4Bu5y6JrmX' 
         },
         headers: {
             'Content-Type': 'application/json'
         },
         data: {
-            amount: reqBody.amount * 100, 
+            amount: promo.total_amount * 100, // Amount in paise (10000 paise = ₹100.00)
             currency: 'INR'
         }
     };
 
-    let razorpayResponse;
+    let response;
+
     try {
-        razorpayResponse = await axios(razorpayOptions);
-        console.log('Order created successfully:', razorpayResponse.data);
+        response = await axios(options);
+        console.log('Order created successfully:', response.data);
     } catch (error) {
-        console.error('Error creating Razorpay order:', error.response ? error.response.data : error.message);
-        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'USER.order_creation_failed', error.message, req.headers.lang);
+        console.error('Error creating order:', error.response ? error.response.data : error.message);
     }
 
-    reqBody.order_id = razorpayResponse.data.id;
-    reqBody.user = userId
+    reqBody.user = userId;
+    reqBody.order_id = response.data.id;
+    reqBody.total_amount = promo.total_amount;
     reqBody.created_at = await dateFormat.set_current_timestamp();
     reqBody.updated_at = await dateFormat.set_current_timestamp();
 
-    const document = await DocumentUpload.create(reqBody);
+    const document = await OrderSummary.create(reqBody);
+    const users = await User.findById(userId);
 
     const responseData = {
         _id: document._id,
         user: document.user,
-        adharcard: document.adharcard,
-        application_fee: document.application_fee,
-        amount: document.amount,
-        course_name:document.course_name,
-        order_id: document.order_id,
-        tenth_certificate: document.tenth_certificate,
-        plus_two_certificate: document.plus_two_certificate,
+        total_amount: document.total_amount,
+        payment_status: document.payment_status,
         created_at: document.created_at,
-        updated_at: document.updated_at
+        updated_at: document.updated_at,
+        deleted_at: document.deleted_at,
     };
 
-    return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.documents_successfully', responseData, req.headers.lang);
+    let invoiceNumber = generateInvoiceNumber();
+    const currentDate = new Date();
+    const option = { day: '2-digit', month: 'long', year: 'numeric' };
+    const formattedDate = currentDate.toLocaleDateString('en-US', option);
+
+    finalInvoice(users.full_name, users.email , users.phone , invoiceNumber , formattedDate , document.total_amount).then(() => {
+        console.log('successfully send the email.............')
+    }).catch((err) => {
+        console.log('email not send.........', err);
+    })
+    
+    return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.payment_complete', responseData, req.headers.lang);
 
     } catch (err) {
-        console.log("Error in upload_documents: ", err);
+        console.log("Error in order_summary: ", err);
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang);
     }
 };
 
 
+
+exports.create_promocode = async (req, res, next) => {
+
+    try {
+
+        const userId = req.user._id;
+        const reqBody = req.body;
+
+        const loginedIn = await User.findOne({_id: userId});
+
+        if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
+
+        reqBody.user = userId;
+        reqBody.created_at = await dateFormat.set_current_timestamp();
+        reqBody.updated_at = await dateFormat.set_current_timestamp();
+        let expirationDate = new Date();
+        expirationDate.setDate(expirationDate.getDate() + reqBody.expire_date);
+        reqBody.expire_date =  expirationDate;
+        const promo = await promoCode.create(reqBody);
+
+        const responseData = {
+            _id: promo._id,
+            user: userId,
+            promo_code:promo.promo_code,
+            discount:promo.discount, 
+            expire_days:promo.expire_days,
+            created_at: promo.created_at,
+            updated_at: promo.updated_at,
+            deleted_at: promo.deleted_at || null
+        };
+        
+        return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.create_promo_code', responseData, req.headers.lang);
+
+    } catch (err) {
+        console.log("Error in create promocode: ", err);
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang);
+    }
+};
+
+
+
+exports.apply_promocode = async (req, res, next) => {
+
+    try {
+
+        const userId = req.user._id;
+        const { promo_code , total_amount } = req.query;
+
+        const loginedIn = await User.findOne({_id: userId});
+
+        if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
+
+            
+    const promo = await promoCode.findOne({ promo_code: promo_code, isActive: true });
+
+    if (!promo) 
+        return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.promo_code_not_found', {} , req.headers.lang);
+
+    if (new Date(promo.expire_days) < new Date()) 
+        return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.promo_code_expired', {} , req.headers.lang);
+    
+    let discounts = (total_amount * promo.discount) / 100;
+    const total_amounts = total_amount - discounts;
+    promo.total_amount = total_amounts;
+    promo.discount_amount = discounts;
+    await promo.save();
+
+        const responseData = {
+            _id: promo._id,
+            user: userId,
+            promo_code:promo.promo_code,
+            discount:promo.discount, 
+            discount_amount:promo.discount_amount,
+            expire_days:promo.expire_days,
+            total_amount:promo.total_amount,
+            created_at: promo.created_at,
+            updated_at: promo.updated_at,
+            deleted_at: promo.deleted_at || null
+        };
+        
+        return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.apply_promo_code', responseData, req.headers.lang);
+
+    } catch (err) {
+        console.log("Error in create apply_promocode: ", err);
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang);
+    }
+};

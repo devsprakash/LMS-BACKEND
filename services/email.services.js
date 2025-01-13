@@ -320,6 +320,58 @@ exports.registrationInvoice = async (name, email,phone ,courseName ,invoiceNumbe
 
 
 
+exports.finalInvoice = async (name, email,phone ,courseName ,invoiceNumber , date , total_amount) => {
+
+    try {
+    
+        let transporter = nodemailer.createTransport({
+            host: 'smtp.mailer91.com',  // SMTP host
+            port: 587,                  // SMTP port
+            secure: false,              // Use SSL if true
+            auth: {
+                user: 'emailer@atiitglobal.com', // your SMTP username
+                pass: 'nop5PDPOLYqyYKHk',        // your SMTP password
+            },
+        });
+
+        const templatePath = path.join(__dirname, 'final-price-template.html');
+
+        if (!fs.existsSync(templatePath)) {
+            throw new Error(`Template file not found: ${templatePath}`);
+        }
+
+        const source = fs.readFileSync(templatePath, 'utf-8');
+        const template = handlebars.compile(source);
+
+        const replacements = {
+            name: name,
+            email:email,
+            phone:phone,
+            course_name:courseName,
+            invoiceNumber:invoiceNumber,
+            date: date,
+            total_amount:total_amount
+        };
+        const htmlToSend = template(replacements);
+        let mailOptions = {
+            from: '<connect@atiitglobal.com>',
+            to: email, 
+            subject: "Your Full Payment Invoice is Ready, Admin!",
+            html: htmlToSend,
+        };
+
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully:', info.response);
+        return info;
+
+    } catch (error) {
+        console.error('Error sending email:', error.message || error);
+        throw error;
+    }
+};
+
+
+
 // Function to fetch the Zoho token
 exports.fetchZohoToken = async () => {
     let ZOHO_TOKEN;
