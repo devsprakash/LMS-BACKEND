@@ -31,7 +31,7 @@ router.post('/application-fees' , application_fees_validator , ValidatorResult ,
 router.post('/order_summary' , authenticate , order_summary);
 router.post('/generate_promocode' ,  authenticate , create_promocode);
 router.get('/applied_promocode', authenticate , apply_promocode);
-router.get('/application_fees_details' , application_fees_details_validator , ValidatorResult , authenticate , get_application_fees_details)
+router.post('/application_fees_details' , application_fees_details_validator , ValidatorResult , authenticate , get_application_fees_details)
 
 
 
