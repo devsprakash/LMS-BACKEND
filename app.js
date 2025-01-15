@@ -13,10 +13,10 @@ const adminRouter = require('./admin/routes/admin');
 const UserAdminRouter = require('./admin/routes/user');
 const coursesRouter = require("./admin/routes/courses");
 const batchRouter = require('./admin/routes/batch');
-const seatBookingRouter = require('./v1/routes/seat_booking')
-const crypto = require('crypto');
+const seatBookingRouter = require('./v1/routes/seat_booking');
+const { payment_verification } = require('./v1/controllers/user.controller')
 const fs = require('fs');
-const Events = require('./models/python-registartion.modal');
+
 
 const app = express();
 app.use(cors());
@@ -36,44 +36,10 @@ app.use(
 );
 
 
-// Middleware to parse incoming requests
+
 app.use(express.json());
 
-
-app.post('/payment_verification', async (req, res) => {
-
-  const secret = '7290938999'; 
-  const signature = req.headers['x-razorpay-signature'];
-  const body = JSON.stringify(req.body);
-  console.log("reqbody.........", body)
-
-  const expectedSignature = crypto.createHmac('sha256', secret).update(body).digest('hex');
-  if (signature !== expectedSignature) {
-      return res.status(400).json({ message: 'Invalid webhook signature' });
-  }
-
-  const paymentData = req.body.payload.payment.entity;
-  const orderId = paymentData.order_id;
-  const paymentStatus = paymentData.status; 
-
-  try {
- 
-    const event = await Events.findOne({ order_id: orderId });
-    if (!event) {
-      return res.status(404).json({ message: 'Event not found' });
-    }
-
-
-    event.payment_status = paymentStatus === 'captured' ? 'Success' : paymentStatus === 'failed' ? 'Failed' : 'Pending';
-    await event.save();
-
-    res.status(200).json({ message: 'Payment verification completed' });
-
-  } catch (err) {
-    console.error('Error in payment_verification:', err);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
-});
+app.post('/payment_verification', payment_verification);
 
 
 

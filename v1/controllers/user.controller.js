@@ -33,6 +33,7 @@ const { sendMail, BookingSendMail, fetchZohoToken , PythonRegistrationInvoice , 
 const axios = require('axios');
 const OrderSummary = require('../../models/final_payment');
 const generator=require('random-password');
+const crypto = require('crypto');
 
 
 
@@ -1262,17 +1263,6 @@ exports.python_register = async (req, res, next) => {
             updated_at: user.updated_at
         }
 
-        // let invoiceNumber = generateInvoiceNumber();
-        // const currentDate = new Date();
-        // const option = { day: '2-digit', month: 'long', year: 'numeric' };
-        // const formattedDate = currentDate.toLocaleDateString('en-US', option);
-
-        // PythonRegistrationInvoice(user.name, user.email , user.phone , invoiceNumber , formattedDate , user.amount).then(() => {
-        //     console.log('successfully send the email.............')
-        // }).catch((err) => {
-        //     console.log('email not send.........', err);
-        // })
-
         return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.python_registartion', responseData, req.headers.lang);
 
     } catch (err) {
@@ -1281,3 +1271,36 @@ exports.python_register = async (req, res, next) => {
     }
 }
 
+
+exports.payment_verification = async (req , res) => {
+
+  const secret = '7290938999'; 
+  const signature = req.headers['x-razorpay-signature'];
+  const body = JSON.stringify(req.body);
+
+  const expectedSignature = crypto.createHmac('sha256', secret).update(body).digest('hex');
+  if (signature !== expectedSignature) {
+      return res.status(400).json({ message: 'Invalid webhook signature' });
+  }
+
+  const paymentData = req.body.payload.payment.entity;
+  const orderId = paymentData.order_id;
+  const paymentStatus = paymentData.status; 
+
+  try {
+ 
+    const event = await Events.findOne({ order_id: orderId });
+
+    if (!event) 
+        return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.event_data_not_found', responseData, req.headers.lang);
+    
+    event.payment_status = paymentStatus === 'captured' ? 'Success' : paymentStatus === 'failed' ? 'Failed' : 'Pending';
+    await event.save();
+
+    return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.verification_complete', {} , req.headers.lang);
+
+  } catch (err) {
+    console.error('Error in payment_verification:', err);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+}

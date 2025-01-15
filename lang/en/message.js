@@ -83,7 +83,9 @@ module.exports = {
         payment_complete:'Your payment has been successfully',
         apply_promo_code:'successfully applied promocode',
         registration_fees_completed:'this course registration proccess already completed',
-        python_registartion:'You have successfully registered in python program'
+        python_registartion:'You have successfully registered in python program',
+        event_data_not_found:'Event data not found',
+        verification_complete: 'Payment verification completed'
     },
     'ADMIN':{
          user: 'successfully add user',
