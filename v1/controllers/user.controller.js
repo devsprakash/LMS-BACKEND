@@ -16,6 +16,7 @@ const Brochure = require('../../models/brochure_download');
 const Contact = require('../../models/contact_us');
 const ReferAndEarn = require('../../models/refer-and-earn');
 const Callback = require('../../models/arrang_call_back');
+const Events = require('../../models/python-registartion.modal');
 const promoCode = require('../../models/promo_code');
 const Apply = require('../../models/Apply_here');
 const {
@@ -28,7 +29,7 @@ const {
 const {
     isValid
 } = require('../../services/blackListMail')
-const { sendMail, BookingSendMail, fetchZohoToken , OtpSendMail , generateFourDigitOTP , finalInvoice , registrationInvoice , generateInvoiceNumber } = require('../../services/email.services')
+const { sendMail, BookingSendMail, fetchZohoToken , PythonRegistrationInvoice , OtpSendMail , generateFourDigitOTP , finalInvoice , registrationInvoice , generateInvoiceNumber } = require('../../services/email.services')
 const axios = require('axios');
 const OrderSummary = require('../../models/final_payment');
 const generator=require('random-password');
@@ -1205,3 +1206,76 @@ exports.apply_promocode = async (req, res, next) => {
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang);
     }
 };
+
+
+
+
+exports.python_register = async (req, res, next) => {
+
+    try {
+
+        const reqBody = req.body;
+        const checkMail = await isValid(reqBody.email);
+
+        if (!checkMail)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
+
+        const options = {
+            method: 'POST',
+            url: 'https://api.razorpay.com/v1/orders',
+            auth: {
+                username: 'rzp_live_6pmqjNtXITyYIv',  
+                password: 'x4S4xdEYSxgaNk4Bu5y6JrmX' 
+            },
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: {
+                amount: reqBody.amount * 100,
+                currency: 'INR'
+            }
+        };
+    
+        let response;
+    
+        try {
+            response = await axios(options);
+            console.log('Order created successfully:', response.data);
+        } catch (error) {
+            console.error('Error creating order:', error.response ? error.response.data : error.message);
+        }
+
+        reqBody.order_id = response.data.id;
+        reqBody.created_at = await dateFormat.set_current_timestamp();
+        reqBody.updated_at = await dateFormat.set_current_timestamp();
+
+        const user = new Events(reqBody);
+        await user.save();
+        const responseData = {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            phone: user.phone,
+            order_id:user.order_id,
+            created_at: user.created_at,
+            updated_at: user.updated_at
+        }
+
+        let invoiceNumber = generateInvoiceNumber();
+        const currentDate = new Date();
+        const option = { day: '2-digit', month: 'long', year: 'numeric' };
+        const formattedDate = currentDate.toLocaleDateString('en-US', option);
+
+        PythonRegistrationInvoice(user.name, user.email , user.phone , invoiceNumber , formattedDate , user.amount).then(() => {
+            console.log('successfully send the email.............')
+        }).catch((err) => {
+            console.log('email not send.........', err);
+        })
+
+        return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.python_registartion', responseData, req.headers.lang);
+
+    } catch (err) {
+        console.log("err(python_register)........", err)
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
+    }
+}
