@@ -48,27 +48,26 @@ app.post('/payment_verification', async (req, res) => {
   console.log("reqbody.........", body)
 
   const expectedSignature = crypto.createHmac('sha256', secret).update(body).digest('hex');
-  console.log("data", expectedSignature)
   if (signature !== expectedSignature) {
       return res.status(400).json({ message: 'Invalid webhook signature' });
   }
 
-  // const paymentData = req.body.payload.payment.entity;
-  // const orderId = paymentData.order_id;
-  // const paymentStatus = paymentData.status; 
+  const paymentData = req.body.payload.payment.entity;
+  const orderId = paymentData.order_id;
+  const paymentStatus = paymentData.status; 
 
   try {
  
-    // const event = await Events.findOne({ order_id: orderId });
-    // if (!event) {
-    //   return res.status(404).json({ message: 'Event not found' });
-    // }
+    const event = await Events.findOne({ order_id: orderId });
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
 
 
-    // event.payment_status = paymentStatus === 'captured' ? 'Success' : paymentStatus === 'failed' ? 'Failed' : 'Pending';
-    // await event.save();
+    event.payment_status = paymentStatus === 'captured' ? 'Success' : paymentStatus === 'failed' ? 'Failed' : 'Pending';
+    await event.save();
 
-    // res.status(200).json({ message: 'Payment verification completed' });
+    res.status(200).json({ message: 'Payment verification completed' });
 
   } catch (err) {
     console.error('Error in payment_verification:', err);

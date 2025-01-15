@@ -5,7 +5,6 @@ const { Register , talk_to_expert , post_your_story, post_blog,  Booking, Hiring
 const upload  = require('../../middleware/multer');
 const ResumeUpload  = require('../../middleware/resume_file');
 const authenticate = require('../../middleware/authenticate');
-const { validateRazorpayWebhook } = require('../../middleware/payment_verification')
 
 
 
@@ -33,7 +32,7 @@ router.post('/order_summary' , authenticate , order_summary);
 router.post('/generate_promocode' ,  authenticate , create_promocode);
 router.get('/applied_promocode', authenticate , apply_promocode);
 router.post('/application_fees_details' , application_fees_details_validator , ValidatorResult , authenticate , get_application_fees_details)
-router.post('/python_register' , python_register_validator , ValidatorResult , validateRazorpayWebhook , python_register)
+router.post('/python_register' , python_register_validator , ValidatorResult , python_register)
 
 
 
