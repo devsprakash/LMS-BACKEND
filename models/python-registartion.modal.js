@@ -20,6 +20,10 @@ const eventSchema = new mongoose.Schema({
     amount:{
        type:Number
     },
+    payment_status:{
+        type:String,
+        default:null
+    },
     created_at: {
         type: String
     },

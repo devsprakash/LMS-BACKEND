@@ -1250,6 +1250,7 @@ exports.python_register = async (req, res, next) => {
         reqBody.updated_at = await dateFormat.set_current_timestamp();
 
         const user = new Events(reqBody);
+
         await user.save();
         const responseData = {
             _id: user._id,
@@ -1261,16 +1262,16 @@ exports.python_register = async (req, res, next) => {
             updated_at: user.updated_at
         }
 
-        let invoiceNumber = generateInvoiceNumber();
-        const currentDate = new Date();
-        const option = { day: '2-digit', month: 'long', year: 'numeric' };
-        const formattedDate = currentDate.toLocaleDateString('en-US', option);
+        // let invoiceNumber = generateInvoiceNumber();
+        // const currentDate = new Date();
+        // const option = { day: '2-digit', month: 'long', year: 'numeric' };
+        // const formattedDate = currentDate.toLocaleDateString('en-US', option);
 
-        PythonRegistrationInvoice(user.name, user.email , user.phone , invoiceNumber , formattedDate , user.amount).then(() => {
-            console.log('successfully send the email.............')
-        }).catch((err) => {
-            console.log('email not send.........', err);
-        })
+        // PythonRegistrationInvoice(user.name, user.email , user.phone , invoiceNumber , formattedDate , user.amount).then(() => {
+        //     console.log('successfully send the email.............')
+        // }).catch((err) => {
+        //     console.log('email not send.........', err);
+        // })
 
         return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.python_registartion', responseData, req.headers.lang);
 
@@ -1279,3 +1280,4 @@ exports.python_register = async (req, res, next) => {
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
     }
 }
+

@@ -4,7 +4,8 @@ const { user_validator, login_validator , python_register_validator , applicatio
 const { Register , talk_to_expert , post_your_story, post_blog,  Booking, HiringRequirements, login, contact_us, forgot_password, reset_password, verify_email, refer_and_Earn, arrange_call_back, apply_now, brochure_download, verify_otp, brochure_verify_otp, resend_otp, brchure_resend_otp, application_details, application_fees, upload_documents, order_summary, create_promocode, apply_promocode, get_application_fees_details, python_register } = require('../controllers/user.controller')
 const upload  = require('../../middleware/multer');
 const ResumeUpload  = require('../../middleware/resume_file');
-const authenticate = require('../../middleware/authenticate')
+const authenticate = require('../../middleware/authenticate');
+const { validateRazorpayWebhook } = require('../../middleware/payment_verification')
 
 
 
@@ -32,7 +33,7 @@ router.post('/order_summary' , authenticate , order_summary);
 router.post('/generate_promocode' ,  authenticate , create_promocode);
 router.get('/applied_promocode', authenticate , apply_promocode);
 router.post('/application_fees_details' , application_fees_details_validator , ValidatorResult , authenticate , get_application_fees_details)
-router.post('/python_register' , python_register_validator , ValidatorResult , python_register)
+router.post('/python_register' , python_register_validator , ValidatorResult , validateRazorpayWebhook , python_register)
 
 
 
