@@ -1081,6 +1081,9 @@ try {
     const responseData = {
         _id: document._id,
         user: document.user,
+        name:users.full_name,
+        email:users.email,
+        phone:users.phone,
         total_amount: document.total_amount,
         payment_status: document.payment_status,
         created_at: document.created_at,
@@ -1145,13 +1148,13 @@ exports.apply_promocode = async (req, res, next) => {
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
 
             
-    const promo = await promoCode.findOne({ promo_code: promo_code, isActive: true });
+          const promo = await promoCode.findOne({ promo_code: promo_code, isActive: true });
 
-    if (!promo) 
-        return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.promo_code_not_found', {} , req.headers.lang);
+         if (!promo) 
+            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.promo_code_not_found', {} , req.headers.lang);
 
-    if (new Date(promo.expire_days) < new Date()) 
-        return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.promo_code_expired', {} , req.headers.lang);
+        if (new Date(promo.expire_days) < new Date()) 
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.promo_code_expired', {} , req.headers.lang);
     
     let discounts = (total_amount * promo.discount) / 100;
     const total_amounts = total_amount - discounts;
