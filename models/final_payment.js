@@ -13,10 +13,9 @@ const OrderSummarySchema = new mongoose.Schema({
     order_id:{
         type: String
     },
-    payment_status: {
-        type: String,
-        default: 'pending', // Default status as pending
-        enum: ['pending', 'paid', 'failed'] // Accepted values
+    payment_status:{
+        type:String,
+        default:null
     },
     created_at: {
         type: String,

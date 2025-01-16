@@ -986,16 +986,6 @@ exports.application_fees = async (req, res, next) => {
             updated_at: fees.updated_at
         };
       
-        let invoiceNumber = generateInvoiceNumber();
-        const currentDate = new Date();
-        const option = { day: '2-digit', month: 'long', year: 'numeric' };
-        const formattedDate = currentDate.toLocaleDateString('en-US', option);
-
-        registrationInvoice(users.full_name, fees.email , users.phone , fees.course_name , invoiceNumber , formattedDate).then(() => {
-            console.log('successfully send the email.............')
-        }).catch((err) => {
-            console.log('email not send.........', err);
-        })
 
         return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.application_details_successfully', responseData, req.headers.lang);
 
@@ -1098,17 +1088,6 @@ try {
         deleted_at: document.deleted_at,
     };
 
-    let invoiceNumber = generateInvoiceNumber();
-    const currentDate = new Date();
-    const option = { day: '2-digit', month: 'long', year: 'numeric' };
-    const formattedDate = currentDate.toLocaleDateString('en-US', option);
-
-    finalInvoice(users.full_name, users.email , users.phone , invoiceNumber , formattedDate , document.total_amount).then(() => {
-        console.log('successfully send the email.............')
-    }).catch((err) => {
-        console.log('email not send.........', err);
-    })
-    
     return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.payment_complete', responseData, req.headers.lang);
 
     } catch (err) {
@@ -1157,6 +1136,7 @@ exports.create_promocode = async (req, res, next) => {
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang);
     }
 };
+
 
 
 
@@ -1272,35 +1252,115 @@ exports.python_register = async (req, res, next) => {
 }
 
 
-exports.payment_verification = async (req , res) => {
 
-  const secret = '7290938999'; 
-  const signature = req.headers['x-razorpay-signature'];
-  const body = JSON.stringify(req.body);
+exports.payment_verification = async (req, res) => {
 
-  const expectedSignature = crypto.createHmac('sha256', secret).update(body).digest('hex');
-  if (signature !== expectedSignature) {
+    const secret = '7290938999'; 
+    const signature = req.headers['x-razorpay-signature'];
+    const body = JSON.stringify(req.body);
+  
+    // Verify Razorpay signature
+    const expectedSignature = crypto.createHmac('sha256', secret).update(body).digest('hex');
+    if (signature !== expectedSignature) {
       return res.status(400).json({ message: 'Invalid webhook signature' });
+    }
+  
+    const paymentData = req.body.payload.payment.entity;
+    const { order_id: orderId, status: paymentStatus } = paymentData;
+  
+    try {
+
+      let foundRecord = false;
+  
+      const invoiceNumber = generateInvoiceNumber();
+      const currentDate = new Date();
+      const formattedDate = currentDate.toLocaleDateString('en-US', { day: '2-digit', month: 'long', year: 'numeric' });
+
+      const orderSummaryData = await OrderSummary.findOne({ order_id: orderId });
+      if (orderSummaryData) {
+        foundRecord = true;
+        orderSummaryData.payment_status = mapPaymentStatus(paymentStatus);
+        await orderSummaryData.save();
+  
+        try {
+          await finalInvoice(
+            orderSummaryData.full_name,
+            orderSummaryData.email,
+            orderSummaryData.phone,
+            invoiceNumber,
+            formattedDate,
+            orderSummaryData.total_amount
+          );
+          console.log('Invoice email sent successfully for Order Summary.');
+        } catch (emailError) {
+          console.error('Failed to send email for Order Summary:', emailError);
+        }
+      }
+  
+      // Step 2: Check and process Events
+      const event = await Events.findOne({ order_id: orderId });
+      if (event) {
+        foundRecord = true;
+        event.payment_status = mapPaymentStatus(paymentStatus);
+        await event.save();
+  
+        try {
+          await PythonRegistrationInvoice(
+            event.name,
+            event.email,
+            event.phone,
+            invoiceNumber,
+            formattedDate
+          );
+          console.log('Invoice email sent successfully for Event.');
+        } catch (emailError) {
+          console.error('Failed to send email for Event:', emailError);
+        }
+      }
+  
+      // Step 3: Check and process ApplicationFees
+      const applicationFees = await ApplicationFees.findOne({ order_id: orderId });
+      if (applicationFees) {
+        foundRecord = true;
+        applicationFees.payment_status = mapPaymentStatus(paymentStatus);
+        await applicationFees.save();
+  
+        try {
+            
+          await registrationInvoice(
+            applicationFees.name,
+            applicationFees.email,
+            applicationFees.phone,
+            invoiceNumber,
+            formattedDate,
+          );
+          console.log('Invoice email sent successfully for Application Fees.');
+        } catch (emailError) {
+          console.error('Failed to send email for Application Fees:', emailError);
+        }
+      }
+  
+      if (!foundRecord) 
+          return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.data_not_found', {}, req.headers.lang);
+      
+
+      return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.verification_complete', {}, req.headers.lang);
+  
+    } catch (err) {
+      console.error('Error in payment_verification:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+  };
+
+
+  function mapPaymentStatus(status) {
+    switch (status) {
+      case 'captured':
+        return 'Success';
+      case 'failed':
+        return 'Failed';
+      default:
+        return 'Pending';
+    }
   }
-
-  const paymentData = req.body.payload.payment.entity;
-  const orderId = paymentData.order_id;
-  const paymentStatus = paymentData.status; 
-
-  try {
- 
-    const event = await Events.findOne({ order_id: orderId });
-
-    if (!event) 
-        return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.event_data_not_found', responseData, req.headers.lang);
-    
-    event.payment_status = paymentStatus === 'captured' ? 'Success' : paymentStatus === 'failed' ? 'Failed' : 'Pending';
-    await event.save();
-
-    return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.verification_complete', {} , req.headers.lang);
-
-  } catch (err) {
-    console.error('Error in payment_verification:', err);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
-}
+  

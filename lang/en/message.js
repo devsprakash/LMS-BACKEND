@@ -84,7 +84,7 @@ module.exports = {
         apply_promo_code:'successfully applied promocode',
         registration_fees_completed:'this course registration proccess already completed',
         python_registartion:'You have successfully registered in python program',
-        event_data_not_found:'Event data not found',
+        data_not_found:'data not found',
         verification_complete: 'Payment verification completed'
     },
     'ADMIN':{

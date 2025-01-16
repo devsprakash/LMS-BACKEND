@@ -269,7 +269,7 @@ exports.NewUserWelcomeEmail = async (user, email, password) => {
 
 
 
-exports.registrationInvoice = async (name, email,phone ,courseName ,invoiceNumber  , date) => {
+exports.registrationInvoice = async (name, email,phone ,courseName ,invoiceNumber , date) => {
 
     try {
     
@@ -373,7 +373,7 @@ exports.finalInvoice = async (name, email,phone ,courseName ,invoiceNumber , dat
 
 /*=========================== python regitstartion email ======================*/
 
-exports.PythonRegistrationInvoice = async (name, email,phone ,invoiceNumber  , date) => {
+exports.PythonRegistrationInvoice = async (name, email,phone ,invoiceNumber , date) => {
 
     try {
     

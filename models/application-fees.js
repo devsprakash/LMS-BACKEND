@@ -22,6 +22,10 @@ const ApplicationFeesSchema = new mongoose.Schema({
     order_id:{
         type:String
     },
+    payment_status:{
+        type:String,
+        default:null
+    },
     created_at: {
         type: String
     },
