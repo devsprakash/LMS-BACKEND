@@ -1102,15 +1102,8 @@ exports.create_promocode = async (req, res, next) => {
 
     try {
 
-        const userId = req.user._id;
         const reqBody = req.body;
 
-        const loginedIn = await User.findOne({_id: userId});
-
-        if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
-
-        reqBody.user = userId;
         reqBody.created_at = await dateFormat.set_current_timestamp();
         reqBody.updated_at = await dateFormat.set_current_timestamp();
         let expirationDate = new Date();
@@ -1120,7 +1113,6 @@ exports.create_promocode = async (req, res, next) => {
 
         const responseData = {
             _id: promo._id,
-            user: userId,
             promo_code:promo.promo_code,
             discount:promo.discount, 
             expire_days:promo.expire_days,

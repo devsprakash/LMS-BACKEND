@@ -29,7 +29,7 @@ router.post('/brochure_resend_otp' , resend_otp_validator , ValidatorResult , br
 router.post('/application-details' , application_deatils_validator , ValidatorResult , authenticate , application_details  )
 router.post('/application-fees' , application_fees_validator , ValidatorResult , authenticate , application_fees)
 router.post('/order_summary' , authenticate , order_summary);
-router.post('/generate_promocode' ,  authenticate , create_promocode);
+router.post('/generate_promocode' , create_promocode);
 router.get('/applied_promocode', authenticate , apply_promocode);
 router.post('/application_fees_details' , application_fees_details_validator , ValidatorResult , authenticate , get_application_fees_details)
 router.post('/python_register' , python_register_validator , ValidatorResult , python_register)
