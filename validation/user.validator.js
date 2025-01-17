@@ -464,12 +464,6 @@ exports.apply_now_validator = [
     .isEmpty().withMessage('experience is required')
     .isNumeric().withMessage('experience must be a number')
     .trim(),
-
-    body('immediate_join')
-    .not()
-    .isEmpty().withMessage('immediate_join is required')
-    .isString().withMessage('immediate_join must be a string')
-    .trim(),
 ]
 
 

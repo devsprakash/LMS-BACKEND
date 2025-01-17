@@ -709,21 +709,19 @@ exports.apply_now = async (req, res, next) => {
         const reqBody = req.body;
 
         const checkMail = await isValid(reqBody.email);
+
         if (!checkMail) {
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
         }
 
-
         const loggedInUser = await User.findById(userId);
-        if (!loggedInUser || (loggedInUser.tokens === null && loggedInUser.refresh_tokens === null)) {
+        
+        if (!loggedInUser || (loggedInUser.tokens === null && loggedInUser.refresh_tokens === null)) 
             return sendResponse(res, constants.WEB_STATUS_CODE.UNAUTHORIZED, constants.STATUS_CODE.FAIL, 'USER.loginedIn_failed', {}, req.headers.lang);
-        }
 
-
-        if (!req.file) {
+        if (!req.file) 
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.no_file_uploaded', {}, req.headers.lang);
-        }
-
+        
         reqBody.resume = req.file.originalname ? `${BASEURL}/uploads/${req.file.originalname}` : null;
         const currentTimestamp = await dateFormat.set_current_timestamp();
         reqBody.created_at = currentTimestamp;
@@ -740,7 +738,6 @@ exports.apply_now = async (req, res, next) => {
             position: newApplication.position,
             experience: newApplication.experience,
             resume: newApplication.resume,
-            immediate_join: newApplication.immediate_join,
             created_at: newApplication.created_at,
             updated_at: newApplication.updated_at
         };

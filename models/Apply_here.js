@@ -26,9 +26,6 @@ const ApplySchema = new mongoose.Schema({
     resume:{
         type:String
     },
-    immediate_join:{
-        type: String
-    },
     created_at: {
         type: String
     },
