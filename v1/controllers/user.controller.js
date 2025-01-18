@@ -705,7 +705,6 @@ exports.apply_now = async (req, res, next) => {
 
     try {
 
-        const userId = req.user._id;
         const reqBody = req.body;
 
         const checkMail = await isValid(reqBody.email);
@@ -713,11 +712,6 @@ exports.apply_now = async (req, res, next) => {
         if (!checkMail) {
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
         }
-
-        const loggedInUser = await User.findById(userId);
-        
-        if (!loggedInUser || (loggedInUser.tokens === null && loggedInUser.refresh_tokens === null)) 
-            return sendResponse(res, constants.WEB_STATUS_CODE.UNAUTHORIZED, constants.STATUS_CODE.FAIL, 'USER.loginedIn_failed', {}, req.headers.lang);
 
         if (!req.file) 
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.no_file_uploaded', {}, req.headers.lang);
@@ -731,7 +725,6 @@ exports.apply_now = async (req, res, next) => {
 
         const responseData = {
             _id: newApplication._id,
-            user:userId,
             name: newApplication.name,
             email: newApplication.email,
             phone: newApplication.phone,

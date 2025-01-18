@@ -4,10 +4,6 @@ const mongoose = require('mongoose');
 
 const ApplySchema = new mongoose.Schema({
     
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'users', 
-    },
     name: {
         type: String
     },

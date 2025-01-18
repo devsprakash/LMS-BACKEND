@@ -20,7 +20,7 @@ router.post('/reset_password' , reset_password_validator , ValidatorResult , res
 router.post('/verify_email' , verify_email_validator , ValidatorResult , verify_email);
 router.post('/refer_and_earn' , refer_and_earn_validator , ValidatorResult , authenticate , refer_and_Earn)
 router.post('/arrange_call_back' , call_back_validator , ValidatorResult , arrange_call_back)
-router.post('/apply_here' , ResumeUpload.single('resume') , apply_now_validator , ValidatorResult , authenticate ,  apply_now)
+router.post('/apply_here' , ResumeUpload.single('resume') , apply_now_validator , ValidatorResult , apply_now)
 router.post('/brochure_download' , brochure_download_validator , ValidatorResult , authenticate , brochure_download)
 router.post('/verify_otp' , otp_validator , ValidatorResult , verify_otp);
 router.post('/resend_otp' , resend_otp_validator , ValidatorResult , resend_otp);
