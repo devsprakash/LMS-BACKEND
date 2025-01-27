@@ -18,6 +18,7 @@ const { payment_verification } = require('./v1/controllers/user.controller')
 const fs = require('fs');
 
 
+
 const app = express();
 app.use(cors());
 app.use(flash());
@@ -38,7 +39,6 @@ app.use(
 
 
 app.use(express.json());
-
 app.post('/payment_verification', payment_verification);
 
 

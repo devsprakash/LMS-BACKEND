@@ -85,7 +85,9 @@ module.exports = {
         registration_fees_completed:'this course registration proccess already completed',
         python_registartion:'You have successfully registered in python program',
         data_not_found:'data not found',
-        verification_complete: 'Payment verification completed'
+        verification_complete: 'Payment verification completed',
+        sumbit_successfully:'learners form successfully sumbited',
+        school_form_sumbit:'school form successfully sumbited'
     },
     'ADMIN':{
          user: 'successfully add user',

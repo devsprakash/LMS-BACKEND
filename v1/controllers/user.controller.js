@@ -34,6 +34,9 @@ const axios = require('axios');
 const OrderSummary = require('../../models/final_payment');
 const generator=require('random-password');
 const crypto = require('crypto');
+const Learner = require('../../models/Learners-corner');
+const School = require('../../models/school_and_colleges')
+
 
 
 
@@ -485,34 +488,65 @@ exports.refer_and_Earn = async (req, res, next) => {
 
 
 
-exports.verify_email = async (req, res, next) => {
+exports.Learners_Corners = async (req, res, next) => {
 
     try {
 
         const reqBody = req.body;
         const checkMail = await isValid(reqBody.email);
+        const userId = req.user._id;
 
         if (!checkMail)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
         
-        const user = await User.findOne({ email: reqBody.email });
-      
-        if(!user || user === null)
-            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
-        
-        const responseData = {
-            _id: user._id,
-            email: user.email,
-        }
+        const loginedIn = await User.findOne({ _id: userId});
 
-        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.verify_email', responseData, req.headers.lang);
+        if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
+
+        reqBody.created_at = await dateFormat.set_current_timestamp();
+        reqBody.updated_at = await dateFormat.set_current_timestamp();
+        reqBody.user = userId;
+        const learner = await Learner.create(reqBody);
+ 
+        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.sumbit_successfully', learner , req.headers.lang);
 
     } catch (err) {
-        console.log("err(verify_email)........", err)
+        console.log("err(Learners_Corners)........", err)
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
     }
 }
 
+
+exports.School_college = async (req, res, next) => {
+
+    try {
+
+        const reqBody = req.body;
+        const checkMail = await isValid(reqBody.email);
+        const userId = req.user._id;
+
+        if (!checkMail)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
+        
+        const loginedIn = await User.findOne({ _id: userId});
+
+        if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
+
+        reqBody.created_at = await dateFormat.set_current_timestamp();
+        reqBody.updated_at = await dateFormat.set_current_timestamp();
+        reqBody.user = userId;
+
+        const Schools = await School.create(reqBody);
+ 
+        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.school_form_sumbit', Schools ,req.headers.lang);
+
+    } catch (err) {
+        console.log("err(School_college)")
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
+    }
+}
 
 
 exports.post_your_story = async (req, res, next) => {
@@ -1096,7 +1130,6 @@ exports.create_promocode = async (req, res, next) => {
     try {
 
         const reqBody = req.body;
-
         reqBody.created_at = await dateFormat.set_current_timestamp();
         reqBody.updated_at = await dateFormat.set_current_timestamp();
         let expirationDate = new Date();

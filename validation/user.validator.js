@@ -663,6 +663,78 @@ body('phone')
 ]
 
 
+exports.learner_validator = [
+
+  body('name')
+  .not()
+  .isEmpty().withMessage('name is required')
+  .isString().withMessage('name must be a string')
+  .trim(),
+
+body('email')
+  .not()
+  .isEmpty()
+  .withMessage('email is required')
+  .isString().withMessage('email mus be a string')
+  .isEmail().withMessage('please enter a valid email')
+  .trim(),
+
+body('phone')
+  .not()
+  .isEmpty().withMessage('phone is required')
+  .isString().withMessage('phone must be a string')
+  .isMobilePhone().withMessage('please enter a valid phone number')
+  .isLength({ min: 10, max: 12 }).withMessage('phone must be at least 10 characters')
+  .trim(),
+
+  body('descripation')
+  .not()
+  .isEmpty().withMessage('descripation is required')
+  .isString().withMessage('descripation must be a string')
+  .trim(),
+
+]
+
+
+
+exports.school_validator = [
+
+  body('name')
+  .not()
+  .isEmpty().withMessage('name is required')
+  .isString().withMessage('name must be a string')
+  .trim(),
+
+body('email')
+  .not()
+  .isEmpty()
+  .withMessage('email is required')
+  .isString().withMessage('email mus be a string')
+  .isEmail().withMessage('please enter a valid email')
+  .trim(),
+
+body('phone')
+  .not()
+  .isEmpty().withMessage('phone is required')
+  .isString().withMessage('phone must be a string')
+  .isMobilePhone().withMessage('please enter a valid phone number')
+  .isLength({ min: 10, max: 12 }).withMessage('phone must be at least 10 characters')
+  .trim(),
+
+  body('institute_name')
+  .not()
+  .isEmpty().withMessage('institute_name is required')
+  .isString().withMessage('institue_name must be a string')
+  .trim(),
+
+  body('website_url')
+  .not()
+  .isEmpty().withMessage('website_url is required')
+  .isString().withMessage('website_url must be a string')
+  .trim(),
+
+]
+
 
 
 
