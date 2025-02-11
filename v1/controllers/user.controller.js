@@ -963,12 +963,17 @@ exports.application_fees = async (req, res, next) => {
         if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
 
+        const already_register = await ApplicationFees.findOne({ email: reqBody.email , course_name: reqBody.course_name});
+
+        if(already_register)
+            return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.registration_process_completed', {}, req.headers.lang);
+
         const options = {
             method: 'POST',
             url: 'https://api.razorpay.com/v1/orders',
             auth: {
-                username: 'rzp_live_6pmqjNtXITyYIv',  // Replace with your Razorpay Key ID
-                password: 'x4S4xdEYSxgaNk4Bu5y6JrmX' // Replace with your Razorpay Key Secret
+                username: 'rzp_live_6pmqjNtXITyYIv',  
+                password: 'x4S4xdEYSxgaNk4Bu5y6JrmX' 
             },
             headers: {
                 'Content-Type': 'application/json'
@@ -993,7 +998,7 @@ exports.application_fees = async (req, res, next) => {
         reqBody.order_id = response.data.id;
         reqBody.created_at = await dateFormat.set_current_timestamp();
         reqBody.updated_at = await dateFormat.set_current_timestamp();
-
+        
         const users = await User.findById(userId)
         const fees = await ApplicationFees.create(reqBody);
 
@@ -1018,6 +1023,7 @@ exports.application_fees = async (req, res, next) => {
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang);
     }
 };
+
 
 
 

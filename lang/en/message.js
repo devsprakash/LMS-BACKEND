@@ -87,7 +87,8 @@ module.exports = {
         data_not_found:'data not found',
         verification_complete: 'Payment verification completed',
         sumbit_successfully:'learners form successfully sumbited',
-        school_form_sumbit:'school form successfully sumbited'
+        school_form_sumbit:'school form successfully sumbited',
+        registration_process_completed:'your registartion process already completed'
     },
     'ADMIN':{
          user: 'successfully add user',
