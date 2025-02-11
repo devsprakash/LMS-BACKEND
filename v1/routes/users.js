@@ -38,5 +38,4 @@ router.post('/School_form_sumbit', school_validator , ValidatorResult , authenti
 
 
 
-
 module.exports = router;
