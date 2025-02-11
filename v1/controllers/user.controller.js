@@ -1277,6 +1277,8 @@ exports.payment_verification = async (req, res) => {
     const secret = '7290938999'; 
     const signature = req.headers['x-razorpay-signature'];
     const body = JSON.stringify(req.body);
+
+    console.log("d-reqBody........." , body)
   
     // Verify Razorpay signature
     const expectedSignature = crypto.createHmac('sha256', secret).update(body).digest('hex');
