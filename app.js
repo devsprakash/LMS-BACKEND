@@ -39,7 +39,24 @@ app.use(
 
 
 app.use(express.json());
-app.post('/payment_verification', payment_verification);
+app.post('/payment_verification', (req, res) => {
+
+        const secret = '7290938999'; 
+        const signature = req.headers['x-razorpay-signature'];
+        const body = JSON.stringify(req.body);
+    
+        console.log("d-reqBody........." , body)
+      
+        // Verify Razorpay signature
+        const expectedSignature = crypto.createHmac('sha256', secret).update(body).digest('hex');
+        if (signature !== expectedSignature) {
+          return res.status(400).json({ message: 'Invalid webhook signature' });
+        }
+      
+        const paymentData = req.body.payload.payment.entity;
+        console.log(paymentData)
+
+}); 
 
 
 
