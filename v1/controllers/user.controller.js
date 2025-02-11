@@ -1339,11 +1339,12 @@ exports.payment_verification = async (req, res) => {
   
       // Step 3: Check and process ApplicationFees
       const applicationFees = await ApplicationFees.findOne({ order_id: orderId });
+      console.log("application data......", applicationFees)
       if (applicationFees) {
         foundRecord = true;
         applicationFees.payment_status = mapPaymentStatus(paymentStatus);
         await applicationFees.save();
-  
+        console.log("status......" , applicationFees)
         try {
             
           await registrationInvoice(
