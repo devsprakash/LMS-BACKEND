@@ -963,6 +963,11 @@ exports.application_fees = async (req, res, next) => {
         if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
 
+        const already_exist = await ApplicationFees.findOne({ user: userId , course_name:reqBody.course_name , payment_status : "Success"})
+
+        if(already_exist)
+            return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.registration_fees_completed', {} , req.headers.lang);
+
         const options = {
             method: 'POST',
             url: 'https://api.razorpay.com/v1/orders',
@@ -1019,28 +1024,6 @@ exports.application_fees = async (req, res, next) => {
 };
 
 
-
-
-exports.get_application_fees_details = async (req, res, next) => {
-
-    try {
-
-        const userId = req.user._id;
-        const { course_name } = req.body;
-        const loginedIn = await User.findOne({ _id: userId });
-
-        if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
-
-        const existingCourse = await ApplicationFees.findOne({ course_name: course_name, user: userId});
-
-        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.registration_fees_completed', existingCourse, req.headers.lang);
-
-    } catch (err) {
-        console.log("Error in get_application_fees_details: ", err);
-        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang);
-    }
-};
 
 
 
