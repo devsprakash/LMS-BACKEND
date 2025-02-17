@@ -966,8 +966,9 @@ exports.application_fees = async (req, res, next) => {
         const already_exist = await ApplicationFees.findOne({ user: userId , course_name:reqBody.course_name , payment_status : "Success"})
 
         if(already_exist)
-            return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.registration_fees_completed', {} , req.headers.lang);
+            return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.registration_fees_completed', already_exist , req.headers.lang);
 
+        
         const options = {
             method: 'POST',
             url: 'https://api.razorpay.com/v1/orders',
