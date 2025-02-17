@@ -37,6 +37,7 @@
     "nodemon": "^3.1.0",
     "password-generator": "^2.3.2",
     "path": "^0.12.7",
+    "pdfkit": "^0.16.0",
     "pm2": "^5.4.2",
     "random-password": "^0.1.2"
   },

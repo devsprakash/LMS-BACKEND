@@ -29,10 +29,10 @@ const {
 const {
     isValid
 } = require('../../services/blackListMail')
-const { sendMail, BookingSendMail, fetchZohoToken , PythonRegistrationInvoice , OtpSendMail , generateFourDigitOTP , finalInvoice , registrationInvoice , generateInvoiceNumber } = require('../../services/email.services')
+const { sendMail, BookingSendMail, fetchZohoToken, PythonRegistrationInvoice, OtpSendMail, generateFourDigitOTP, finalInvoice, registrationInvoice, generateInvoiceNumber } = require('../../services/email.services')
 const axios = require('axios');
 const OrderSummary = require('../../models/final_payment');
-const generator=require('random-password');
+const generator = require('random-password');
 const crypto = require('crypto');
 const Learner = require('../../models/Learners-corner');
 const School = require('../../models/school_and_colleges')
@@ -56,9 +56,9 @@ exports.Register = async (req, res, next) => {
 
         if (existing_email)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.exist_email', {}, req.headers.lang);
-        
-        let passwords = generator(10); 
-        console.log(passwords)  
+
+        let passwords = generator(10);
+        console.log(passwords)
         reqBody.password = await bcrypt.hash(passwords, 10);
         reqBody.created_at = await dateFormat.set_current_timestamp();
         reqBody.updated_at = await dateFormat.set_current_timestamp();
@@ -86,7 +86,7 @@ exports.Register = async (req, res, next) => {
             ]
         }
 
-   fetchZohoToken().then(token => {
+        fetchZohoToken().then(token => {
             return axios.post(ZOHO__LEAD_URL, newlead, {
                 headers: {
                     'Authorization': `Zoho-oauthtoken ${token}`,
@@ -94,12 +94,12 @@ exports.Register = async (req, res, next) => {
                 }
             });
         })
-        .then(response => {
-            console.log('Lead created successfully:', response.data);
-        })
-        .catch(error => {
-            console.error('Error:', error.response ? error.response.data : error.message);
-        });
+            .then(response => {
+                console.log('Lead created successfully:', response.data);
+            })
+            .catch(error => {
+                console.error('Error:', error.response ? error.response.data : error.message);
+            });
 
         const user = await Usersave(reqBody);
         const responseData = {
@@ -110,13 +110,13 @@ exports.Register = async (req, res, next) => {
             user_type: user.user_type,
             social_media: user.social_media,
             phone: user.phone,
-            qualification:user.qualification,
-            course_name:user.course_name,
+            qualification: user.qualification,
+            course_name: user.course_name,
             created_at: user.created_at,
             updated_at: user.updated_at
         };
 
-        sendMail(user.email, user.full_name , passwords).then(() => {
+        sendMail(user.email, user.full_name, passwords).then(() => {
             console.log('successfully send the email.............')
         }).catch((err) => {
             console.log('email not send.........', err)
@@ -135,60 +135,60 @@ exports.verify_otp = async (req, res) => {
 
     try {
 
-      const { otp, userId } = req.body; 
-    
-      const user = await User.findById(userId);
-  
-      if (!user) 
-        return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
+        const { otp, userId } = req.body;
 
-      // Verify OTP
-      if (user.otp == otp) {
-        user.otp = null; // Clear OTP after successful verification
-        await user.save(); // Save the updated user data
-        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.verify_otp', {}, req.headers.lang);
-      } else {
-        return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.invalid_otp', {}, req.headers.lang);
-      }
-  
+        const user = await User.findById(userId);
+
+        if (!user)
+            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
+
+        // Verify OTP
+        if (user.otp == otp) {
+            user.otp = null; // Clear OTP after successful verification
+            await user.save(); // Save the updated user data
+            return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.verify_otp', {}, req.headers.lang);
+        } else {
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.invalid_otp', {}, req.headers.lang);
+        }
+
     } catch (error) {
-      console.error('Error verifying OTP:', error);
-      return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', { error: error.message }, req.headers.lang);
+        console.error('Error verifying OTP:', error);
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', { error: error.message }, req.headers.lang);
     }
-  };
+};
 
 
 
-  exports.resend_otp = async (req, res) => {
+exports.resend_otp = async (req, res) => {
 
     try {
-          
-        const { email , userId } = req.body;
 
-        const user = await User.findOne({ email : email , _id: userId });
-  
-        if (!user) 
-          return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);  
+        const { email, userId } = req.body;
+
+        const user = await User.findOne({ email: email, _id: userId });
+
+        if (!user)
+            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
 
         const otp = generateFourDigitOTP();
 
-        OtpSendMail(otp , email).then(() => {
+        OtpSendMail(otp, email).then(() => {
             console.log('successfully send the otp.............')
         }).catch((err) => {
             console.log('otp not send.........', err)
         });
 
-       user.otp = otp;
-       await user.save();
+        user.otp = otp;
+        await user.save();
 
-       return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.resend_otp', {}, req.headers.lang);  
+        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.resend_otp', {}, req.headers.lang);
 
     } catch (error) {
-      console.error('Error resend OTP:', error);
-      return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', { error: error.message }, req.headers.lang);
+        console.error('Error resend OTP:', error);
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', { error: error.message }, req.headers.lang);
     }
-  };
-  
+};
+
 
 
 
@@ -269,12 +269,12 @@ exports.talk_to_expert = async (req, res, next) => {
                 }
             });
         })
-        .then(response => {
-            console.log('Lead created successfully:', response.data);
-        })
-        .catch(error => {
-            console.error('Error:', error.response ? error.response.data : error.message);
-        });
+            .then(response => {
+                console.log('Lead created successfully:', response.data);
+            })
+            .catch(error => {
+                console.error('Error:', error.response ? error.response.data : error.message);
+            });
 
 
         const user = await TalkToExpert.create(reqBody);
@@ -303,22 +303,22 @@ exports.reset_password = async (req, res, next) => {
     try {
 
         const reqBody = req.body;
-        const { email , new_password , confirm_password } = reqBody;
-    
-        if(new_password !== confirm_password)
+        const { email, new_password, confirm_password } = reqBody;
+
+        if (new_password !== confirm_password)
             return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.password_mismatch', {}, req.headers.lang);
-        
+
         const user = await User.findOne({ email });
-      
-        if(!user || user === null)
+
+        if (!user || user === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.invalid_token', {}, req.headers.lang);
-        
-        const hashedPassword = await bcrypt.hash(new_password, 10); 
+
+        const hashedPassword = await bcrypt.hash(new_password, 10);
         user.password = hashedPassword;
-        user.reset_password_token = null; 
+        user.reset_password_token = null;
         await user.save();
- 
-        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.set_new_password_success', user , req.headers.lang);
+
+        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.set_new_password_success', user, req.headers.lang);
 
     } catch (err) {
         console.log("err(reset_password)........", err)
@@ -358,12 +358,12 @@ exports.contact_us = async (req, res, next) => {
                 }
             });
         })
-        .then(response => {
-            console.log('Contact created successfully:', response.data);
-        })
-        .catch(error => {
-            console.error('Error:', error.response ? error.response.data : error.message);
-        });
+            .then(response => {
+                console.log('Contact created successfully:', response.data);
+            })
+            .catch(error => {
+                console.error('Error:', error.response ? error.response.data : error.message);
+            });
 
 
         const user = await Contact.create(reqBody);
@@ -418,12 +418,12 @@ exports.arrange_call_back = async (req, res, next) => {
                 }
             });
         })
-        .then(response => {
-            console.log('Contact created successfully:', response.data);
-        })
-        .catch(error => {
-            console.error('Error:', error.response ? error.response.data : error.message);
-        });
+            .then(response => {
+                console.log('Contact created successfully:', response.data);
+            })
+            .catch(error => {
+                console.error('Error:', error.response ? error.response.data : error.message);
+            });
 
         const user = await Callback.create(reqBody);
 
@@ -457,8 +457,8 @@ exports.refer_and_Earn = async (req, res, next) => {
 
         if (!checkMail)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
-       
-        const loginedIn = await User.findOne({ _id: userId});
+
+        const loginedIn = await User.findOne({ _id: userId });
 
         if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
@@ -473,7 +473,7 @@ exports.refer_and_Earn = async (req, res, next) => {
             name: user.name,
             email: user.email,
             phone: user.phone,
-            course_name:user.course_name,
+            course_name: user.course_name,
             created_at: user.created_at,
             updated_at: user.updated_at
         }
@@ -498,8 +498,8 @@ exports.Learners_Corners = async (req, res, next) => {
 
         if (!checkMail)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
-        
-        const loginedIn = await User.findOne({ _id: userId});
+
+        const loginedIn = await User.findOne({ _id: userId });
 
         if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
@@ -508,8 +508,8 @@ exports.Learners_Corners = async (req, res, next) => {
         reqBody.updated_at = await dateFormat.set_current_timestamp();
         reqBody.user = userId;
         const learner = await Learner.create(reqBody);
- 
-        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.sumbit_successfully', learner , req.headers.lang);
+
+        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.sumbit_successfully', learner, req.headers.lang);
 
     } catch (err) {
         console.log("err(Learners_Corners)........", err)
@@ -528,8 +528,8 @@ exports.School_college = async (req, res, next) => {
 
         if (!checkMail)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
-        
-        const loginedIn = await User.findOne({ _id: userId});
+
+        const loginedIn = await User.findOne({ _id: userId });
 
         if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
@@ -539,8 +539,8 @@ exports.School_college = async (req, res, next) => {
         reqBody.user = userId;
 
         const Schools = await School.create(reqBody);
- 
-        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.school_form_sumbit', Schools ,req.headers.lang);
+
+        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.school_form_sumbit', Schools, req.headers.lang);
 
     } catch (err) {
         console.log("err(School_college)")
@@ -560,7 +560,7 @@ exports.post_your_story = async (req, res, next) => {
         if (!checkMail)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
 
-        const loginedIn = await User.findOne({ _id: userId});
+        const loginedIn = await User.findOne({ _id: userId });
 
         if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
@@ -572,7 +572,7 @@ exports.post_your_story = async (req, res, next) => {
         const responseData = {
             _id: user._id,
             name: user.name,
-            user:userId,
+            user: userId,
             email: user.email,
             descripation: user.descripation,
             created_at: user.created_at,
@@ -596,7 +596,7 @@ exports.post_blog = async (req, res, next) => {
         const userId = req.user._id;
         const reqBody = req.body;
 
-        const loginedIn = await User.findOne({ _id: userId});
+        const loginedIn = await User.findOne({ _id: userId });
 
         if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
@@ -614,7 +614,7 @@ exports.post_blog = async (req, res, next) => {
         const user = await Blog.create(reqBody);
         const responseData = {
             _id: user._id,
-            user:userId,
+            user: userId,
             blog_name: user.blog_name,
             blog_title: user.blog_title,
             blog_image: user.blog_image,
@@ -645,7 +645,7 @@ exports.Booking = async (req, res, next) => {
         if (!checkMail)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
 
-        const loginedIn = await User.findOne({ _id: userId});
+        const loginedIn = await User.findOne({ _id: userId });
 
         if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
@@ -657,7 +657,7 @@ exports.Booking = async (req, res, next) => {
         const booking = await Booking.create(reqBody);
         const responseData = {
             _id: booking._id,
-            user:userId,
+            user: userId,
             full_name: booking.full_name,
             email: booking.email,
             gender: booking.gender,
@@ -696,7 +696,7 @@ exports.HiringRequirements = async (req, res, next) => {
         if (!checkMail)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
 
-        const loginedIn = await User.findOne({ _id: userId});
+        const loginedIn = await User.findOne({ _id: userId });
 
         if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
@@ -714,7 +714,7 @@ exports.HiringRequirements = async (req, res, next) => {
         const hiring = await Hiring.create(reqBody);
         const responseData = {
             _id: hiring._id,
-            user:userId,
+            user: userId,
             name: hiring.name,
             work_email: hiring.work_email,
             phone_number: hiring.phone_number,
@@ -747,9 +747,9 @@ exports.apply_now = async (req, res, next) => {
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
         }
 
-        if (!req.file) 
+        if (!req.file)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.no_file_uploaded', {}, req.headers.lang);
-        
+
         reqBody.resume = req.file.originalname ? `${BASEURL}/uploads/${req.file.originalname}` : null;
         const currentTimestamp = await dateFormat.set_current_timestamp();
         reqBody.created_at = currentTimestamp;
@@ -784,115 +784,115 @@ exports.brochure_download = async (req, res, next) => {
 
     try {
 
-      const reqBody = req.body;
-      const userId = req.user._id;
-  
-      const userData = await User.findById(userId);
-      if (!userData) 
-        return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.unauthorized_user', {}, req.headers.lang);
-      
-  
-      const checkMail = await isValid(reqBody.email);
-      if (!checkMail) 
-        return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
-      
+        const reqBody = req.body;
+        const userId = req.user._id;
 
-      let user = await Brochure.findOne({ user: userId });
-      const otp = generateFourDigitOTP();
-      reqBody.otp = otp;
-      reqBody.updated_at = await dateFormat.set_current_timestamp();
-  
-      if (user) {
-        user.otp = otp;
-        user.updated_at = reqBody.updated_at;
-        await user.save();
-      } else {
-        reqBody.user = userId;
-        reqBody.created_at = reqBody.updated_at;
-        user = await Brochure.create(reqBody);
-      }
-  
-      const responseData = {
-        _id: user._id,
-        name: user.name,
-        user: user.user,
-        email: user.email,
-        phone: user.phone,
-        created_at: user.created_at,
-        updated_at: user.updated_at
-      };
-  
-      OtpSendMail(otp, user.email).then(() => {
-        console.log('Successfully sent the OTP.');
-      }).catch((err) => {
-        console.log('Failed to send OTP:', err);
-      });
-  
-      return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.brochure_download_success', responseData, req.headers.lang);
-  
+        const userData = await User.findById(userId);
+        if (!userData)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.unauthorized_user', {}, req.headers.lang);
+
+
+        const checkMail = await isValid(reqBody.email);
+        if (!checkMail)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
+
+
+        let user = await Brochure.findOne({ user: userId });
+        const otp = generateFourDigitOTP();
+        reqBody.otp = otp;
+        reqBody.updated_at = await dateFormat.set_current_timestamp();
+
+        if (user) {
+            user.otp = otp;
+            user.updated_at = reqBody.updated_at;
+            await user.save();
+        } else {
+            reqBody.user = userId;
+            reqBody.created_at = reqBody.updated_at;
+            user = await Brochure.create(reqBody);
+        }
+
+        const responseData = {
+            _id: user._id,
+            name: user.name,
+            user: user.user,
+            email: user.email,
+            phone: user.phone,
+            created_at: user.created_at,
+            updated_at: user.updated_at
+        };
+
+        OtpSendMail(otp, user.email).then(() => {
+            console.log('Successfully sent the OTP.');
+        }).catch((err) => {
+            console.log('Failed to send OTP:', err);
+        });
+
+        return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.brochure_download_success', responseData, req.headers.lang);
+
     } catch (err) {
-      console.log("Error (brochure_download):", err);
-      return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', { error: err.message }, req.headers.lang);
+        console.log("Error (brochure_download):", err);
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', { error: err.message }, req.headers.lang);
     }
-  };
-  
+};
+
 
 
 exports.brochure_verify_otp = async (req, res) => {
 
     try {
 
-      const { otp, userId } = req.body; 
-    
-      const user = await Brochure.findOne({user: userId});
-  
-      if (!user) 
-        return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
+        const { otp, userId } = req.body;
 
-      if (user.otp == otp) {
-        user.otp = null; // Clear OTP after successful verification
-        await user.save(); // Save the updated user data
-        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.verify_otp', {}, req.headers.lang);
-      } else {
-        return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.invalid_otp', {}, req.headers.lang);
-      }
-  
+        const user = await Brochure.findOne({ user: userId });
+
+        if (!user)
+            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
+
+        if (user.otp == otp) {
+            user.otp = null; // Clear OTP after successful verification
+            await user.save(); // Save the updated user data
+            return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.verify_otp', {}, req.headers.lang);
+        } else {
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.invalid_otp', {}, req.headers.lang);
+        }
+
     } catch (error) {
-      console.error('Error brochure_verify_otp :', error);
-      return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', { error: error.message }, req.headers.lang);
+        console.error('Error brochure_verify_otp :', error);
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', { error: error.message }, req.headers.lang);
     }
-  };
-  
+};
 
-  exports.brchure_resend_otp = async (req, res) => {
+
+exports.brchure_resend_otp = async (req, res) => {
 
     try {
-          
-        const { email , userId } = req.body;
 
-        const user = await Brochure.findOne({ email : email , user: userId });
-  
-        if (!user) 
-          return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);  
+        const { email, userId } = req.body;
+
+        const user = await Brochure.findOne({ email: email, user: userId });
+
+        if (!user)
+            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.user_not_found', {}, req.headers.lang);
 
         const otp = generateFourDigitOTP();
 
-        OtpSendMail(otp , email).then(() => {
+        OtpSendMail(otp, email).then(() => {
             console.log('successfully send the otp.............')
         }).catch((err) => {
             console.log('otp not send.........', err)
         });
 
-       user.otp = otp;
-       await user.save();
+        user.otp = otp;
+        await user.save();
 
-       return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.resend_otp', {}, req.headers.lang);  
+        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.resend_otp', {}, req.headers.lang);
 
     } catch (error) {
-      console.error('Error brchure_resend_otp:', error);
-      return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', { error: error.message }, req.headers.lang);
+        console.error('Error brchure_resend_otp:', error);
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', { error: error.message }, req.headers.lang);
     }
-  };
+};
 
 
 
@@ -907,7 +907,7 @@ exports.application_details = async (req, res, next) => {
         if (!checkMail)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
 
-        const loginedIn = await User.findOne({_id: userId});
+        const loginedIn = await User.findOne({ _id: userId });
 
         if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
@@ -920,27 +920,27 @@ exports.application_details = async (req, res, next) => {
 
         const responseData = {
             _id: enroll._id,
-            user: userId, 
-            name: enroll.name, 
+            user: userId,
+            name: enroll.name,
             email: enroll.email,
             phone: enroll.phone,
-            state: enroll.state, 
-            location: enroll.location, 
-            city: enroll.city, 
+            state: enroll.state,
+            location: enroll.location,
+            city: enroll.city,
             gender: enroll.gender,
             date_of_birth: enroll.date_of_birth,
-            highest_qualification: enroll.highest_qualification, 
-            specialization: enroll.specialization, 
-            institute_name: enroll.institute_name, 
-            passing_year: enroll.passing_year, 
-            working_professional: enroll.working_professional, 
-            work_experience: enroll.work_experience, 
-            company_name: enroll.company_name, 
+            highest_qualification: enroll.highest_qualification,
+            specialization: enroll.specialization,
+            institute_name: enroll.institute_name,
+            passing_year: enroll.passing_year,
+            working_professional: enroll.working_professional,
+            work_experience: enroll.work_experience,
+            company_name: enroll.company_name,
             created_at: enroll.created_at,
             updated_at: enroll.updated_at,
             deleted_at: enroll.deleted_at || null
         };
-        
+
         return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.application_details_successfully', responseData, req.headers.lang);
 
     } catch (err) {
@@ -957,7 +957,7 @@ exports.application_fees = async (req, res, next) => {
 
         const userId = req.user._id;
         const reqBody = req.body;
-      
+
         const loginedIn = await User.findOne({ _id: userId });
 
         if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
@@ -967,8 +967,8 @@ exports.application_fees = async (req, res, next) => {
             method: 'POST',
             url: 'https://api.razorpay.com/v1/orders',
             auth: {
-                username: 'rzp_live_6pmqjNtXITyYIv',  
-                password: 'x4S4xdEYSxgaNk4Bu5y6JrmX' 
+                username: 'rzp_live_6pmqjNtXITyYIv',
+                password: 'x4S4xdEYSxgaNk4Bu5y6JrmX'
             },
             headers: {
                 'Content-Type': 'application/json'
@@ -993,23 +993,22 @@ exports.application_fees = async (req, res, next) => {
         reqBody.order_id = response.data.id;
         reqBody.created_at = await dateFormat.set_current_timestamp();
         reqBody.updated_at = await dateFormat.set_current_timestamp();
-        
+
         const users = await User.findById(userId)
         const fees = await ApplicationFees.create(reqBody);
 
         const responseData = {
             _id: fees._id,
             user: userId,
-            name:users.full_name,
-            email:users.email,
-            phone:users.phone,
+            name: users.full_name,
+            email: users.email,
+            phone: users.phone,
             amount: fees.amount,
-            course_name:fees.course_name,
+            course_name: fees.course_name,
             order_id: fees.order_id,
             created_at: fees.created_at,
             updated_at: fees.updated_at
         };
-      
 
         return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.application_details_successfully', responseData, req.headers.lang);
 
@@ -1027,13 +1026,13 @@ exports.get_application_fees_details = async (req, res, next) => {
     try {
 
         const userId = req.user._id;
-        const { course_name , email } = req.body;
+        const { course_name } = req.body;
         const loginedIn = await User.findOne({ _id: userId });
 
         if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
-         
-        const existingCourse = await ApplicationFees.findOne({ course_name: course_name , user : userId , email: email});
+
+        const existingCourse = await ApplicationFees.findOne({ course_name: course_name, user: userId});
 
         return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.registration_fees_completed', existingCourse, req.headers.lang);
 
@@ -1047,76 +1046,76 @@ exports.get_application_fees_details = async (req, res, next) => {
 
 exports.order_summary = async (req, res, next) => {
 
-try {
-
-    const userId = req.user._id;
-    const reqBody = req.body;
-
-    const loginedIn = await User.findOne({ _id: userId });
-
-    if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
-        return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
-   
-    let totalAmount = reqBody.total_amount; 
-    let discountAmount = 0;
-
-    if(reqBody.promo_code){
-        const promo = await promoCode.findOne({ promo_code: reqBody.promo_code, isActive: true });
-        if (!promo) 
-            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.promo_code_not_found', {} , req.headers.lang);
-
-        discountAmount = promo.discount_amount || 0;
-        totalAmount = totalAmount - discountAmount; // Ensure total amount is not negative
-    }
-
-    const options = {
-        method: 'POST',
-        url: 'https://api.razorpay.com/v1/orders',
-        auth: {
-            username: 'rzp_live_6pmqjNtXITyYIv',  
-            password: 'x4S4xdEYSxgaNk4Bu5y6JrmX' 
-        },
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        data: {
-            amount: totalAmount * 100, // Amount in paise (10000 paise = ₹100.00)
-            currency: 'INR'
-        }
-    };
-
-    let response;
-
     try {
-        response = await axios(options);
-        console.log('Order created successfully:', response.data);
-    } catch (error) {
-        console.error('Error creating order:', error.response ? error.response.data : error.message);
-    }
 
-    reqBody.user = userId;
-    reqBody.order_id = response.data.id;
-    reqBody.total_amount = totalAmount;
-    reqBody.created_at = await dateFormat.set_current_timestamp();
-    reqBody.updated_at = await dateFormat.set_current_timestamp();
+        const userId = req.user._id;
+        const reqBody = req.body;
 
-    const document = await OrderSummary.create(reqBody);
-    const users = await User.findById(userId);
+        const loginedIn = await User.findOne({ _id: userId });
 
-    const responseData = {
-        _id: document._id,
-        user: document.user,
-        name:users.full_name,
-        email:users.email,
-        phone:users.phone,
-        total_amount: document.total_amount,
-        payment_status: document.payment_status,
-        created_at: document.created_at,
-        updated_at: document.updated_at,
-        deleted_at: document.deleted_at,
-    };
+        if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
 
-    return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.payment_complete', responseData, req.headers.lang);
+        let totalAmount = reqBody.total_amount;
+        let discountAmount = 0;
+
+        if (reqBody.promo_code) {
+            const promo = await promoCode.findOne({ promo_code: reqBody.promo_code, isActive: true });
+            if (!promo)
+                return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.promo_code_not_found', {}, req.headers.lang);
+
+            discountAmount = promo.discount_amount || 0;
+            totalAmount = totalAmount - discountAmount; // Ensure total amount is not negative
+        }
+
+        const options = {
+            method: 'POST',
+            url: 'https://api.razorpay.com/v1/orders',
+            auth: {
+                username: 'rzp_live_6pmqjNtXITyYIv',
+                password: 'x4S4xdEYSxgaNk4Bu5y6JrmX'
+            },
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: {
+                amount: totalAmount * 100, // Amount in paise (10000 paise = ₹100.00)
+                currency: 'INR'
+            }
+        };
+
+        let response;
+
+        try {
+            response = await axios(options);
+            console.log('Order created successfully:', response.data);
+        } catch (error) {
+            console.error('Error creating order:', error.response ? error.response.data : error.message);
+        }
+
+        reqBody.user = userId;
+        reqBody.order_id = response.data.id;
+        reqBody.total_amount = totalAmount;
+        reqBody.created_at = await dateFormat.set_current_timestamp();
+        reqBody.updated_at = await dateFormat.set_current_timestamp();
+
+        const document = await OrderSummary.create(reqBody);
+        const users = await User.findById(userId);
+
+        const responseData = {
+            _id: document._id,
+            user: document.user,
+            name: users.full_name,
+            email: users.email,
+            phone: users.phone,
+            total_amount: document.total_amount,
+            payment_status: document.payment_status,
+            created_at: document.created_at,
+            updated_at: document.updated_at,
+            deleted_at: document.deleted_at,
+        };
+
+        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.payment_complete', responseData, req.headers.lang);
 
     } catch (err) {
         console.log("Error in order_summary: ", err);
@@ -1135,19 +1134,19 @@ exports.create_promocode = async (req, res, next) => {
         reqBody.updated_at = await dateFormat.set_current_timestamp();
         let expirationDate = new Date();
         expirationDate.setDate(expirationDate.getDate() + reqBody.expire_date);
-        reqBody.expire_date =  expirationDate;
+        reqBody.expire_date = expirationDate;
         const promo = await promoCode.create(reqBody);
 
         const responseData = {
             _id: promo._id,
-            promo_code:promo.promo_code,
-            discount:promo.discount, 
-            expire_days:promo.expire_days,
+            promo_code: promo.promo_code,
+            discount: promo.discount,
+            expire_days: promo.expire_days,
             created_at: promo.created_at,
             updated_at: promo.updated_at,
             deleted_at: promo.deleted_at || null
         };
-        
+
         return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.create_promo_code', responseData, req.headers.lang);
 
     } catch (err) {
@@ -1164,41 +1163,41 @@ exports.apply_promocode = async (req, res, next) => {
     try {
 
         const userId = req.user._id;
-        const { promo_code , total_amount } = req.query;
+        const { promo_code, total_amount } = req.query;
 
-        const loginedIn = await User.findOne({_id: userId});
+        const loginedIn = await User.findOne({ _id: userId });
 
         if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
 
-            
-          const promo = await promoCode.findOne({ promo_code: promo_code, isActive: true });
 
-         if (!promo) 
-            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.promo_code_not_found', {} , req.headers.lang);
+        const promo = await promoCode.findOne({ promo_code: promo_code, isActive: true });
 
-        if (new Date(promo.expire_days) < new Date()) 
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.promo_code_expired', {} , req.headers.lang);
-    
-    let discounts = (total_amount * promo.discount) / 100;
-    const total_amounts = total_amount - discounts;
-    promo.total_amount = total_amounts;
-    promo.discount_amount = discounts;
-    await promo.save();
+        if (!promo)
+            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.promo_code_not_found', {}, req.headers.lang);
+
+        if (new Date(promo.expire_days) < new Date())
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.promo_code_expired', {}, req.headers.lang);
+
+        let discounts = (total_amount * promo.discount) / 100;
+        const total_amounts = total_amount - discounts;
+        promo.total_amount = total_amounts;
+        promo.discount_amount = discounts;
+        await promo.save();
 
         const responseData = {
             _id: promo._id,
             user: userId,
-            promo_code:promo.promo_code,
-            discount:promo.discount, 
-            discount_amount:promo.discount_amount,
-            expire_days:promo.expire_days,
-            total_amount:promo.total_amount,
+            promo_code: promo.promo_code,
+            discount: promo.discount,
+            discount_amount: promo.discount_amount,
+            expire_days: promo.expire_days,
+            total_amount: promo.total_amount,
             created_at: promo.created_at,
             updated_at: promo.updated_at,
             deleted_at: promo.deleted_at || null
         };
-        
+
         return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.apply_promo_code', responseData, req.headers.lang);
 
     } catch (err) {
@@ -1224,8 +1223,8 @@ exports.python_register = async (req, res, next) => {
             method: 'POST',
             url: 'https://api.razorpay.com/v1/orders',
             auth: {
-                username: 'rzp_live_6pmqjNtXITyYIv',  
-                password: 'x4S4xdEYSxgaNk4Bu5y6JrmX' 
+                username: 'rzp_live_6pmqjNtXITyYIv',
+                password: 'x4S4xdEYSxgaNk4Bu5y6JrmX'
             },
             headers: {
                 'Content-Type': 'application/json'
@@ -1235,9 +1234,9 @@ exports.python_register = async (req, res, next) => {
                 currency: 'INR'
             }
         };
-    
+
         let response;
-    
+
         try {
             response = await axios(options);
             console.log('Order created successfully:', response.data);
@@ -1257,7 +1256,7 @@ exports.python_register = async (req, res, next) => {
             name: user.name,
             email: user.email,
             phone: user.phone,
-            order_id:user.order_id,
+            order_id: user.order_id,
             created_at: user.created_at,
             updated_at: user.updated_at
         }
@@ -1274,115 +1273,113 @@ exports.python_register = async (req, res, next) => {
 
 exports.payment_verification = async (req, res) => {
 
-    const secret = '7290938999'; 
+    const secret = '7290938999';
     const signature = req.headers['x-razorpay-signature'];
     const body = JSON.stringify(req.body);
 
-    console.log("d-reqBody........." , body)
-  
+
     // Verify Razorpay signature
     const expectedSignature = crypto.createHmac('sha256', secret).update(body).digest('hex');
     if (signature !== expectedSignature) {
-      return res.status(400).json({ message: 'Invalid webhook signature' });
+        return res.status(400).json({ message: 'Invalid webhook signature' });
     }
-  
+
     const paymentData = req.body.payload.payment.entity;
     const { order_id: orderId, status: paymentStatus } = paymentData;
-  
+
     try {
 
-      let foundRecord = false;
-  
-      const invoiceNumber = generateInvoiceNumber();
-      const currentDate = new Date();
-      const formattedDate = currentDate.toLocaleDateString('en-US', { day: '2-digit', month: 'long', year: 'numeric' });
+        let foundRecord = false;
 
-      const orderSummaryData = await OrderSummary.findOne({ order_id: orderId });
-      if (orderSummaryData) {
-        foundRecord = true;
-        orderSummaryData.payment_status = mapPaymentStatus(paymentStatus);
-        await orderSummaryData.save();
-  
-        try {
-          await finalInvoice(
-            orderSummaryData.full_name,
-            orderSummaryData.email,
-            orderSummaryData.phone,
-            invoiceNumber,
-            formattedDate,
-            orderSummaryData.total_amount
-          );
-          console.log('Invoice email sent successfully for Order Summary.');
-        } catch (emailError) {
-          console.error('Failed to send email for Order Summary:', emailError);
-        }
-      }
-  
-      // Step 2: Check and process Events
-      const event = await Events.findOne({ order_id: orderId });
-      if (event) {
-        foundRecord = true;
-        event.payment_status = mapPaymentStatus(paymentStatus);
-        await event.save();
-  
-        try {
-          await PythonRegistrationInvoice(
-            event.name,
-            event.email,
-            event.phone,
-            invoiceNumber,
-            formattedDate
-          );
-          console.log('Invoice email sent successfully for Event.');
-        } catch (emailError) {
-          console.error('Failed to send email for Event:', emailError);
-        }
-      }
-  
-      // Step 3: Check and process ApplicationFees
-      const applicationFees = await ApplicationFees.findOne({ order_id: orderId });
-      console.log("application data......", applicationFees)
-      if (applicationFees) {
-        foundRecord = true;
-        applicationFees.payment_status = mapPaymentStatus(paymentStatus);
-        await applicationFees.save();
-        console.log("status......" , applicationFees)
-        try {
-            
-          await registrationInvoice(
-            applicationFees.name,
-            applicationFees.email,
-            applicationFees.phone,
-            invoiceNumber,
-            formattedDate,
-          );
-          console.log('Invoice email sent successfully for Application Fees.');
-        } catch (emailError) {
-          console.error('Failed to send email for Application Fees:', emailError);
-        }
-      }
-  
-      if (!foundRecord) 
-          return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.data_not_found', {}, req.headers.lang);
-      
+        const invoiceNumber = generateInvoiceNumber();
+        const currentDate = new Date();
+        const formattedDate = currentDate.toLocaleDateString('en-US', { day: '2-digit', month: 'long', year: 'numeric' });
 
-      return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.verification_complete', {}, req.headers.lang);
-  
+        const orderSummaryData = await OrderSummary.findOne({ order_id: orderId });
+        if (orderSummaryData) {
+            foundRecord = true;
+            orderSummaryData.payment_status = mapPaymentStatus(paymentStatus);
+            await orderSummaryData.save();
+
+            try {
+                await finalInvoice(
+                    orderSummaryData.full_name,
+                    orderSummaryData.email,
+                    orderSummaryData.phone,
+                    invoiceNumber,
+                    formattedDate,
+                    orderSummaryData.total_amount
+                );
+                console.log('Invoice email sent successfully for Order Summary.');
+            } catch (emailError) {
+                console.error('Failed to send email for Order Summary:', emailError);
+            }
+        }
+
+        // Step 2: Check and process Events
+        const event = await Events.findOne({ order_id: orderId });
+        if (event) {
+            foundRecord = true;
+            event.payment_status = mapPaymentStatus(paymentStatus);
+            await event.save();
+
+            try {
+                await PythonRegistrationInvoice(
+                    event.name,
+                    event.email,
+                    event.phone,
+                    invoiceNumber,
+                    formattedDate
+                );
+                console.log('Invoice email sent successfully for Event.');
+            } catch (emailError) {
+                console.error('Failed to send email for Event:', emailError);
+            }
+        }
+
+        // Step 3: Check and process ApplicationFees
+        const applicationFees = await ApplicationFees.findOne({ order_id: orderId });
+        console.log("application data......", applicationFees)
+        if (applicationFees) {
+            foundRecord = true;
+            applicationFees.payment_status = mapPaymentStatus(paymentStatus);
+            await applicationFees.save();
+            console.log("status......", applicationFees)
+            try {
+
+                await registrationInvoice(
+                    applicationFees.name,
+                    applicationFees.email,
+                    applicationFees.phone,
+                    invoiceNumber,
+                    formattedDate,
+                );
+                console.log('Invoice email sent successfully for Application Fees.');
+            } catch (emailError) {
+                console.error('Failed to send email for Application Fees:', emailError);
+            }
+        }
+
+        if (!foundRecord)
+            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.data_not_found', {}, req.headers.lang);
+
+
+        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.verification_complete', {}, req.headers.lang);
+
     } catch (err) {
-      console.error('Error in payment_verification:', err);
-      return res.status(500).json({ message: 'Internal Server Error' });
+        console.error('Error in payment_verification:', err);
+        return res.status(500).json({ message: 'Internal Server Error' });
     }
-  };
+};
 
 
-  function mapPaymentStatus(status) {
+function mapPaymentStatus(status) {
     switch (status) {
-      case 'captured':
-        return 'Success';
-      case 'failed':
-        return 'Failed';
-      default:
-        return 'Pending';
+        case 'captured':
+            return 'Success';
+        case 'failed':
+            return 'Failed';
+        default:
+            return 'Pending';
     }
-  }
-  
+}
