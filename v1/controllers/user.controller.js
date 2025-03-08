@@ -1108,27 +1108,28 @@ exports.order_summary = async (req, res, next) => {
 };
 
 
-
 exports.create_promocode = async (req, res, next) => {
 
     try {
 
         const reqBody = req.body;
-        reqBody.created_at = await dateFormat.set_current_timestamp();
-        reqBody.updated_at = await dateFormat.set_current_timestamp();
-        let expirationDate = new Date();
-        expirationDate.setDate(expirationDate.getDate() + reqBody.expire_date);
-        reqBody.expire_date = expirationDate;
+        reqBody.createdAt = await dateFormat.set_current_timestamp();
+        reqBody.updatedAt = await dateFormat.set_current_timestamp();
         const promo = await promoCode.create(reqBody);
 
         const responseData = {
             _id: promo._id,
-            promo_code: promo.promo_code,
+            promoCode: promo.promoCode,
             discount: promo.discount,
-            expire_days: promo.expire_days,
-            created_at: promo.created_at,
-            updated_at: promo.updated_at,
-            deleted_at: promo.deleted_at || null
+            discountType: promo.discountType,
+            discountValue: promo.discountValue,
+            maxUsage: promo.maxUsage,
+            usageCount: promo.usageCount,
+            expiryDate: promo.expiryDate,
+            isActive: promo.isActive,
+            createdAt: promo.createdAt,
+            updatedAt: promo.updatedAt,
+            deletedAt: promo.deletedAt || null
         };
 
         return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.create_promo_code', responseData, req.headers.lang);
@@ -1140,55 +1141,97 @@ exports.create_promocode = async (req, res, next) => {
 };
 
 
-
-
-exports.apply_promocode = async (req, res, next) => {
+exports.python_register = async (req, res, next) => {
 
     try {
 
-        const userId = req.user._id;
-        const { promo_code, total_amount } = req.query;
+        const reqBody = req.body;
+        const checkMail = await isValid(reqBody.email);
 
-        const loginedIn = await User.findOne({ _id: userId });
+        if (!checkMail)
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
 
-        if (loginedIn.tokens === null && loginedIn.refresh_tokens === null)
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.loginedIn_success', {}, req.headers.lang);
+        const { coupon, amount } = req.body;
 
+        // Find the active coupon
+        const coupons = await promoCode.findOne({ promoCode: coupon, isActive: true });
 
-        const promo = await promoCode.findOne({ promo_code: promo_code, isActive: true });
+        if (!coupons) 
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.invalid_coupon', {}, req.headers.lang);
+        
+        // Check if coupon has exceeded max usage
+        if (coupons.usageCount >= coupons.maxUsage) 
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.coupon_uses', {}, req.headers.lang);
+        
+        // Calculate the discounted amount
+        let discountedAmount = amount;
+        if (coupons.discountType === "percentage") {
+            discountedAmount = amount - (amount * (coupons.discountValue / 100));
+        } else if (coupons.discountType === "fixed") {
+            discountedAmount = amount - coupons.discountValue;
+        }
+        discountedAmount = Math.max(0, discountedAmount); // Ensure the amount doesn't go below zero
 
-        if (!promo)
-            return sendResponse(res, constants.WEB_STATUS_CODE.NOT_FOUND, constants.STATUS_CODE.FAIL, 'USER.promo_code_not_found', {}, req.headers.lang);
-
-        if (new Date(promo.expire_days) < new Date())
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.promo_code_expired', {}, req.headers.lang);
-
-        let discounts = (total_amount * promo.discount) / 100;
-        const total_amounts = total_amount - discounts;
-        promo.total_amount = total_amounts;
-        promo.discount_amount = discounts;
-        await promo.save();
-
-        const responseData = {
-            _id: promo._id,
-            user: userId,
-            promo_code: promo.promo_code,
-            discount: promo.discount,
-            discount_amount: promo.discount_amount,
-            expire_days: promo.expire_days,
-            total_amount: promo.total_amount,
-            created_at: promo.created_at,
-            updated_at: promo.updated_at,
-            deleted_at: promo.deleted_at || null
+        // Create an order using Razorpay
+        const options = {
+            method: 'POST',
+            url: 'https://api.razorpay.com/v1/orders',
+            auth: {
+                username: 'rzp_live_6pmqjNtXITyYIv',
+                password: 'x4S4xdEYSxgaNk4Bu5y6JrmX'
+            },
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: {
+                amount: discountedAmount * 100,
+                currency: 'INR'
+            }
         };
 
-        return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.apply_promo_code', responseData, req.headers.lang);
+        let response;
+        try {
+            response = await axios(options);
+            console.log('Order created successfully:', response.data);
+        } catch (error) {
+            console.error('Error creating order:', error.response ? error.response.data : error.message);
+            return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'RAZORPAY.order_failed', {}, req.headers.lang);
+        }
+
+        reqBody.order_id = response.data.id;
+        reqBody.amount = discountedAmount;
+        reqBody.created_at = await dateFormat.set_current_timestamp();
+        reqBody.updated_at = await dateFormat.set_current_timestamp();
+
+        // Save user event
+        const user = new Events(reqBody);
+        await user.save();
+
+        // Update coupon usage count
+        await promoCode.updateOne(
+            { promoCode:coupon },
+            { $inc: { usageCount: 1 } } // Increment usageCount by 1
+        );
+
+        const responseData = {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            phone: user.phone,
+            amount:user.amount,
+            order_id: user.order_id,
+            created_at: user.created_at,
+            updated_at: user.updated_at
+        };
+
+        return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.python_registration', responseData, req.headers.lang);
 
     } catch (err) {
-        console.log("Error in create apply_promocode: ", err);
+        console.error("Error in python_register:", err);
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang);
     }
 };
+
 
 
 
