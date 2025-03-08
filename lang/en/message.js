@@ -88,7 +88,9 @@ module.exports = {
         verification_complete: 'Payment verification completed',
         sumbit_successfully:'learners form successfully sumbited',
         school_form_sumbit:'school form successfully sumbited',
-        registration_process_completed:'your registartion process already completed'
+        registration_process_completed:'your registartion process already completed',
+        invalid_coupon:'please enter valid coupon code',
+        coupon_uses: "Coupon code usage limit exceeded."
     },
     'ADMIN':{
          user: 'successfully add user',
