@@ -1,35 +1,41 @@
 const mongoose = require('mongoose');
 
-
 const promoCodeSchema = new mongoose.Schema({
 
-    promo_code:{
-        type:String
+    promoCode: {
+        type: String
     },
-    expire_days:{
-        type:Date,
+    discountType: {
+        type: String,
+        required: true
     },
-    discount:{
-        type:Number
+    discountValue: {
+        type: Number,
+        required: true
     },
-    isActive:{
-        type:Boolean,
-        default:true
+    maxUsage: {
+        type: Number,
+        default: 1
     },
-    discount_amount:{
-        type:Number
+    usageCount: {
+        type: Number,
+        default: 0
     },
-    total_amount:{
-        type:Number,
-        default:0
+    expiryDate: {
+        type: Date,
+        required: true
     },
-    created_at: {
+    isActive: {
+        type: Boolean,
+        default: true
+    },
+    createdAt: {
         type: String,
     },
-    updated_at: {
+    updatedAt: {
         type: String,
     },
-    deleted_at: {
+    deletedAt: {
         type: String,
         default: null // Set when the record is soft-deleted
     }
