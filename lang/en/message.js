@@ -90,7 +90,8 @@ module.exports = {
         school_form_sumbit:'school form successfully sumbited',
         registration_process_completed:'your registartion process already completed',
         invalid_coupon:'please enter valid coupon code',
-        coupon_uses: "Coupon code usage limit exceeded."
+        coupon_uses: "Coupon code usage limit exceeded.",
+        coupon_code_applied:'user successfully applied coupon code'
     },
     'ADMIN':{
          user: 'successfully add user',
