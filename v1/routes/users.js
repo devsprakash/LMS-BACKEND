@@ -30,6 +30,7 @@ router.post('/application-fees' , application_fees_validator , ValidatorResult ,
 router.post('/order_summary' , authenticate , order_summary);
 router.post('/generate_promocode' , create_promocode);
 router.post('/python_register' , python_register_validator , ValidatorResult , python_register)
+router.post('/applyCoupons', applyCoupon)
 router.post('/learner_form_sumbit', learner_validator, ValidatorResult , authenticate , Learners_Corners )
 router.post('/School_form_sumbit', school_validator , ValidatorResult , authenticate , School_college )
 
