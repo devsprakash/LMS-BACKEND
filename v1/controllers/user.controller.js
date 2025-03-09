@@ -1108,6 +1108,7 @@ exports.order_summary = async (req, res, next) => {
 };
 
 
+
 exports.create_promocode = async (req, res, next) => {
 
     try {
@@ -1133,12 +1134,56 @@ exports.create_promocode = async (req, res, next) => {
         };
 
         return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.create_promo_code', responseData, req.headers.lang);
-
     } catch (err) {
         console.log("Error in create promocode: ", err);
         return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang);
     }
 };
+
+
+exports.applyCoupon = async (req, res) => {
+
+    try {
+
+        const { coupon, amount } = req.body;
+        const coupons = await promoCode.findOne({ promoCode: coupon, isActive: true });
+
+        if (!coupons) {
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.invalid_coupon', {}, req.headers.lang);
+        }
+
+        if (coupons.usageCount >= coupons.maxUsage) {
+            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.coupon_uses', {}, req.headers.lang);
+        }
+
+        // Calculate the discounted amount
+        let discountedAmount = amount;
+        if (coupons.discountType === "percentage") {
+            discountedAmount = amount - (amount * (coupons.discountValue / 100));
+        } else if (coupons.discountType === "fixed") {
+            discountedAmount = amount - coupons.discountValue;
+        }
+
+        discountedAmount = Math.max(0, discountedAmount); 
+
+        await promoCode.updateOne(
+            { promoCode:coupon },
+            { $inc: { usageCount: 1 } } // Increment usageCount by 1
+        );
+
+        // Return success response with discounted amount
+        return sendResponse(res, constants.WEB_STATUS_CODE.OK, constants.STATUS_CODE.SUCCESS, 'USER.coupon_applied', {
+            originalAmount: amount,
+            discountedAmount,
+            discountApplied: amount - discountedAmount
+        }, req.headers.lang);
+
+    } catch (error) {
+        console.error("Error in applyCoupon:", error);
+        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', error.message, req.headers.lang);
+    }
+};
+
 
 
 exports.python_register = async (req, res, next) => {
@@ -1150,27 +1195,6 @@ exports.python_register = async (req, res, next) => {
 
         if (!checkMail)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
-
-        const { coupon, amount } = req.body;
-
-        // Find the active coupon
-        const coupons = await promoCode.findOne({ promoCode: coupon, isActive: true });
-
-        if (!coupons) 
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.invalid_coupon', {}, req.headers.lang);
-        
-        // Check if coupon has exceeded max usage
-        if (coupons.usageCount >= coupons.maxUsage) 
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'USER.coupon_uses', {}, req.headers.lang);
-        
-        // Calculate the discounted amount
-        let discountedAmount = amount;
-        if (coupons.discountType === "percentage") {
-            discountedAmount = amount - (amount * (coupons.discountValue / 100));
-        } else if (coupons.discountType === "fixed") {
-            discountedAmount = amount - coupons.discountValue;
-        }
-        discountedAmount = Math.max(0, discountedAmount); // Ensure the amount doesn't go below zero
 
         // Create an order using Razorpay
         const options = {
@@ -1184,7 +1208,7 @@ exports.python_register = async (req, res, next) => {
                 'Content-Type': 'application/json'
             },
             data: {
-                amount: discountedAmount * 100,
+                amount: reqBody.amount * 100,
                 currency: 'INR'
             }
         };
@@ -1199,19 +1223,12 @@ exports.python_register = async (req, res, next) => {
         }
 
         reqBody.order_id = response.data.id;
-        reqBody.amount = discountedAmount;
         reqBody.created_at = await dateFormat.set_current_timestamp();
         reqBody.updated_at = await dateFormat.set_current_timestamp();
 
         // Save user event
         const user = new Events(reqBody);
         await user.save();
-
-        // Update coupon usage count
-        await promoCode.updateOne(
-            { promoCode:coupon },
-            { $inc: { usageCount: 1 } } // Increment usageCount by 1
-        );
 
         const responseData = {
             _id: user._id,
@@ -1232,69 +1249,6 @@ exports.python_register = async (req, res, next) => {
     }
 };
 
-
-
-
-
-exports.python_register = async (req, res, next) => {
-
-    try {
-
-        const reqBody = req.body;
-        const checkMail = await isValid(reqBody.email);
-
-        if (!checkMail)
-            return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
-
-        const options = {
-            method: 'POST',
-            url: 'https://api.razorpay.com/v1/orders',
-            auth: {
-                username: 'rzp_live_6pmqjNtXITyYIv',
-                password: 'x4S4xdEYSxgaNk4Bu5y6JrmX'
-            },
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: {
-                amount: reqBody.amount * 100,
-                currency: 'INR'
-            }
-        };
-
-        let response;
-
-        try {
-            response = await axios(options);
-            console.log('Order created successfully:', response.data);
-        } catch (error) {
-            console.error('Error creating order:', error.response ? error.response.data : error.message);
-        }
-
-        reqBody.order_id = response.data.id;
-        reqBody.created_at = await dateFormat.set_current_timestamp();
-        reqBody.updated_at = await dateFormat.set_current_timestamp();
-
-        const user = new Events(reqBody);
-
-        await user.save();
-        const responseData = {
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            phone: user.phone,
-            order_id: user.order_id,
-            created_at: user.created_at,
-            updated_at: user.updated_at
-        }
-
-        return sendResponse(res, constants.WEB_STATUS_CODE.CREATED, constants.STATUS_CODE.SUCCESS, 'USER.python_registartion', responseData, req.headers.lang);
-
-    } catch (err) {
-        console.log("err(python_register)........", err)
-        return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'GENERAL.general_error_content', err.message, req.headers.lang)
-    }
-}
 
 
 
