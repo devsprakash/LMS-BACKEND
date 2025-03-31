@@ -14,16 +14,6 @@ const eventSchema = new mongoose.Schema({
     phone: {
         type: String
     },
-    order_id:{
-        type:String
-    },
-    amount:{
-       type:Number
-    },
-    payment_status:{
-        type:String,
-        default:null
-    },
     created_at: {
         type: String
     },
