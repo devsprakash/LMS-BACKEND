@@ -1196,33 +1196,6 @@ exports.python_register = async (req, res, next) => {
         if (!checkMail)
             return sendResponse(res, constants.WEB_STATUS_CODE.BAD_REQUEST, constants.STATUS_CODE.FAIL, 'GENERAL.blackList_mail', {}, req.headers.lang);
 
-        // Create an order using Razorpay
-        const options = {
-            method: 'POST',
-            url: 'https://api.razorpay.com/v1/orders',
-            auth: {
-                username: 'rzp_live_6pmqjNtXITyYIv',
-                password: 'x4S4xdEYSxgaNk4Bu5y6JrmX'
-            },
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: {
-                amount: reqBody.amount * 100,
-                currency: 'INR'
-            }
-        };
-
-        let response;
-        try {
-            response = await axios(options);
-            console.log('Order created successfully:', response.data);
-        } catch (error) {
-            console.error('Error creating order:', error.response ? error.response.data : error.message);
-            return sendResponse(res, constants.WEB_STATUS_CODE.SERVER_ERROR, constants.STATUS_CODE.FAIL, 'RAZORPAY.order_failed', {}, req.headers.lang);
-        }
-
-        reqBody.order_id = response.data.id;
         reqBody.created_at = await dateFormat.set_current_timestamp();
         reqBody.updated_at = await dateFormat.set_current_timestamp();
 
@@ -1235,8 +1208,6 @@ exports.python_register = async (req, res, next) => {
             name: user.name,
             email: user.email,
             phone: user.phone,
-            amount:user.amount,
-            order_id: user.order_id,
             created_at: user.created_at,
             updated_at: user.updated_at
         };
